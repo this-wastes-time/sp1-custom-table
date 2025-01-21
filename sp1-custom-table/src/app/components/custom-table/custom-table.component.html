@@ -1,0 +1,69 @@
+<div class="outer-table-container">
+  <div class="table-paginator-container">
+    <div class="table-container">
+      <!-- <table mat-table [dataSource]="(dataSource$ | async) || []"> -->
+      <table mat-table [dataSource]="dataSource">
+
+        <!--- Note that these columns can be defined in any order.
+              The actual rendered columns are set as a property on the row definition" -->
+
+        <!-- Column for numbered rows. -->
+        @if (tableConfig.numberedRows) {
+          <ng-container matColumnDef="#">
+            <th mat-header-cell *matHeaderCellDef> # </th>
+            <td mat-cell *matCellDef="let row; let i = index"> {{ rowOffset + i }} </td>
+          </ng-container>
+        }
+
+        <!-- Columns generated from table configuration. -->
+        @for (column of tableConfig.columns; track column) {
+          <ng-container matColumnDef="{{ column.field }}">
+            <th mat-header-cell *matHeaderCellDef> {{ column.header }} </th>
+            <!-- <td mat-cell *matCellDef="let row" [ngClass]="column.cellClass?.(row) ?? ''"> {{ row[column.field]}} </td> -->
+            <td mat-cell *matCellDef="let row" [ngClass]="column.cellClass?.(row) ?? ''">
+              {{ column.valueGetter?.(row) ?? row[column.field] }}
+            </td>
+          </ng-container>
+        }
+
+        <!-- Column for row actions. -->
+        @if (tableConfig.rowActions) {
+          <ng-container matColumnDef="actions" [stickyEnd]="tableConfig.stickyActions">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let row">
+              <button mat-icon-button [matMenuTriggerFor]="actionMenu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #actionMenu="matMenu">
+                @for (action of tableConfig.rowActions; track action) {
+                  <span [class.disabled-wrapper]="action.disabled">
+                    <button mat-menu-item [attr.aria-label]="action.description" [disabled]="action.disabled" (click)="action.action(row)">
+                      <span> {{ action.label }}</span>
+                    </button>
+                  </span>
+                }
+              </mat-menu>
+            </td>
+          </ng-container>
+        }
+
+        <tr mat-header-row *matHeaderRowDef="displayColumns; sticky: tableConfig.stickyHeaders"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayColumns"
+          [class.showActions]="tableConfig.rowActions"
+          [ngClass]="tableConfig.rowClass?.(row) ?? ''"></tr>
+      </table>
+    </div>
+
+    <div class="paginator-container">
+      <!-- Place holder pagination for sizing.. -->
+      <nav>
+        <mat-paginator [length]="dataSource.data.length"
+          [pageSize]="tableConfig.pagination?.pageSize ?? 10"
+          [pageSizeOptions]="tableConfig.pagination?.pageSizeOptions ?? [5, 10, 25, 100]"
+          [attr.aria-label]="tableConfig.pagination?.accessibleLabel"
+          showFirstLastButtons="true">
+        </mat-paginator>
+      </nav>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,26 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "watch",
+			"path": "sp1-custom-table",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "npm: watch - sp1-custom-table",
+			"detail": "ng build --watch --configuration development"
+		},
+		{
+			"type": "shell",
+			"label": "ng serve",
+			"command": "ng serve",
+			"options": {
+				"cwd": "${workspaceFolder}/sp1-custom-table"
+			},
+			"group": {
+				"kind": "build",
+			},
+			"problemMatcher": []
+		}
+	]
+}

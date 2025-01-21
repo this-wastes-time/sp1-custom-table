@@ -1,0 +1,39 @@
+.outer-table-container {
+  margin: .625rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+
+  .table-paginator-container {
+
+    .table-container {
+      margin: 0 auto;
+      overflow: auto;
+    }
+  }
+}
+
+table {
+  width: 100%;
+
+  th,
+  td {
+    white-space: nowrap;
+  }
+}
+
+.mat-mdc-header-row {
+  height: 26px;
+}
+
+.mat-mdc-row {
+  height: 36px;
+
+  &.showActions {
+    height: 52px;
+  }
+}
+
+.mat-column-actions {
+  border-left: 1px solid #ccc;
+}
