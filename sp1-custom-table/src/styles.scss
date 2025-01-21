@@ -1,0 +1,27 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import '@angular/material/prebuilt-themes/cyan-orange.css';
+// @import '@angular/material/prebuilt-themes/azure-blue.css';
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.disabled-wrapper {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.gold {
+  color: goldenrod !important;
+}
+
+.bold {
+  font-weight: bold !important;
+}
