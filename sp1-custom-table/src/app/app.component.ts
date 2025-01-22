@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Table } from './components/custom-table/models/table.model';
 import { CustomTableComponent } from './components/custom-table/custom-table.component';
-import { ButtonCellComponent } from './components/custom-table/cells/button-cell/button-cell.component';
 
 const NAMES = [
   'Hydrogen',
@@ -144,25 +143,69 @@ export class AppComponent {
     caption: 'User data table with actions.',
     columns: [
       {
-        field: 'position', header: 'Position', sortable: true, component: ButtonCellComponent,
-        componentInputs: (row) => ({
-          label: `${row.position}`, clickFunc: () => this.buttonClick(row.name)
+        field: 'position',
+        header: 'Position',
+        sortable: true,
+        cellTemplate: 'buttonTemplate',
+        templateInputs: (row) => ({
+          label: `${row.position}`,
+          clickFunc: () => this.buttonClick(row.name),
         }),
       },
-      { field: 'name', header: 'Name', sortable: true, },
-      { field: 'weight', header: 'Weight', sortable: true, },
-      { field: 'symbol', header: 'Symbol', sortable: true, },
-      { field: 'discoverer', header: 'Discovered By', sortable: true, },
       {
-        field: 'discoveredLocation', header: 'Discovery Location',
+        field: 'name',
+        header: 'Name',
+        sortable: true,
+      },
+      {
+        field: 'weight',
+        header: 'Weight',
+        sortable: true,
+      },
+      {
+        field: 'symbol',
+        header: 'Symbol',
+        sortable: true,
+      },
+      {
+        field: 'discoverer',
+        header: 'Discovered By',
+        sortable: true,
+      },
+      {
+        field: 'discoveredLocation',
+        header: 'Discovery Location',
         valueGetter: (row) => `${row.university} (${row.country})`,
         sortable: true,
       },
-      { field: 'career', header: 'Career', sortable: true, },
-      { field: 'online', header: 'Online Graduate', },
-      { field: 'age', header: 'Age', sortable: true, },
-      { field: 'married', header: 'Married', sortable: true, },
-      { field: 'company', header: 'Compnay', sortable: true, },
+      {
+        field: 'career',
+        header: 'Career',
+        sortable: true,
+      },
+      {
+        field: 'online',
+        header: 'Online Graduate',
+        cellTemplate: 'checkboxTemplate',
+        templateInputs: (row) => ({
+          checked: row.online,
+        }),
+      },
+      {
+        field: 'age',
+        header: 'Age',
+        sortable: true,
+      },
+      {
+        field: 'married',
+        header: 'Married',
+        sortable: true,
+      },
+      {
+        field: 'company',
+        header: 'Compnay',
+        sortable: true,
+      },
     ],
     numberedRows: true,
     rowClass: (row) => (row.name === 'Calcium' ? ['gold', 'bold'] : ''),
@@ -177,8 +220,17 @@ export class AppComponent {
       },
     },
     rowActions: [
-      { label: 'Edit', description: 'Edit row action', action: (row) => console.log('Edit:', row), disabled: (row) => row.name === 'Calcium', },
-      { label: 'Delete', description: 'Delete row action', action: (row) => console.log('Delete:', row), },
+      {
+        label: 'Edit',
+        description: 'Edit row action',
+        action: (row) => console.log('Edit:', row),
+        disabled: (row) => row.name === 'Calcium',
+      },
+      {
+        label: 'Delete',
+        description: 'Delete row action',
+        action: (row) => console.log('Delete:', row),
+      },
     ],
     stickyActions: true,
     pagination: {
