@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Table } from './components/custom-table/models/table.model';
 import { CustomTableComponent } from './components/custom-table/custom-table.component';
+import { ButtonCellComponent } from './components/custom-table/cells/button-cell/button-cell.component';
 
 const NAMES = [
   'Hydrogen',
@@ -142,12 +143,21 @@ export class AppComponent {
     id: 'test-table',
     caption: 'User data table with actions.',
     columns: [
-      { field: 'position', header: 'Position', sortable: true, },
+      {
+        field: 'position', header: 'Position', sortable: true, component: ButtonCellComponent,
+        componentInputs: (row) => ({
+          label: `${row.position}`, clickFunc: () => this.buttonClick(row.name)
+        }),
+      },
       { field: 'name', header: 'Name', sortable: true, },
       { field: 'weight', header: 'Weight', sortable: true, },
       { field: 'symbol', header: 'Symbol', sortable: true, },
       { field: 'discoverer', header: 'Discovered By', sortable: true, },
-      { field: 'discoveredLocation', header: 'Discovery Location', valueGetter: (row) => `${row.university} (${row.country})`, sortable: true, },
+      {
+        field: 'discoveredLocation', header: 'Discovery Location',
+        valueGetter: (row) => `${row.university} (${row.country})`,
+        sortable: true,
+      },
       { field: 'career', header: 'Career', sortable: true, },
       { field: 'online', header: 'Online Graduate', },
       { field: 'age', header: 'Age', sortable: true, },
@@ -197,5 +207,9 @@ export class AppComponent {
       married: name.charAt(0) === 'P',
       company: COMPANIES[Math.round(Math.random() * (COMPANIES.length - 1))],
     };
+  }
+
+  private buttonClick(str: string): void {
+    console.log('Button clicked:', str);
   }
 }
