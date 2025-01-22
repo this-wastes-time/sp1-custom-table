@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
 
 
 
@@ -17,6 +18,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatMenuModule,
     MatIconModule,
     MatPaginatorModule,
+    MatSortModule,
   ],
   exports: [
     CommonModule,
@@ -24,7 +26,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatSortModule,
   ]
 })
 export class CustomTableModule { }

@@ -3,4 +3,5 @@ export interface Column {
   header: string; // Display name of the column
   cellClass?: (row: any) => string | string[]; // Function to determine CSS class for a cell
   valueGetter?: (row: any) => any; // Function to determine the displayed value in the cell
+  sortable?: boolean; // Whether the column is sortable
 }

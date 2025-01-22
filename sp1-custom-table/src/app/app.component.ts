@@ -125,6 +125,10 @@ const COMPANIES = [
   'FusionSphere Inc.',
 ];
 
+const AGES = [
+  36, 41, 47, 52, 56, 59, 63, 68, 70, 71
+];
+
 
 @Component({
   selector: 'app-root',
@@ -138,23 +142,32 @@ export class AppComponent {
     id: 'test-table',
     caption: 'User data table with actions.',
     columns: [
-      { field: 'position', header: 'Position', },
-      { field: 'name', header: 'Name', },
-      { field: 'weight', header: 'Weight', },
-      { field: 'symbol', header: 'Symbol', },
-      { field: 'discoverer', header: 'Discovered By', },
-      { field: 'discoveredLocation', header: 'Discovery Location', valueGetter: (row) => `${row.university} (${row.country})`, },
-      { field: 'career', header: 'Career', },
+      { field: 'position', header: 'Position', sortable: true, },
+      { field: 'name', header: 'Name', sortable: true, },
+      { field: 'weight', header: 'Weight', sortable: true, },
+      { field: 'symbol', header: 'Symbol', sortable: true, },
+      { field: 'discoverer', header: 'Discovered By', sortable: true, },
+      { field: 'discoveredLocation', header: 'Discovery Location', valueGetter: (row) => `${row.university} (${row.country})`, sortable: true, },
+      { field: 'career', header: 'Career', sortable: true, },
       { field: 'online', header: 'Online Graduate', },
-      { field: 'age', header: 'Age', },
-      { field: 'married', header: 'Married', },
-      { field: 'company', header: 'Compnay', },
+      { field: 'age', header: 'Age', sortable: true, },
+      { field: 'married', header: 'Married', sortable: true, },
+      { field: 'company', header: 'Compnay', sortable: true, },
     ],
     numberedRows: true,
     rowClass: (row) => (row.name === 'Calcium' ? ['gold', 'bold'] : ''),
     stickyHeaders: true,
+    sortOptions: {
+      initialSort: { active: 'name', direction: 'asc' },
+      sortFunc(item, property) {
+        if (property === 'discoveredLocation') {
+          return `${item.university} ${item.country}`;
+        }
+        return item[property];
+      },
+    },
     rowActions: [
-      { label: 'Edit', description: 'Edit row action', action: (row) => console.log('Edit:', row), disabled: (row) => (row.name === 'Calcium'), },
+      { label: 'Edit', description: 'Edit row action', action: (row) => console.log('Edit:', row), disabled: (row) => row.name === 'Calcium', },
       { label: 'Delete', description: 'Delete row action', action: (row) => console.log('Delete:', row), },
     ],
     stickyActions: true,
@@ -180,8 +193,8 @@ export class AppComponent {
       country: COUNTIRES[Math.round(Math.random() * (COUNTIRES.length - 1))],
       discoverer: DISCOVERERS[Math.round(Math.random() * (DISCOVERERS.length - 1))],
       career: CAREERS[Math.round(Math.random() * (CAREERS.length - 1))],
-      online: pos % 7 === 0,
-      age: 71,
+      online: pos % 4 === 0,
+      age: AGES[Math.round(Math.random() * (AGES.length - 1))],
       married: name.charAt(0) === 'P',
       company: COMPANIES[Math.round(Math.random() * (COMPANIES.length - 1))],
     };
