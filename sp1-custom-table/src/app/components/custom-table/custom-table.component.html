@@ -39,8 +39,8 @@
               </button>
               <mat-menu #actionMenu="matMenu">
                 @for (action of tableConfig.rowActions; track action) {
-                  <span [class.disabled-wrapper]="action.disabled">
-                    <button mat-menu-item [attr.aria-label]="action.description" [disabled]="action.disabled" (click)="action.action(row)">
+                  <span [class.disabled-wrapper]="action.disabled?.(row)">
+                    <button mat-menu-item [attr.aria-label]="action.description" [disabled]="action.disabled?.(row)" (click)="action.action(row)">
                       <span> {{ action.label }}</span>
                     </button>
                   </span>

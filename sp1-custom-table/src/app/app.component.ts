@@ -179,7 +179,6 @@ export class AppComponent {
   };
 
   data = Array.from({ length: 100 }, (_, k) => this.genData(k + 1));
-  // data = [];
 
   genData(pos: number): any {
     const name = NAMES[Math.round(Math.random() * (NAMES.length - 1))];
