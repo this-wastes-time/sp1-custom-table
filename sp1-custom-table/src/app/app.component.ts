@@ -207,7 +207,7 @@ export class AppComponent {
         sortable: true,
       },
     ],
-    numberedRows: true,
+    showRowNumbers: true,
     rowClass: (row) => (row.name === 'Calcium' ? ['gold', 'bold'] : ''),
     stickyHeaders: true,
     sortOptions: {
@@ -233,6 +233,11 @@ export class AppComponent {
       },
     ],
     stickyActions: true,
+    tableFilterOptions: {
+      id: 'table-filter',
+      label: 'Filter',
+      placeholder: 'Example: Hydrogen',
+    },
     pagination: {
       accessibleLabel: 'custom paginator label',
       pageSize: 11,
@@ -242,7 +247,7 @@ export class AppComponent {
 
   data = Array.from({ length: 100 }, (_, k) => this.genData(k + 1));
 
-  genData(pos: number): any {
+  private genData(pos: number): any {
     const name = NAMES[Math.round(Math.random() * (NAMES.length - 1))];
 
     return {

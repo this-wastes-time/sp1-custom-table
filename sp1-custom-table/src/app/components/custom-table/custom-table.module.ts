@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { SearchBoxComponent } from '../search-box/search-box.component';
 
 
 
@@ -21,6 +22,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatPaginatorModule,
     MatSortModule,
     MatCheckboxModule,
+    SearchBoxComponent,
   ],
   exports: [
     CommonModule,
@@ -31,6 +33,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatPaginatorModule,
     MatSortModule,
     MatCheckboxModule,
+    SearchBoxComponent,
   ]
 })
 export class CustomTableModule { }

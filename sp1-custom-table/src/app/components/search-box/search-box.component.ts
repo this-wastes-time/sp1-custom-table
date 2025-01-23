@@ -1,14 +1,17 @@
 import { Component, EventEmitter, Input, Output, OnInit, OnDestroy } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
-const DEBOUNCEWAIT = 300;
+const DEBOUNCEWAIT = 250;
 
 @Component({
   selector: 'app-search-box',
   standalone: true,
-  imports: [MatInputModule],
+  imports: [MatInputModule, MatButtonModule, MatIconModule, FormsModule],
   templateUrl: './search-box.component.html',
   styleUrl: './search-box.component.scss'
 })
@@ -17,6 +20,8 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
   @Input() label = 'Search';
   @Input() placeholder = 'Search...';
   @Output() inputChange = new EventEmitter<string>();
+
+  protected text!: string;
 
   private inputSubject = new Subject<string>();
   private inputSubscription: any;
@@ -34,11 +39,16 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
     this.inputSubscription.unsubscribe();
   }
 
-  getValue(event: Event): string {
+  protected getValue(event: Event): string {
     return (event.target as HTMLInputElement).value;
   }
 
-  onInputChange(value: string): void {
+  protected onInputChange(value: string): void {
     this.inputSubject.next(value);
+  }
+
+  protected clear(): void {
+    this.text = '';
+    this.inputSubject.next(this.text);
   }
 }

@@ -6,6 +6,11 @@
 
   .table-paginator-container {
 
+    .table-filter-container {
+      padding: .625rem;
+      border-bottom: 1px solid #ccc;
+    }
+
     .table-container {
       margin: 0 auto;
       overflow: auto;

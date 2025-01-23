@@ -55,7 +55,7 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
     this.displayColumns = this.tableConfig!.columns.map(col => col.field);
 
     // Include the row number column.
-    if (this.tableConfig.numberedRows) {
+    if (this.tableConfig.showRowNumbers) {
       this.displayColumns.unshift('#');
     }
 
@@ -70,4 +70,11 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
     this.announcer.announce(`Sorting by ${event.active} ${sortDirection}`);
   }
 
+  protected applyFilter(filterString: string): void {
+    this.dataSource.filter = filterString.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
 }
