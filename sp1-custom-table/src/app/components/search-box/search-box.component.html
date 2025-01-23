@@ -1,0 +1,4 @@
+<mat-form-field>
+  <mat-label> {{ label }} </mat-label>
+  <input [id]="id" matInput type="text" [placeholder]="placeholder" (keyup)="onInputChange(getValue($event))"/>
+</mat-form-field>
