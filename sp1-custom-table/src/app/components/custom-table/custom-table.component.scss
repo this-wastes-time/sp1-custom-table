@@ -25,6 +25,17 @@ table {
   td {
     white-space: nowrap;
   }
+
+  tr {
+    &.mat-mdc-no-data-row {
+      white-space: nowrap;
+    }
+  }
+
+  .mat-mdc-form-field {
+    margin: .5rem auto;
+    min-width: 250px;
+  }
 }
 
 .mat-mdc-header-row {

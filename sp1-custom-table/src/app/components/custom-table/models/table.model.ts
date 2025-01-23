@@ -1,6 +1,6 @@
 import { Pagination } from '../../custom-paginator/models/paginator.model';
 import { Column } from './column.model';
-import { Filter } from './filter.model';
+import { TableFilter } from './filter.model';
 import { RowAction } from './row-action.model';
 import { Sort } from './sort.model';
 
@@ -14,6 +14,6 @@ export interface Table {
   sortOptions?: Sort; // Configuration for sorting
   rowActions?: RowAction[]; // Array of actions available for each row
   stickyActions?: boolean; // Whether the actions column should be sticky
-  tableFilterOptions?: Filter; // Configuration for table filter
+  filterOptions?: TableFilter; // Configuration for table filter
   pagination?: Pagination; // Configuration for pagination
 }

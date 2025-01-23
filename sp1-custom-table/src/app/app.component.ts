@@ -161,6 +161,10 @@ export class AppComponent {
         field: 'weight',
         header: 'Weight',
         sortable: true,
+        filterOptions: {
+          type: 'text',
+          filterable: true,
+        }
       },
       {
         field: 'symbol',
@@ -233,7 +237,7 @@ export class AppComponent {
       },
     ],
     stickyActions: true,
-    tableFilterOptions: {
+    filterOptions: {
       id: 'table-filter',
       label: 'Filter',
       placeholder: 'Example: Hydrogen',
@@ -261,7 +265,7 @@ export class AppComponent {
       career: CAREERS[Math.round(Math.random() * (CAREERS.length - 1))],
       online: pos % 4 === 0,
       age: AGES[Math.round(Math.random() * (AGES.length - 1))],
-      married: name.charAt(0) === 'P',
+      married: name.charAt(0) === 'P' ? 'Yes' : 'No',
       company: COMPANIES[Math.round(Math.random() * (COMPANIES.length - 1))],
     };
   }
