@@ -25,7 +25,6 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
 
   // Table column vars.
   displayColumns: string[] = [];
-  rowOffset = 1;
 
   constructor(
     private announcer: LiveAnnouncer,
@@ -63,6 +62,10 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
     if (this.tableConfig.rowActions) {
       this.displayColumns.push('actions');
     }
+  }
+
+  protected getRowOffset(index: number): number {
+    return this.paginator?.pageIndex * this.paginator?.pageSize + index + 1;
   }
 
   protected sortChange(event: Sort): void {
