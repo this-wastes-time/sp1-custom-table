@@ -6,10 +6,12 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MAT_CHECKBOX_DEFAULT_OPTIONS, MatCheckboxDefaultOptions, MatCheckboxModule } from '@angular/material/checkbox';
 import { SearchBoxComponent } from '../search-box/search-box.component';
 
-
+const checkboxConfig: MatCheckboxDefaultOptions = {
+  clickAction: 'noop',
+};
 
 @NgModule({
   declarations: [],
@@ -34,6 +36,9 @@ import { SearchBoxComponent } from '../search-box/search-box.component';
     MatSortModule,
     MatCheckboxModule,
     SearchBoxComponent,
+  ],
+  providers: [
+    { provide: MAT_CHECKBOX_DEFAULT_OPTIONS, useValue: checkboxConfig },
   ]
 })
 export class CustomTableModule { }
