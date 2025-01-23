@@ -146,7 +146,7 @@ export class AppComponent {
         field: 'position',
         header: 'Position',
         sortable: true,
-        cellTemplate: 'buttonTemplate',
+        cellTemplate: 'button',
         templateInputs: (row) => ({
           label: `${row.position}`,
           clickFunc: () => this.buttonClick(row.name),
@@ -168,12 +168,12 @@ export class AppComponent {
         sortable: true,
       },
       {
-        field: 'discoverer',
+        field: 'discoveredBy',
         header: 'Discovered By',
         sortable: true,
       },
       {
-        field: 'discoveredLocation',
+        field: 'discoveryLocation',
         header: 'Discovery Location',
         valueGetter: (row) => `${row.university} (${row.country})`,
         sortable: true,
@@ -186,7 +186,7 @@ export class AppComponent {
       {
         field: 'online',
         header: 'Online Graduate',
-        cellTemplate: 'checkboxTemplate',
+        cellTemplate: 'checkbox',
         templateInputs: (row) => ({
           checked: row.online,
         }),
@@ -203,7 +203,7 @@ export class AppComponent {
       },
       {
         field: 'company',
-        header: 'Compnay',
+        header: 'Company',
         sortable: true,
       },
     ],
@@ -213,7 +213,7 @@ export class AppComponent {
     sortOptions: {
       initialSort: { active: 'name', direction: 'asc' },
       sortFunc(item, property) {
-        if (property === 'discoveredLocation') {
+        if (property === 'discoveryLocation') {
           return `${item.university} ${item.country}`;
         }
         return item[property];
@@ -257,7 +257,7 @@ export class AppComponent {
       symbol: name.charAt(0),
       university: UNIVERSITIES[Math.round(Math.random() * (UNIVERSITIES.length - 1))],
       country: COUNTIRES[Math.round(Math.random() * (COUNTIRES.length - 1))],
-      discoverer: DISCOVERERS[Math.round(Math.random() * (DISCOVERERS.length - 1))],
+      discoveredBy: DISCOVERERS[Math.round(Math.random() * (DISCOVERERS.length - 1))],
       career: CAREERS[Math.round(Math.random() * (CAREERS.length - 1))],
       online: pos % 4 === 0,
       age: AGES[Math.round(Math.random() * (AGES.length - 1))],

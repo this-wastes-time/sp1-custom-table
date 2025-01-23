@@ -8,6 +8,7 @@
           (inputChange)="applyFilter($event)"></app-search-box>
       </div>
     }
+
     <div class="table-container">
       <table mat-table [dataSource]="dataSource" matSort
         [matSortActive]="tableConfig.sortOptions?.initialSort?.active ?? ''"
@@ -33,10 +34,10 @@
               sortActionDescription="Sort by {{column.field}}" [disabled]="!column.sortable"> {{ column.header }} </th>
             <td mat-cell *matCellDef="let row" [ngClass]="column.cellClass?.(row) ?? ''">
               @switch (column.cellTemplate) {
-                @case ('buttonTemplate') {
+                @case ('button') {
                   <ng-container *ngTemplateOutlet="buttonTemplate; context: { $implicit: column.templateInputs?.(row) }"></ng-container>
                 }
-                @case ('checkboxTemplate') {
+                @case ('checkbox') {
                   <ng-container *ngTemplateOutlet="checkboxTemplate; context: { $implicit: column.templateInputs?.(row) }"></ng-container>
                 }
                 @default {

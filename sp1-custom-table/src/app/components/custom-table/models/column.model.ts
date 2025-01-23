@@ -1,4 +1,4 @@
-export declare type templates = 'buttonTemplate' | 'checkboxTemplate';
+export declare type templates = 'button' | 'checkbox';
 
 export interface Column {
   field: string; // Field name in the data object
