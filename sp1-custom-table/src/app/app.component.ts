@@ -141,98 +141,100 @@ export class AppComponent {
   tableConfig: Table = {
     id: 'test-table',
     caption: 'User data table with actions.',
-    columns: [
-      {
-        field: 'position',
-        header: 'Position',
-      },
-      {
-        field: 'name',
-        header: 'Name',
-        sortable: true,
-        filterOptions: {
-          type: 'select',
-          filterable: true,
-        }
-      },
-      {
-        field: 'weight',
-        header: 'Weight',
-        sortable: true,
-        filterOptions: {
-          type: 'text',
-          filterable: true,
-          label: 'Filter Weight (>=)',
-          filterPredicate: (row: any, filter: string) => {
-            const filterNumber = parseInt(filter, 10);
-            return row.weight >= filterNumber; // Example: Show rows where weight is greater than or equal to the filter
-          },
-        }
-      },
-      {
-        field: 'symbol',
-        header: 'Symbol',
-        sortable: true,
-        filterOptions: {
-          type: 'select',
-          filterable: true,
-        }
-      },
-      {
-        field: 'discoveredBy',
-        header: 'Discovered By',
-        sortable: true,
-      },
-      {
-        field: 'discoveryLocation',
-        header: 'Discovery Location',
-        valueGetter: (row) => `${row.university} (${row.country})`,
-        sortable: true,
-      },
-      {
-        field: 'career',
-        header: 'Career',
-        sortable: true,
-        filterOptions: {
-          type: 'select',
-          filterable: true,
-        }
-      },
-      {
-        field: 'online',
-        header: 'Online Graduate',
-        cellTemplate: 'checkbox',
-        templateInputs: (row) => ({
-          checked: row.online,
-        }),
-        filterOptions: {
-          type: 'select',
-          filterable: true,
-        }
-      },
-      {
-        field: 'age',
-        header: 'Age',
-        sortable: true,
-      },
-      {
-        field: 'married',
-        header: 'Married',
-        sortable: true,
-      },
-      {
-        field: 'company',
-        header: 'Company',
-        sortable: true,
-        filterOptions: {
-          type: 'select',
-          filterable: true,
-        }
-      },
-    ],
+    columnsConfig: {
+      columns: [
+        {
+          field: 'position',
+          header: 'Position',
+        },
+        {
+          field: 'name',
+          header: 'Name',
+          sortable: true,
+          filterOptions: {
+            type: 'select',
+            filterable: true,
+          }
+        },
+        {
+          field: 'weight',
+          header: 'Weight',
+          sortable: true,
+          filterOptions: {
+            type: 'text',
+            filterable: true,
+            label: 'Filter Weight (>=)',
+            filterPredicate: (row: any, filter: string) => {
+              const filterNumber = parseInt(filter, 10);
+              return row.weight >= filterNumber; // Example: Show rows where weight is greater than or equal to the filter
+            },
+          }
+        },
+        {
+          field: 'symbol',
+          header: 'Symbol',
+          sortable: true,
+          filterOptions: {
+            type: 'select',
+            filterable: true,
+          }
+        },
+        {
+          field: 'discoveredBy',
+          header: 'Discovered By',
+          sortable: true,
+        },
+        {
+          field: 'discoveryLocation',
+          header: 'Discovery Location',
+          valueGetter: (row) => `${row.university} (${row.country})`,
+          sortable: true,
+        },
+        {
+          field: 'career',
+          header: 'Career',
+          sortable: true,
+          filterOptions: {
+            type: 'select',
+            filterable: true,
+          }
+        },
+        {
+          field: 'online',
+          header: 'Online Graduate',
+          cellTemplate: 'checkbox',
+          templateInputs: (row) => ({
+            checked: row.online,
+          }),
+          filterOptions: {
+            type: 'select',
+            filterable: true,
+          }
+        },
+        {
+          field: 'age',
+          header: 'Age',
+          sortable: true,
+        },
+        {
+          field: 'married',
+          header: 'Married',
+          sortable: true,
+        },
+        {
+          field: 'company',
+          header: 'Company',
+          sortable: true,
+          filterOptions: {
+            type: 'select',
+            filterable: true,
+          }
+        },
+      ],
+      stickyHeaders: true,
+    },
     showRowNumbers: true,
     rowClass: (row) => (row.name === 'Calcium' ? ['gold', 'bold'] : ''),
-    stickyHeaders: true,
     sortOptions: {
       sortFunc(item, property) {
         if (property === 'discoveryLocation') {

@@ -42,7 +42,7 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
     if (changes['tableConfig']?.currentValue) {
       this.generateDisplayColumns();
       // If any column has a filter, generate the filter columns.
-      if (this.tableConfig.columns.some((col) => col.filterOptions?.filterable)) {
+      if (this.tableConfig.columnsConfig.columns.some((col) => col.filterOptions?.filterable)) {
         this.generateDisplayColumnsFilters();
       }
     }
@@ -62,7 +62,7 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
   }
 
   private generateDisplayColumns(): void {
-    this.displayColumns = this.tableConfig!.columns.map(col => col.field);
+    this.displayColumns = this.tableConfig.columnsConfig.columns.map(col => col.field);
 
     // Include the row number column.
     if (this.tableConfig.showRowNumbers) {
@@ -80,7 +80,7 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
   }
 
   private generateColumnSelectFilterOptions(): void {
-    this.tableConfig.columns.forEach((column) => {
+    this.tableConfig.columnsConfig.columns.forEach((column) => {
       if (column.filterOptions?.type === 'select') {
         const uniqueValues = Array.from(new Set(this.dataSource.data.map((row) => row[column.field]))).sort();
         this.columnSelectFilterOptions[column.field] = uniqueValues;
@@ -103,7 +103,7 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
       }
 
       // Apply column-specific filters
-      return this.tableConfig.columns.every((column) => {
+      return this.tableConfig.columnsConfig.columns.every((column) => {
         if (!column.filterOptions?.filterable || !columnFilters[column.field]?.length) {
           return true; // Skip columns without active filters
         }

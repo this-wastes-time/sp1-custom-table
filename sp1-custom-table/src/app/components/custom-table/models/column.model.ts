@@ -2,7 +2,12 @@ import { ColumnFilter } from './filter.model';
 
 export declare type CellTemplate = 'button' | 'checkbox';
 
-export interface Column {
+export interface ColumnsConfig {
+  columns: Column[]; // Array of column configurations
+  stickyHeaders?: boolean; // Whether column headers should be sticky
+}
+
+interface Column {
   field: string; // Field name in the data object
   header: string; // Display name of the column
   cellClass?: (row: any) => string | string[]; // Function to determine CSS class for a cell
