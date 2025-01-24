@@ -28,36 +28,13 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
   displayColumns: string[] = [];
   displayColumnsFilters: string[] = [];
   columnFilters: Record<string, string> = {}; // Store filters for each column
+  columnSelectFilterOptions: Record<string, any[]> = {}; // Store select dropdown filter options for each column
 
   constructor(
     private announcer: LiveAnnouncer,
     private detector: ChangeDetectorRef
   ) {
-    this.dataSource.filterPredicate = (row: any, filter: string) => {
-      const { globalFilter, columnFilters } = JSON.parse(filter);
-
-      // Apply global filter (matches any column)
-      if (globalFilter) {
-        const matchesGlobal = Object.keys(row).some((key) =>
-          row[key]?.toString().toLowerCase().includes(globalFilter.toLowerCase())
-        );
-        if (!matchesGlobal) {
-          return false;
-        }
-      }
-
-      // Apply column-specific filters
-      return this.tableConfig.columns.every((column) => {
-        if (!column.filterOptions?.filterable || !columnFilters[column.field]) {
-          return true; // Skip columns without filters
-        }
-        const filterValue = columnFilters[column.field].toLowerCase();
-        const cellValue = row[column.field]?.toString().toLowerCase();
-        return column.filterOptions.filterPredicate
-          ? column.filterOptions.filterPredicate(row, filterValue)
-          : cellValue.includes(filterValue);
-      });
-    };
+    this.dataSource.filterPredicate = this.createFilterPredicate();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -73,6 +50,7 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
     // When the data for the table comes in, update the Observable.
     if (changes['tableData']?.currentValue) {
       this.dataSource.data = changes['tableData']?.currentValue ?? this.dataSource.data;
+      this.generateColumnSelectFilterOptions();
     }
   }
 
@@ -99,6 +77,49 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
 
   private generateDisplayColumnsFilters(): void {
     this.displayColumnsFilters = this.displayColumns.map(col => `${col}-filter`);
+  }
+
+  private generateColumnSelectFilterOptions(): void {
+    this.tableConfig.columns.forEach((column) => {
+      if (column.filterOptions?.type === 'select') {
+        const uniqueValues = Array.from(new Set(this.dataSource.data.map((row) => row[column.field]))).sort();
+        this.columnSelectFilterOptions[column.field] = uniqueValues;
+      }
+    });
+  }
+
+  private createFilterPredicate(): (row: any, filter: string) => boolean {
+    return (row: any, filter: string): boolean => {
+      const { globalFilter, columnFilters } = JSON.parse(filter);
+
+      // Apply global filter (matches any column)
+      if (globalFilter) {
+        const matchesGlobal = Object.keys(row).some((key) =>
+          row[key]?.toString().toLowerCase().includes(globalFilter.toLowerCase())
+        );
+        if (!matchesGlobal) {
+          return false;
+        }
+      }
+
+      // Apply column-specific filters
+      return this.tableConfig.columns.every((column) => {
+        if (!column.filterOptions?.filterable || !columnFilters[column.field]?.length) {
+          return true; // Skip columns without active filters
+        }
+
+        const filterValue = columnFilters[column.field];
+
+        if (column.filterOptions.type === 'select') {
+          return filterValue.includes(row[column.field]); // Check if the row's value matches any selected option
+        }
+
+        const cellValue = row[column.field]?.toString().toLowerCase();
+        return column.filterOptions.filterPredicate
+          ? column.filterOptions.filterPredicate(row, filterValue)
+          : cellValue.includes(filterValue);
+      });
+    };
   }
 
   protected getRowNumber(index: number): number {

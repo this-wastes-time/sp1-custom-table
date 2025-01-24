@@ -169,6 +169,10 @@ export class AppComponent {
         field: 'symbol',
         header: 'Symbol',
         sortable: true,
+        filterOptions: {
+          type: 'select',
+          filterable: true,
+        }
       },
       {
         field: 'discoveredBy',
@@ -214,7 +218,6 @@ export class AppComponent {
     rowClass: (row) => (row.name === 'Calcium' ? ['gold', 'bold'] : ''),
     stickyHeaders: true,
     sortOptions: {
-      initialSort: { active: 'name', direction: 'asc' },
       sortFunc(item, property) {
         if (property === 'discoveryLocation') {
           return `${item.university} ${item.country}`;
@@ -224,14 +227,9 @@ export class AppComponent {
     },
     rowActions: [
       {
-        label: 'Edit',
-        description: 'Edit row action',
-        action: (row) => console.log('Edit:', row),
-      },
-      {
-        label: 'Delete',
-        description: 'Delete row action',
-        action: (row) => console.log('Delete:', row),
+        label: 'Show Details',
+        description: 'Show more details',
+        action: (row) => console.log('Showing details:', row),
       },
     ],
     stickyActions: true,

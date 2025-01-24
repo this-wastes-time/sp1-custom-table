@@ -11,6 +11,8 @@ import { SearchBoxComponent } from '../search-box/search-box.component';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldDefaultOptions, MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 
 const checkboxConfig: MatCheckboxDefaultOptions = {
   clickAction: 'noop',
@@ -36,6 +38,8 @@ const formFieldConfig: MatFormFieldDefaultOptions = {
     MatFormFieldModule,
     MatInputModule,
     FormsModule,
+    MatSelectModule,
+    MatOptionModule,
   ],
   exports: [
     CommonModule,
@@ -50,6 +54,8 @@ const formFieldConfig: MatFormFieldDefaultOptions = {
     MatFormFieldModule,
     MatInputModule,
     FormsModule,
+    MatSelectModule,
+    MatOptionModule,
   ],
   providers: [
     { provide: MAT_CHECKBOX_DEFAULT_OPTIONS, useValue: checkboxConfig },

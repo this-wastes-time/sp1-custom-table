@@ -66,6 +66,9 @@
                   @case ('text') {
                     <ng-container *ngTemplateOutlet="textFilter; context: { $implicit: column, filters: columnFilters }"></ng-container>
                   }
+                  @case ('select') {
+                    <ng-container *ngTemplateOutlet="selectFilter; context: { $implicit: column, filters: columnFilters }"></ng-container>
+                  }
                 }
               </th>
             </ng-container>
@@ -150,5 +153,16 @@
         <mat-icon>close</mat-icon>
       </button>
     }
+  </mat-form-field>
+</ng-template>
+<!-- Select -->
+<ng-template #selectFilter let-column let-filters="filters">
+  <mat-form-field>
+    <mat-label> {{ column.filterOptions.label ?? 'Filter ' + column.header }} </mat-label>
+    <mat-select [(ngModel)]="filters[column.field]" (selectionChange)="applyFilters()" multiple>
+      @for (option of columnSelectFilterOptions[column.field]; track option) {
+        <mat-option [value]="option"> {{ option }} </mat-option>
+      }
+    </mat-select>
   </mat-form-field>
 </ng-template>

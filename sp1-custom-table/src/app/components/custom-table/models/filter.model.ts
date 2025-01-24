@@ -1,4 +1,4 @@
-export declare type FilterType = 'text';
+export declare type FilterType = 'text' | 'select';
 
 export interface TableFilter {
   id?: string; // ID for filter input element
