@@ -39,7 +39,9 @@ table {
 }
 
 .mat-mdc-header-row {
-  height: 26px;
+  &.non-filter-header {
+    height: 26px;
+  }
 }
 
 .mat-mdc-row {

@@ -1,7 +1,7 @@
 import { Pagination } from '../../custom-paginator/models/paginator.model';
 import { Column } from './column.model';
 import { TableFilter } from './filter.model';
-import { RowAction } from './row-action.model';
+import { RowActionsConfig } from './row-action.model';
 import { Sort } from './sort.model';
 
 export interface Table {
@@ -12,8 +12,7 @@ export interface Table {
   showRowNumbers?: boolean; // Whether to display a numbered column
   stickyHeaders?: boolean; // Whether column headers should be sticky
   sortOptions?: Sort; // Configuration for sorting
-  rowActions?: RowAction[]; // Array of actions available for each row
-  stickyActions?: boolean; // Whether the actions column should be sticky
+  rowActions?: RowActionsConfig; // Configuration for row actions
   filterOptions?: TableFilter; // Configuration for table filter
   pagination?: Pagination; // Configuration for pagination
 }

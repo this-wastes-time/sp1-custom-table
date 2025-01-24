@@ -150,6 +150,10 @@ export class AppComponent {
         field: 'name',
         header: 'Name',
         sortable: true,
+        filterOptions: {
+          type: 'select',
+          filterable: true,
+        }
       },
       {
         field: 'weight',
@@ -189,6 +193,10 @@ export class AppComponent {
         field: 'career',
         header: 'Career',
         sortable: true,
+        filterOptions: {
+          type: 'select',
+          filterable: true,
+        }
       },
       {
         field: 'online',
@@ -197,6 +205,10 @@ export class AppComponent {
         templateInputs: (row) => ({
           checked: row.online,
         }),
+        filterOptions: {
+          type: 'select',
+          filterable: true,
+        }
       },
       {
         field: 'age',
@@ -212,6 +224,10 @@ export class AppComponent {
         field: 'company',
         header: 'Company',
         sortable: true,
+        filterOptions: {
+          type: 'select',
+          filterable: true,
+        }
       },
     ],
     showRowNumbers: true,
@@ -225,14 +241,16 @@ export class AppComponent {
         return item[property];
       },
     },
-    rowActions: [
-      {
-        label: 'Show Details',
-        description: 'Show more details',
-        action: (row) => console.log('Showing details:', row),
-      },
-    ],
-    stickyActions: true,
+    rowActions: {
+      stickyActions: true,
+      actions: [
+        {
+          label: 'Show Details',
+          description: 'Show more details',
+          action: (row) => console.log('Showing details:', row),
+        },
+      ],
+    },
     filterOptions: {
       id: 'table-filter',
       label: 'Filter',
