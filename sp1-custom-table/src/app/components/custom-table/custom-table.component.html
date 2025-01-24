@@ -144,7 +144,7 @@
 <!-- Text, maybe tweak SearchBox so it can be utilized here? -->
 <ng-template #textFilter let-column let-filters="filters">
   <mat-form-field>
-    <mat-label> {{ column.filterOptions.label ?? 'Filter ' + column.header }} </mat-label>
+    <mat-label> {{ column.filterOptions.label ?? 'Filter by ' + column.header.toLowerCase() }} </mat-label>
     <input matInput type="text" [(ngModel)]="filters[column.field]" [placeholder]="column.filterOptions.placeholder ?? ''" (keyup)="applyFilters()">
     @if (filters[column.field]) {
       <button mat-icon-button matSuffix
@@ -158,7 +158,7 @@
 <!-- Select -->
 <ng-template #selectFilter let-column let-filters="filters">
   <mat-form-field>
-    <mat-label> {{ column.filterOptions.label ?? 'Filter ' + column.header }} </mat-label>
+    <mat-label> {{ column.filterOptions.label ?? 'Filter by ' + column.header.toLowerCase() }} </mat-label>
     <mat-select [(ngModel)]="filters[column.field]" (selectionChange)="applyFilters()" multiple>
       @for (option of columnSelectFilterOptions[column.field]; track option) {
         <mat-option [value]="option"> {{ option }} </mat-option>

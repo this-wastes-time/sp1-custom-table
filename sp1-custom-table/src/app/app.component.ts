@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Table } from './components/custom-table/models/table.model';
 import { CustomTableComponent } from './components/custom-table/custom-table.component';
+import { formatDate } from '@angular/common';
 
 const NAMES = [
   'Hydrogen',
@@ -125,10 +126,6 @@ const COMPANIES = [
   'FusionSphere Inc.',
 ];
 
-const AGES = [
-  36, 41, 47, 52, 56, 59, 63, 68, 70, 71
-];
-
 
 @Component({
   selector: 'app-root',
@@ -212,9 +209,10 @@ export class AppComponent {
           }
         },
         {
-          field: 'age',
-          header: 'Age',
+          field: 'dob',
+          header: 'Date of Birth',
           sortable: true,
+          valueGetter: (row) => formatDate(row.dob, 'MM/dd/yyyy', 'en-US'),
         },
         {
           field: 'married',
@@ -255,7 +253,7 @@ export class AppComponent {
     },
     filterOptions: {
       id: 'table-filter',
-      label: 'Filter',
+      label: 'Filter entire table',
       placeholder: 'Example: Hydrogen',
     },
     pagination: {
@@ -280,7 +278,7 @@ export class AppComponent {
       discoveredBy: DISCOVERERS[Math.round(Math.random() * (DISCOVERERS.length - 1))],
       career: CAREERS[Math.round(Math.random() * (CAREERS.length - 1))],
       online: pos % 4 === 0,
-      age: AGES[Math.round(Math.random() * (AGES.length - 1))],
+      dob: this.generateRandomDateBetween1940AndToday(),
       married: name.charAt(0) === 'P' ? 'Yes' : 'No',
       company: COMPANIES[Math.round(Math.random() * (COMPANIES.length - 1))],
     };
@@ -288,5 +286,18 @@ export class AppComponent {
 
   private buttonClick(str: string): void {
     console.log('Button clicked:', str);
+  }
+
+  private getRandomDate(startDate: Date, endDate: Date): Date {
+    const startTime = startDate.getTime();
+    const endTime = endDate.getTime();
+    const randomTime = Math.random() * (endTime - startTime) + startTime;
+    return new Date(randomTime);
+  }
+
+  private generateRandomDateBetween1940AndToday(): Date {
+    const startDate = new Date('1940-01-01');
+    const endDate = new Date(); // Today's date
+    return this.getRandomDate(startDate, endDate);
   }
 }
