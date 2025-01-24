@@ -53,7 +53,9 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
         }
         const filterValue = columnFilters[column.field].toLowerCase();
         const cellValue = row[column.field]?.toString().toLowerCase();
-        return cellValue.includes(filterValue);
+        return column.filterOptions.filterPredicate
+          ? column.filterOptions.filterPredicate(row, filterValue)
+          : cellValue.includes(filterValue);
       });
     };
   }

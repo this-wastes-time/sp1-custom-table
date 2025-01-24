@@ -145,12 +145,6 @@ export class AppComponent {
       {
         field: 'position',
         header: 'Position',
-        sortable: true,
-        cellTemplate: 'button',
-        templateInputs: (row) => ({
-          label: `${row.position}`,
-          clickFunc: () => this.buttonClick(row.name),
-        }),
       },
       {
         field: 'name',
@@ -164,6 +158,11 @@ export class AppComponent {
         filterOptions: {
           type: 'text',
           filterable: true,
+          label: 'Filter Weight (>=)',
+          filterPredicate: (row: any, filter: string) => {
+            const filterNumber = parseInt(filter, 10);
+            return row.weight >= filterNumber; // Example: Show rows where weight is greater than or equal to the filter
+          },
         }
       },
       {
@@ -228,7 +227,6 @@ export class AppComponent {
         label: 'Edit',
         description: 'Edit row action',
         action: (row) => console.log('Edit:', row),
-        disabled: (row) => row.name === 'Calcium',
       },
       {
         label: 'Delete',
