@@ -2,11 +2,31 @@
   <div class="table-paginator-container">
     @if (tableConfig.filterOptions) {
       <div class="table-filter-container">
-        <app-search-box [id]="tableConfig.filterOptions.id ?? ''"
-          [label]="tableConfig.filterOptions.label ?? ''"
-          [placeholder]="tableConfig.filterOptions.placeholder ?? ''"
-          (inputChange)="applyFilter($event)">
-        </app-search-box>
+        <!-- Table filter -->
+        <div class="filter-search-box" [class.table-menu-showing]="tableActions.length > 0">
+          <app-search-box #searchBox [id]="tableConfig.filterOptions.id ?? ''"
+            [label]="tableConfig.filterOptions.label ?? ''"
+            [placeholder]="tableConfig.filterOptions.placeholder ?? ''"
+            (inputChange)="applyFilter($event)">
+          </app-search-box>
+        </div>
+        @if (tableActions.length > 0) {
+          <!-- Table menu -->
+          <div class="table-menu">
+            <button mat-icon-button [color]="'accent'" [matMenuTriggerFor]="tableMenu">
+              <mat-icon>menu</mat-icon>
+            </button>
+            <mat-menu #tableMenu="matMenu">
+              @for (action of tableActions; track action) {
+                <span [class.disabled-wrapper]="action.disabled">
+                  <button mat-menu-item [attr.aria-label]="action.description" [disabled]="action.disabled" (click)="action.action()">
+                    <span> {{ action.label }}</span>
+                  </button>
+                </span>
+              }
+            </mat-menu>
+          </div>
+        }
       </div>
     }
 
@@ -137,13 +157,13 @@
 </ng-template>
 <!-- Checkbox -->
 <ng-template #checkboxTemplate let-inputs>
-  <mat-checkbox [color]="'primary'" [checked]="inputs.checked" ></mat-checkbox>
+  <mat-checkbox [color]="'primary'" [checked]="inputs.checked"></mat-checkbox>
 </ng-template>
 
 <!-- Defined Column Filter Templates -->
 <!-- Text, maybe tweak SearchBox so it can be utilized here? -->
 <ng-template #textFilter let-column let-filters="filters">
-  <mat-form-field>
+  <mat-form-field appearance="outline">
     <mat-label> {{ column.filterOptions.label ?? 'Filter by ' + column.header.toLowerCase() }} </mat-label>
     <input matInput type="text" [(ngModel)]="filters[column.field]" [placeholder]="column.filterOptions.placeholder ?? ''" (keyup)="applyFilters()">
     @if (filters[column.field]) {
@@ -157,7 +177,7 @@
 </ng-template>
 <!-- Select -->
 <ng-template #selectFilter let-column let-filters="filters">
-  <mat-form-field>
+  <mat-form-field appearance="outline">
     <mat-label> {{ column.filterOptions.label ?? 'Filter by ' + column.header.toLowerCase() }} </mat-label>
     <mat-select [(ngModel)]="filters[column.field]" (selectionChange)="applyFilters()" multiple>
       @for (option of columnSelectFilterOptions[column.field]; track option) {

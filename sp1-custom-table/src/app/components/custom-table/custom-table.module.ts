@@ -19,7 +19,6 @@ const checkboxConfig: MatCheckboxDefaultOptions = {
 };
 
 const formFieldConfig: MatFormFieldDefaultOptions = {
-  appearance: 'outline',
   subscriptSizing: 'dynamic'
 };
 

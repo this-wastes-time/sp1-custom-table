@@ -5,6 +5,14 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort, Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { SearchBoxComponent } from '../search-box/search-box.component';
+
+interface TableAction {
+  label: string; // The text label displayed for the action
+  description: string; // Optional description of the action
+  action: () => void; // A function executed when the action is triggered
+  disabled?: () => boolean; // A function to determine if the action should be disabled
+}
 
 @Component({
   selector: 'app-custom-table',
@@ -19,6 +27,7 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild('searchBox') searchBox!: SearchBoxComponent;
 
   // Table data vars.
   dataSource = new MatTableDataSource<any>(); // MatTableDataSource instance
@@ -29,6 +38,10 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
   displayColumnsFilters: string[] = [];
   columnFilters: Record<string, string> = {}; // Store filters for each column
   columnSelectFilterOptions: Record<string, any[]> = {}; // Store select dropdown filter options for each column
+
+  // Table options.
+  tableMenuOpen!: boolean;
+  tableActions: TableAction[] = [];
 
   constructor(
     private announcer: LiveAnnouncer,
@@ -44,6 +57,19 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
       // If any column has a filter, generate the filter columns.
       if (this.tableConfig.columnsConfig.columns.some((col) => col.filterOptions?.filterable)) {
         this.generateDisplayColumnsFilters();
+      }
+      // If table or column-level filters are present, add action to table.
+      if (this.tableConfig.filterOptions || this.displayColumnsFilters.length > 0) {
+        this.tableActions.push({
+          label: 'Reset filters',
+          description: 'Clear all filters and search terms',
+          action: () => {
+            this.globalFilter = '';
+            this.searchBox.clear();
+            this.columnFilters = {};
+            this.applyFilters();
+          }
+        });
       }
     }
 

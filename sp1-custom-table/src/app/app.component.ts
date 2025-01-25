@@ -245,7 +245,7 @@ export class AppComponent {
       stickyActions: true,
       actions: [
         {
-          label: 'Show Details',
+          label: 'Show details',
           description: 'Show more details',
           action: (row) => console.log('Showing details:', row),
         },

@@ -47,7 +47,7 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
     this.inputSubject.next(value);
   }
 
-  protected clear(): void {
+  clear(): void {
     this.text = '';
     this.inputSubject.next(this.text);
   }

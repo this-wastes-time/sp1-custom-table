@@ -1,14 +1,29 @@
 .outer-table-container {
   margin: .625rem;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 4px;
   overflow: hidden;
 
   .table-paginator-container {
 
     .table-filter-container {
-      padding: .625rem;
       border-bottom: 1px solid #ccc;
+      display: flex;
+      align-items: center;
+
+      .filter-search-box {
+        width: 100%;
+
+        &.table-menu-showing {
+          border-right: 1px solid #ccc;
+        }
+      }
+
+      .table-menu {
+        width: 85px;
+        display: flex;
+        justify-content: center;
+      }
     }
 
     .table-container {
