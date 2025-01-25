@@ -4,6 +4,7 @@ export interface TableFilter {
   id?: string; // ID for filter input element
   label?: string; // Label for filter input
   placeholder?: string; // Placeholder text for filter input
+  instantSearch?: boolean; // Determines if the filter should search instantly
 }
 
 export interface ColumnFilter {

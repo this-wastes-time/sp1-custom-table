@@ -255,6 +255,7 @@ export class AppComponent {
       id: 'table-filter',
       label: 'Filter entire table',
       placeholder: 'Example: Hydrogen',
+      instantSearch: true,
     },
     pagination: {
       accessibleLabel: 'custom paginator label',

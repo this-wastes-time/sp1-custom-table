@@ -7,6 +7,7 @@
           <app-search-box #searchBox [id]="tableConfig.filterOptions.id ?? ''"
             [label]="tableConfig.filterOptions.label ?? ''"
             [placeholder]="tableConfig.filterOptions.placeholder ?? ''"
+            [instantSearch]="tableConfig.filterOptions.instantSearch ?? false"
             (inputChange)="applyFilter($event)">
           </app-search-box>
         </div>

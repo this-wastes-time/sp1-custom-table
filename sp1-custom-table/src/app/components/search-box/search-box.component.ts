@@ -19,6 +19,7 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
   @Input() id = 'search-box';
   @Input() label = 'Search';
   @Input() placeholder = 'Search...';
+  @Input() instantSearch = false;
   @Output() inputChange = new EventEmitter<string>();
 
   protected text!: string;
@@ -28,7 +29,7 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.inputSubscription = this.inputSubject.pipe(
-      debounceTime(DEBOUNCEWAIT),
+      debounceTime(this.instantSearch ? 0 : DEBOUNCEWAIT),
       distinctUntilChanged()
     ).subscribe(value => {
       this.inputChange.emit(value);
