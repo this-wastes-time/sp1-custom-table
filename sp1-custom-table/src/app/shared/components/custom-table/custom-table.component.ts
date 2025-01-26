@@ -34,6 +34,7 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
   // Table data vars.
   dataSource = new MatTableDataSource<any>(); // MatTableDataSource instance
   globalFilter!: string; // Filter string from main search box
+  loading!: boolean; // Loading state for the table
 
   // Table column vars.
   displayColumns: string[] = [];
@@ -77,8 +78,10 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
 
     // When the data for the table comes in, update the Observable.
     if (changes['tableData']?.currentValue) {
+      this.loading = true;
       this.dataSource.data = changes['tableData']?.currentValue ?? this.dataSource.data;
       this.generateColumnSelectFilterOptions();
+      this.loading = false;
     }
   }
 
@@ -161,8 +164,10 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
   }
 
   protected sortChange(event: Sort): void {
+    this.loading = true;
     const sortDirection = event.direction ? `${event.direction}ending` : 'cleared';
     this.announcer.announce(`Sorting by ${event.active} ${sortDirection}`);
+    this.loading = false;
   }
 
   protected applyFilter(filterString: string): void {
@@ -171,11 +176,13 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
   }
 
   protected applyFilters() {
+    this.loading = true;
     // Combine global and column filters into one object for MatTableDataSource
     this.dataSource.filter = JSON.stringify({
       globalFilter: this.globalFilter,
       columnFilters: this.columnFilters,
     });
+    this.loading = false;
 
     // Emit current filters to parent component.
     this.currentFilters.emit(this.columnFilters);

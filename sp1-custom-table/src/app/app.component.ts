@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { Table } from './components/custom-table/models/table.model';
-import { CustomTableComponent } from './components/custom-table/custom-table.component';
+import { Table } from './shared/components/custom-table/models/table.model';
+import { CustomTableComponent } from './shared/components/custom-table/custom-table.component';
 import { formatDate } from '@angular/common';
 
 const NAMES = [

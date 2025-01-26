@@ -3,6 +3,10 @@
 @import '@angular/material/prebuilt-themes/cyan-orange.css';
 // @import '@angular/material/prebuilt-themes/azure-blue.css';
 
+:root {
+  --spinner-background: rgba(255, 255, 255, 0.6);
+}
+
 html,
 body {
   height: 100%;

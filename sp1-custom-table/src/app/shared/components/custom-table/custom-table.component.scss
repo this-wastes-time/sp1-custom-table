@@ -5,6 +5,7 @@
   overflow: hidden;
 
   .table-paginator-container {
+    position: relative;
 
     .table-filter-container {
       border-bottom: 1px solid #ccc;
@@ -32,6 +33,16 @@
       overflow: auto;
     }
   }
+}
+
+.spinner-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--spinner-background);
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 
 table {
