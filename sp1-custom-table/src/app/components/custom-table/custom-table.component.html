@@ -1,5 +1,36 @@
 <div class="outer-table-container">
   <div class="table-paginator-container">
+    @if (tableConfig.filterOptions) {
+      <div class="table-filter-container">
+        <!-- Table filter -->
+        <div class="filter-search-box" [class.table-menu-showing]="tableActions.length > 0">
+          <app-search-box #searchBox [id]="tableConfig.filterOptions.id ?? ''"
+            [label]="tableConfig.filterOptions.label ?? ''"
+            [placeholder]="tableConfig.filterOptions.placeholder ?? ''"
+            [instantSearch]="tableConfig.filterOptions.instantSearch ?? false"
+            (inputChange)="applyFilter($event)">
+          </app-search-box>
+        </div>
+        @if (tableActions.length > 0) {
+          <!-- Table menu -->
+          <div class="table-menu">
+            <button mat-icon-button [color]="'accent'" [matMenuTriggerFor]="tableMenu">
+              <mat-icon>menu</mat-icon>
+            </button>
+            <mat-menu #tableMenu="matMenu">
+              @for (action of tableActions; track action) {
+                <span [class.disabled-wrapper]="action.disabled">
+                  <button mat-menu-item [attr.aria-label]="action.description" [disabled]="action.disabled" (click)="action.action()">
+                    <span> {{ action.label }}</span>
+                  </button>
+                </span>
+              }
+            </mat-menu>
+          </div>
+        }
+      </div>
+    }
+
     <div class="table-container">
       <table mat-table [dataSource]="dataSource" matSort
         [matSortActive]="tableConfig.sortOptions?.initialSort?.active ?? ''"
@@ -11,25 +42,34 @@
               The actual rendered columns are set as a property on the row definition" -->
 
         <!-- Column for numbered rows. -->
-        @if (tableConfig.numberedRows) {
+        @if (tableConfig.showRowNumbers) {
           <ng-container matColumnDef="#">
-            <th mat-header-cell *matHeaderCellDef> # </th>
-            <td mat-cell *matCellDef="let row; let i = index"> {{ rowOffset + i }} </td>
+            <th class="non-filter-header" mat-header-cell *matHeaderCellDef> # </th>
+            <td mat-cell *matCellDef="let row; let i = index"> {{ getRowNumber(i) }} </td>
           </ng-container>
+  
+          <!-- Filter column for numbered rows. -->
+          @if (displayColumnsFilters.length > 0) {
+            <ng-container matColumnDef="#-filter">
+              <th mat-header-cell *matHeaderCellDef></th>
+            </ng-container>
+          }
         }
 
         <!-- Columns generated from table configuration. -->
-        @for (column of tableConfig.columns; track column) {
+        @for (column of tableConfig.columnsConfig.columns; track column) {
           <ng-container matColumnDef="{{ column.field }}">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header
-              sortActionDescription="Sort by {{column.field}}" [disabled]="!column.sortable"> {{ column.header }} </th>
+            <th class="non-filter-header" mat-header-cell *matHeaderCellDef mat-sort-header
+              sortActionDescription="Sort by {{column.field}}" [disabled]="!column.sortable">
+              {{ column.header }}
+            </th>
             <td mat-cell *matCellDef="let row" [ngClass]="column.cellClass?.(row) ?? ''">
               @switch (column.cellTemplate) {
-                @case ('buttonTemplate') {
-                  <ng-container *ngTemplateOutlet="buttonTemplate; context: { $implicit: row, inputs: column.templateInputs?.(row) }"></ng-container>
+                @case ('button') {
+                  <ng-container *ngTemplateOutlet="buttonTemplate; context: { $implicit: column.templateInputs?.(row) }"></ng-container>
                 }
-                @case ('checkboxTemplate') {
-                  <ng-container *ngTemplateOutlet="checkboxTemplate; context: { $implicit: row, inputs: column.templateInputs?.(row) }"></ng-container>
+                @case ('checkbox') {
+                  <ng-container *ngTemplateOutlet="checkboxTemplate; context: { $implicit: column.templateInputs?.(row) }"></ng-container>
                 }
                 @default {
                   {{ column.valueGetter?.(row) ?? row[column.field] }}
@@ -39,16 +79,36 @@
           </ng-container>
         }
 
+        @if (displayColumnsFilters.length > 0) {
+          @for (column of tableConfig.columnsConfig.columns; track column; let i = $index) {
+            <ng-container matColumnDef="{{ column.field }}-filter">
+              <th mat-header-cell *matHeaderCellDef>
+                @switch (column.filterOptions?.type) {
+                  @case ('text') {
+                    <ng-container *ngTemplateOutlet="textFilter; context: { $implicit: column, filters: columnFilters }"></ng-container>
+                  }
+                  @case ('select') {
+                    <ng-container *ngTemplateOutlet="selectFilter; context: { $implicit: column, filters: columnFilters }"></ng-container>
+                  }
+                  @case ('date') {
+                    <ng-container *ngTemplateOutlet="dateFilter; context: { $implicit: column, filters: columnFilters }"></ng-container>
+                  }
+                }
+              </th>
+            </ng-container>
+          }
+        }
+
         <!-- Column for row actions. -->
         @if (tableConfig.rowActions) {
-          <ng-container matColumnDef="actions" [stickyEnd]="tableConfig.stickyActions">
-            <th mat-header-cell *matHeaderCellDef> Actions </th>
+          <ng-container matColumnDef="actions" [stickyEnd]="tableConfig.rowActions.stickyActions">
+            <th class="non-filter-header" mat-header-cell *matHeaderCellDef> Actions </th>
             <td mat-cell *matCellDef="let row">
               <button mat-icon-button [color]="'accent'" [matMenuTriggerFor]="actionMenu">
                 <mat-icon>more_vert</mat-icon>
               </button>
               <mat-menu #actionMenu="matMenu">
-                @for (action of tableConfig.rowActions; track action) {
+                @for (action of tableConfig.rowActions.actions; track action) {
                   <span [class.disabled-wrapper]="action.disabled?.(row)">
                     <button mat-menu-item [attr.aria-label]="action.description" [disabled]="action.disabled?.(row)" (click)="action.action(row)">
                       <span> {{ action.label }}</span>
@@ -58,12 +118,23 @@
               </mat-menu>
             </td>
           </ng-container>
+  
+          <!-- Filter column for row actions. -->
+          @if (displayColumnsFilters.length > 0) {
+            <ng-container matColumnDef="actions-filter" [stickyEnd]="tableConfig.rowActions.stickyActions">
+              <th mat-header-cell *matHeaderCellDef></th>
+            </ng-container>
+          }
         }
 
-        <tr mat-header-row *matHeaderRowDef="displayColumns; sticky: tableConfig.stickyHeaders"></tr>
+        <tr mat-header-row *matHeaderRowDef="displayColumns; sticky: tableConfig.columnsConfig.stickyHeaders"></tr>
+        @if (displayColumnsFilters.length > 0) {
+          <tr mat-header-row *matHeaderRowDef="displayColumnsFilters; sticky: tableConfig.columnsConfig.stickyHeaders"></tr>
+        }
         <tr mat-row *matRowDef="let row; columns: displayColumns"
           [class.showActions]="tableConfig.rowActions"
           [ngClass]="tableConfig.rowClass?.(row) ?? ''"></tr>
+        <tr *matNoDataRow>No data to display</tr>
       </table>
     </div>
 
@@ -83,12 +154,59 @@
 
 <!-- Defined Cell Templates -->
 <!-- Button -->
-<ng-template #buttonTemplate let-row let-inputs="inputs">
+<ng-template #buttonTemplate let-inputs>
   <button mat-stroked-button [color]="'accent'" (click)="inputs.clickFunc()">
     <span> {{ inputs.label }} </span>
   </button>
 </ng-template>
 <!-- Checkbox -->
-<ng-template #checkboxTemplate let-row let-inputs="inputs">
-  <mat-checkbox [color]="'primary'" [checked]="inputs.checked"></mat-checkbox>
+<ng-template #checkboxTemplate let-inputs>
+  <mat-checkbox [color]="'primary'" [checked]="inputs.checked" (change)="ignoreCheckboxEvent($event)"></mat-checkbox>
+</ng-template>
+
+<!-- Defined Column Filter Templates -->
+<!-- Text, maybe tweak SearchBox so it can be utilized here? -->
+<ng-template #textFilter let-column let-filters="filters">
+  <mat-form-field appearance="outline">
+    <mat-label> {{ column.filterOptions.label ?? 'Filter by ' + column.header.toLowerCase() }} </mat-label>
+    <input matInput type="text" [(ngModel)]="filters[column.field]" [placeholder]="column.filterOptions.placeholder ?? ''"
+      (keyup)="applyFilters()"/>
+    @if (filters[column.field]) {
+      <button mat-icon-button matSuffix
+        (click)="filters[column.field] = ''; applyFilters()"
+        [attr.aria-label]="'Clear {{column.header}} filter'">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+  </mat-form-field>
+</ng-template>
+<!-- Select -->
+<ng-template #selectFilter let-column let-filters="filters">
+  <mat-form-field appearance="outline">
+    <mat-label> {{ column.filterOptions.label ?? 'Filter by ' + column.header.toLowerCase() }} </mat-label>
+    <mat-select [(ngModel)]="filters[column.field]" (selectionChange)="applyFilters()" multiple>
+      @for (option of columnSelectFilterOptions[column.field]; track option) {
+        <mat-option [value]="option"> {{ option }} </mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</ng-template>
+<!-- Date -->
+<ng-template #dateFilter let-column let-filters="filters">
+  <mat-form-field appearance="outline">
+    <mat-label> {{ column.filterOptions.label ?? 'Filter by ' + column.header.toLowerCase() }} </mat-label>
+    <input matInput [matDatepicker]="picker"
+      [(ngModel)]="filters[column.field]"
+      [placeholder]="column.filterOptions.placeholder ?? 'Select date'"
+      (dateInput)="applyFilters()"/>
+    @if (filters[column.field]) {
+      <button mat-icon-button matSuffix
+        (click)="filters[column.field] = ''; applyFilters()"
+        [attr.aria-label]="'Clear {{column.header}} filter'">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
 </ng-template>

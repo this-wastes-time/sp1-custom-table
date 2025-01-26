@@ -1,10 +1,19 @@
-import { Component, Input, OnChanges, SimpleChanges, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, ViewChild, AfterViewInit, ChangeDetectorRef, EventEmitter, Output } from '@angular/core';
 import { CustomTableModule } from './custom-table.module';
 import { Table } from './models/table.model';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort, Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { SearchBoxComponent } from '../search-box/search-box.component';
+import { MatCheckboxChange } from '@angular/material/checkbox';
+
+interface TableAction {
+  label: string; // The text label displayed for the action
+  description: string; // Optional description of the action
+  action: () => void; // A function executed when the action is triggered
+  disabled?: () => boolean; // A function to determine if the action should be disabled
+}
 
 @Component({
   selector: 'app-custom-table',
@@ -16,31 +25,60 @@ import { LiveAnnouncer } from '@angular/cdk/a11y';
 export class CustomTableComponent implements OnChanges, AfterViewInit {
   @Input({ required: true }) tableConfig!: Table;
   @Input({ required: true }) tableData!: any[];
+  @Output() currentFilters = new EventEmitter<Record<string, string>>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild('searchBox') searchBox!: SearchBoxComponent;
 
   // Table data vars.
   dataSource = new MatTableDataSource<any>(); // MatTableDataSource instance
+  globalFilter!: string; // Filter string from main search box
 
   // Table column vars.
   displayColumns: string[] = [];
-  rowOffset = 1;
+  displayColumnsFilters: string[] = [];
+  columnFilters: Record<string, string> = {}; // Store filters for each column
+  columnSelectFilterOptions: Record<string, any[]> = {}; // Store select dropdown filter options for each column
+
+  // Table options.
+  tableMenuOpen!: boolean;
+  tableActions: TableAction[] = [];
 
   constructor(
     private announcer: LiveAnnouncer,
     private detector: ChangeDetectorRef
-  ) { }
+  ) {
+    this.dataSource.filterPredicate = this.createFilterPredicate();
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     // When a table configuration comes in, set the columns.
     if (changes['tableConfig']?.currentValue) {
       this.generateDisplayColumns();
+      // If any column has a filter, generate the filter columns.
+      if (this.tableConfig.columnsConfig.columns.some((col) => col.filterOptions?.filterable)) {
+        this.generateDisplayColumnsFilters();
+      }
+      // If table or column-level filters are present, add action to table.
+      if (this.tableConfig.filterOptions || this.displayColumnsFilters.length > 0) {
+        this.tableActions.push({
+          label: 'Reset filters',
+          description: 'Clear all filters and search terms',
+          action: () => {
+            this.globalFilter = '';
+            this.searchBox.clear();
+            this.columnFilters = {};
+            this.applyFilters();
+          }
+        });
+      }
     }
 
     // When the data for the table comes in, update the Observable.
     if (changes['tableData']?.currentValue) {
       this.dataSource.data = changes['tableData']?.currentValue ?? this.dataSource.data;
+      this.generateColumnSelectFilterOptions();
     }
   }
 
@@ -52,10 +90,10 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
   }
 
   private generateDisplayColumns(): void {
-    this.displayColumns = this.tableConfig!.columns.map(col => col.field);
+    this.displayColumns = this.tableConfig.columnsConfig.columns.map(col => col.field);
 
     // Include the row number column.
-    if (this.tableConfig.numberedRows) {
+    if (this.tableConfig.showRowNumbers) {
       this.displayColumns.unshift('#');
     }
 
@@ -65,9 +103,86 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
     }
   }
 
+  private generateDisplayColumnsFilters(): void {
+    this.displayColumnsFilters = this.displayColumns.map(col => `${col}-filter`);
+  }
+
+  private generateColumnSelectFilterOptions(): void {
+    this.tableConfig.columnsConfig.columns.forEach((column) => {
+      if (column.filterOptions?.type === 'select') {
+        const uniqueValues = Array.from(new Set(this.dataSource.data.map((row) => row[column.field]))).sort();
+        this.columnSelectFilterOptions[column.field] = uniqueValues;
+      }
+    });
+  }
+
+  private createFilterPredicate(): (row: any, filter: string) => boolean {
+    return (row: any, filter: string): boolean => {
+      const { globalFilter, columnFilters } = JSON.parse(filter);
+
+      // Apply global filter (matches any column)
+      if (globalFilter) {
+        const matchesGlobal = Object.keys(row).some((key) =>
+          row[key]?.toString().toLowerCase().includes(globalFilter.toLowerCase())
+        );
+        if (!matchesGlobal) {
+          return false;
+        }
+      }
+
+      // Apply column-specific filters
+      return this.tableConfig.columnsConfig.columns.every((column) => {
+        if (!column.filterOptions?.filterable || !columnFilters[column.field]?.length) {
+          return true; // Skip columns without active filters
+        }
+
+        const filterValue = columnFilters[column.field];
+
+        if (column.filterOptions.type === 'select') {
+          return filterValue.includes(row[column.field]); // Check if the row's value matches any selected option
+        }
+
+        if (column.filterOptions.type === 'date') {
+          const rowDate = new Date(row[column.field]).setHours(0, 0, 0, 0);
+          const filterDate = new Date(filterValue).setHours(0, 0, 0, 0);
+          return rowDate === filterDate; // Compare dates
+        }
+
+        const cellValue = row[column.field]?.toString().toLowerCase();
+        return column.filterOptions.filterPredicate
+          ? column.filterOptions.filterPredicate(row, filterValue)
+          : cellValue.includes(filterValue);
+      });
+    };
+  }
+
+  protected getRowNumber(index: number): number {
+    return this.paginator?.pageIndex * this.paginator?.pageSize + index + 1;
+  }
+
   protected sortChange(event: Sort): void {
     const sortDirection = event.direction ? `${event.direction}ending` : 'cleared';
     this.announcer.announce(`Sorting by ${event.active} ${sortDirection}`);
   }
 
+  protected applyFilter(filterString: string): void {
+    this.globalFilter = filterString;
+    this.applyFilters();
+  }
+
+  protected applyFilters() {
+    // Combine global and column filters into one object for MatTableDataSource
+    this.dataSource.filter = JSON.stringify({
+      globalFilter: this.globalFilter,
+      columnFilters: this.columnFilters,
+    });
+
+    // Emit current filters to parent component.
+    this.currentFilters.emit(this.columnFilters);
+  }
+
+  protected ignoreCheckboxEvent(event: MatCheckboxChange): void {
+    // Revert checkbox state to "ignore" change event.
+    event.source.checked = !event.checked;
+  }
 }

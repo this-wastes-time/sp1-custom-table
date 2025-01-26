@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Table } from './components/custom-table/models/table.model';
 import { CustomTableComponent } from './components/custom-table/custom-table.component';
+import { formatDate } from '@angular/common';
 
 const NAMES = [
   'Hydrogen',
@@ -125,10 +126,6 @@ const COMPANIES = [
   'FusionSphere Inc.',
 ];
 
-const AGES = [
-  36, 41, 47, 52, 56, 59, 63, 68, 70, 71
-];
-
 
 @Component({
   selector: 'app-root',
@@ -141,98 +138,128 @@ export class AppComponent {
   tableConfig: Table = {
     id: 'test-table',
     caption: 'User data table with actions.',
-    columns: [
-      {
-        field: 'position',
-        header: 'Position',
-        sortable: true,
-        cellTemplate: 'buttonTemplate',
-        templateInputs: (row) => ({
-          label: `${row.position}`,
-          clickFunc: () => this.buttonClick(row.name),
-        }),
-      },
-      {
-        field: 'name',
-        header: 'Name',
-        sortable: true,
-      },
-      {
-        field: 'weight',
-        header: 'Weight',
-        sortable: true,
-      },
-      {
-        field: 'symbol',
-        header: 'Symbol',
-        sortable: true,
-      },
-      {
-        field: 'discoverer',
-        header: 'Discovered By',
-        sortable: true,
-      },
-      {
-        field: 'discoveredLocation',
-        header: 'Discovery Location',
-        valueGetter: (row) => `${row.university} (${row.country})`,
-        sortable: true,
-      },
-      {
-        field: 'career',
-        header: 'Career',
-        sortable: true,
-      },
-      {
-        field: 'online',
-        header: 'Online Graduate',
-        cellTemplate: 'checkboxTemplate',
-        templateInputs: (row) => ({
-          checked: row.online,
-        }),
-      },
-      {
-        field: 'age',
-        header: 'Age',
-        sortable: true,
-      },
-      {
-        field: 'married',
-        header: 'Married',
-        sortable: true,
-      },
-      {
-        field: 'company',
-        header: 'Compnay',
-        sortable: true,
-      },
-    ],
-    numberedRows: true,
+    columnsConfig: {
+      columns: [
+        {
+          field: 'position',
+          header: 'Position',
+        },
+        {
+          field: 'name',
+          header: 'Name',
+          sortable: true,
+          filterOptions: {
+            type: 'select',
+            filterable: true,
+          }
+        },
+        {
+          field: 'weight',
+          header: 'Weight',
+          sortable: true,
+          filterOptions: {
+            type: 'text',
+            filterable: true,
+            label: 'Filter Weight (>=)',
+            filterPredicate: (row: any, filter: string) => {
+              const filterNumber = parseInt(filter, 10);
+              return row.weight >= filterNumber; // Example: Show rows where weight is greater than or equal to the filter
+            },
+          }
+        },
+        {
+          field: 'symbol',
+          header: 'Symbol',
+          sortable: true,
+          filterOptions: {
+            type: 'select',
+            filterable: true,
+          }
+        },
+        {
+          field: 'discoveredBy',
+          header: 'Discovered By',
+          sortable: true,
+        },
+        {
+          field: 'discoveryLocation',
+          header: 'Discovery Location',
+          valueGetter: (row) => `${row.university} (${row.country})`,
+          sortable: true,
+        },
+        {
+          field: 'career',
+          header: 'Career',
+          sortable: true,
+          filterOptions: {
+            type: 'select',
+            filterable: true,
+          }
+        },
+        {
+          field: 'online',
+          header: 'Online Graduate',
+          cellTemplate: 'checkbox',
+          templateInputs: (row) => ({
+            checked: row.online,
+          }),
+          filterOptions: {
+            type: 'select',
+            filterable: true,
+          }
+        },
+        {
+          field: 'dob',
+          header: 'Date of Birth',
+          sortable: true,
+          filterOptions: {
+            type: 'text',
+            filterable: true,
+          }
+        },
+        {
+          field: 'married',
+          header: 'Married',
+          sortable: true,
+        },
+        {
+          field: 'company',
+          header: 'Company',
+          sortable: true,
+          filterOptions: {
+            type: 'select',
+            filterable: true,
+          }
+        },
+      ],
+      stickyHeaders: true,
+    },
+    showRowNumbers: true,
     rowClass: (row) => (row.name === 'Calcium' ? ['gold', 'bold'] : ''),
-    stickyHeaders: true,
     sortOptions: {
-      initialSort: { active: 'name', direction: 'asc' },
       sortFunc(item, property) {
-        if (property === 'discoveredLocation') {
+        if (property === 'discoveryLocation') {
           return `${item.university} ${item.country}`;
         }
         return item[property];
       },
     },
-    rowActions: [
-      {
-        label: 'Edit',
-        description: 'Edit row action',
-        action: (row) => console.log('Edit:', row),
-        disabled: (row) => row.name === 'Calcium',
-      },
-      {
-        label: 'Delete',
-        description: 'Delete row action',
-        action: (row) => console.log('Delete:', row),
-      },
-    ],
-    stickyActions: true,
+    rowActions: {
+      stickyActions: true,
+      actions: [
+        {
+          label: 'Show details',
+          description: 'Show more details',
+          action: (row) => console.log('Showing details:', row),
+        },
+      ],
+    },
+    filterOptions: {
+      id: 'table-filter',
+      label: 'Filter entire table',
+      placeholder: 'Example: Hydrogen',
+      instantSearch: true,
+    },
     pagination: {
       accessibleLabel: 'custom paginator label',
       pageSize: 11,
@@ -242,7 +269,7 @@ export class AppComponent {
 
   data = Array.from({ length: 100 }, (_, k) => this.genData(k + 1));
 
-  genData(pos: number): any {
+  private genData(pos: number): any {
     const name = NAMES[Math.round(Math.random() * (NAMES.length - 1))];
 
     return {
@@ -252,16 +279,30 @@ export class AppComponent {
       symbol: name.charAt(0),
       university: UNIVERSITIES[Math.round(Math.random() * (UNIVERSITIES.length - 1))],
       country: COUNTIRES[Math.round(Math.random() * (COUNTIRES.length - 1))],
-      discoverer: DISCOVERERS[Math.round(Math.random() * (DISCOVERERS.length - 1))],
+      discoveredBy: DISCOVERERS[Math.round(Math.random() * (DISCOVERERS.length - 1))],
       career: CAREERS[Math.round(Math.random() * (CAREERS.length - 1))],
       online: pos % 4 === 0,
-      age: AGES[Math.round(Math.random() * (AGES.length - 1))],
-      married: name.charAt(0) === 'P',
+      dob: this.generateRandomDateBetween1940AndToday(),
+      married: name.charAt(0) === 'P' ? 'Yes' : 'No',
       company: COMPANIES[Math.round(Math.random() * (COMPANIES.length - 1))],
     };
   }
 
-  private buttonClick(str: string): void {
-    console.log('Button clicked:', str);
+  // private getRandomDate(startDate: Date, endDate: Date): Date {
+  private getRandomDate(startDate: Date, endDate: Date): Date {
+    const startTime = startDate.getTime();
+    const endTime = endDate.getTime();
+    const randomTime = Math.random() * (endTime - startTime) + startTime;
+    return new Date(randomTime);
+  }
+
+  private generateRandomDateBetween1940AndToday(): string {
+    const startDate = new Date('1940-01-01');
+    const endDate = new Date(); // Today's date
+    return formatDate(this.getRandomDate(startDate, endDate), 'MM/dd/yyyy', 'en-US');
+  }
+
+  protected printFilters(filters: Record<string, string>): void {
+    console.log('Filters:', filters);
   }
 }
