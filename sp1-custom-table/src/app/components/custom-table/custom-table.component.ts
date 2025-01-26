@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, ViewChild, AfterViewInit, ChangeDetectorRef, EventEmitter, Output } from '@angular/core';
 import { CustomTableModule } from './custom-table.module';
 import { Table } from './models/table.model';
 import { MatPaginator } from '@angular/material/paginator';
@@ -25,6 +25,7 @@ interface TableAction {
 export class CustomTableComponent implements OnChanges, AfterViewInit {
   @Input({ required: true }) tableConfig!: Table;
   @Input({ required: true }) tableData!: any[];
+  @Output() currentFilters = new EventEmitter<Record<string, string>>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -175,6 +176,9 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
       globalFilter: this.globalFilter,
       columnFilters: this.columnFilters,
     });
+
+    // Emit current filters to parent component.
+    this.currentFilters.emit(this.columnFilters);
   }
 
   protected ignoreCheckboxEvent(event: MatCheckboxChange): void {

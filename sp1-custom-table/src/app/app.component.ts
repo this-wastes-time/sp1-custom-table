@@ -301,4 +301,8 @@ export class AppComponent {
     const endDate = new Date(); // Today's date
     return formatDate(this.getRandomDate(startDate, endDate), 'MM/dd/yyyy', 'en-US');
   }
+
+  protected printFilters(filters: Record<string, string>): void {
+    console.log('Filters:', filters);
+  }
 }

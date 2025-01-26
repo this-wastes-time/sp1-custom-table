@@ -169,7 +169,8 @@
 <ng-template #textFilter let-column let-filters="filters">
   <mat-form-field appearance="outline">
     <mat-label> {{ column.filterOptions.label ?? 'Filter by ' + column.header.toLowerCase() }} </mat-label>
-    <input matInput type="text" [(ngModel)]="filters[column.field]" [placeholder]="column.filterOptions.placeholder ?? ''" (keyup)="applyFilters()">
+    <input matInput type="text" [(ngModel)]="filters[column.field]" [placeholder]="column.filterOptions.placeholder ?? ''"
+      (keyup)="applyFilters()"/>
     @if (filters[column.field]) {
       <button mat-icon-button matSuffix
         (click)="filters[column.field] = ''; applyFilters()"
@@ -194,13 +195,10 @@
 <ng-template #dateFilter let-column let-filters="filters">
   <mat-form-field appearance="outline">
     <mat-label> {{ column.filterOptions.label ?? 'Filter by ' + column.header.toLowerCase() }} </mat-label>
-    <input
-      matInput
-      [matDatepicker]="picker"
+    <input matInput [matDatepicker]="picker"
       [(ngModel)]="filters[column.field]"
-      (dateInput)="applyFilters()"
       [placeholder]="column.filterOptions.placeholder ?? 'Select date'"
-    />
+      (dateInput)="applyFilters()"/>
     @if (filters[column.field]) {
       <button mat-icon-button matSuffix
         (click)="filters[column.field] = ''; applyFilters()"
