@@ -212,7 +212,10 @@ export class AppComponent {
           field: 'dob',
           header: 'Date of Birth',
           sortable: true,
-          valueGetter: (row) => formatDate(row.dob, 'MM/dd/yyyy', 'en-US'),
+          filterOptions: {
+            type: 'text',
+            filterable: true,
+          }
         },
         {
           field: 'married',
@@ -285,10 +288,7 @@ export class AppComponent {
     };
   }
 
-  private buttonClick(str: string): void {
-    console.log('Button clicked:', str);
-  }
-
+  // private getRandomDate(startDate: Date, endDate: Date): Date {
   private getRandomDate(startDate: Date, endDate: Date): Date {
     const startTime = startDate.getTime();
     const endTime = endDate.getTime();
@@ -296,9 +296,9 @@ export class AppComponent {
     return new Date(randomTime);
   }
 
-  private generateRandomDateBetween1940AndToday(): Date {
+  private generateRandomDateBetween1940AndToday(): string {
     const startDate = new Date('1940-01-01');
     const endDate = new Date(); // Today's date
-    return this.getRandomDate(startDate, endDate);
+    return formatDate(this.getRandomDate(startDate, endDate), 'MM/dd/yyyy', 'en-US');
   }
 }

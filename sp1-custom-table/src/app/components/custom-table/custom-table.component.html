@@ -90,6 +90,9 @@
                   @case ('select') {
                     <ng-container *ngTemplateOutlet="selectFilter; context: { $implicit: column, filters: columnFilters }"></ng-container>
                   }
+                  @case ('date') {
+                    <ng-container *ngTemplateOutlet="dateFilter; context: { $implicit: column, filters: columnFilters }"></ng-container>
+                  }
                 }
               </th>
             </ng-container>
@@ -185,5 +188,27 @@
         <mat-option [value]="option"> {{ option }} </mat-option>
       }
     </mat-select>
+  </mat-form-field>
+</ng-template>
+<!-- Date -->
+<ng-template #dateFilter let-column let-filters="filters">
+  <mat-form-field appearance="outline">
+    <mat-label> {{ column.filterOptions.label ?? 'Filter by ' + column.header.toLowerCase() }} </mat-label>
+    <input
+      matInput
+      [matDatepicker]="picker"
+      [(ngModel)]="filters[column.field]"
+      (dateInput)="applyFilters()"
+      [placeholder]="column.filterOptions.placeholder ?? 'Select date'"
+    />
+    @if (filters[column.field]) {
+      <button mat-icon-button matSuffix
+        (click)="filters[column.field] = ''; applyFilters()"
+        [attr.aria-label]="'Clear {{column.header}} filter'">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
 </ng-template>

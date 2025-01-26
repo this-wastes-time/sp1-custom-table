@@ -140,6 +140,12 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
           return filterValue.includes(row[column.field]); // Check if the row's value matches any selected option
         }
 
+        if (column.filterOptions.type === 'date') {
+          const rowDate = new Date(row[column.field]).setHours(0, 0, 0, 0);
+          const filterDate = new Date(filterValue).setHours(0, 0, 0, 0);
+          return rowDate === filterDate; // Compare dates
+        }
+
         const cellValue = row[column.field]?.toString().toLowerCase();
         return column.filterOptions.filterPredicate
           ? column.filterOptions.filterPredicate(row, filterValue)
