@@ -6,6 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort, Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { SearchBoxComponent } from '../search-box/search-box.component';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
 interface TableAction {
   label: string; // The text label displayed for the action
@@ -174,5 +175,10 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
       globalFilter: this.globalFilter,
       columnFilters: this.columnFilters,
     });
+  }
+
+  protected ignoreCheckboxEvent(event: MatCheckboxChange): void {
+    // Revert checkbox state to "ignore" change event.
+    event.source.checked = !event.checked;
   }
 }

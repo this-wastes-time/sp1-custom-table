@@ -161,7 +161,7 @@
 </ng-template>
 <!-- Checkbox -->
 <ng-template #checkboxTemplate let-inputs>
-  <mat-checkbox [color]="'primary'" [checked]="inputs.checked"></mat-checkbox>
+  <mat-checkbox [color]="'primary'" [checked]="inputs.checked" (change)="ignoreCheckboxEvent($event)"></mat-checkbox>
 </ng-template>
 
 <!-- Defined Column Filter Templates -->
