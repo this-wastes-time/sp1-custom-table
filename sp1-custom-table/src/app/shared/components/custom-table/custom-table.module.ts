@@ -14,6 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatOptionModule, provideNativeDateAdapter } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { GeneralSpinnerDirective } from '../../directives/general-spinner.directive';
 
 const formFieldConfig: MatFormFieldDefaultOptions = {
   subscriptSizing: 'dynamic'
@@ -37,6 +38,7 @@ const formFieldConfig: MatFormFieldDefaultOptions = {
     MatSelectModule,
     MatOptionModule,
     MatDatepickerModule,
+    GeneralSpinnerDirective,
   ],
   exports: [
     CommonModule,
@@ -54,6 +56,7 @@ const formFieldConfig: MatFormFieldDefaultOptions = {
     MatSelectModule,
     MatOptionModule,
     MatDatepickerModule,
+    GeneralSpinnerDirective,
   ],
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: formFieldConfig },

@@ -1,5 +1,9 @@
 <div class="outer-table-container">
   <div class="table-paginator-container">
+    <div class="spinner-div" appGeneralSpinner
+      [spinnerBusy]="loading" [spinnerColor]="'accent'"
+      [style.z-index]="loading ? 110 : -1"></div>
+
     @if (tableConfig.filterOptions) {
       <div class="table-filter-container">
         <!-- Table filter -->
@@ -32,6 +36,7 @@
     }
 
     <div class="table-container">
+
       <table mat-table [dataSource]="dataSource" matSort
         [matSortActive]="tableConfig.sortOptions?.initialSort?.active ?? ''"
         [matSortDirection]="tableConfig.sortOptions?.initialSort?.direction ?? ''"
