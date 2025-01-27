@@ -6,6 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort, Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { SearchBoxComponent } from '../search-box/search-box.component';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 
 @Component({
@@ -34,6 +35,10 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
   displayColumnsFilters: string[] = [];
   columnFilters: Record<string, string> = {}; // Store filters for each column
   columnSelectFilterOptions: Record<string, any[]> = {}; // Store select dropdown filter options for each column
+  readonly range = new FormGroup({
+    start: new FormControl<Date | null>(null),
+    end: new FormControl<Date | null>(null),
+  });
 
   // Selected rows vars.
   selectedRows!: any[]; // Store selected rows of table.
@@ -62,6 +67,7 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
             this.globalFilter = '';
             this.searchBox.clear();
             this.columnFilters = {};
+            this.range.reset();
             this.applyFilters();
           }
         };
@@ -137,7 +143,7 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
 
       // Apply column-specific filters
       return this.tableConfig.columnsConfig.columns.every((column) => {
-        if (!column.filterOptions?.filterable || !columnFilters[column.field]?.length) {
+        if (!column.filterOptions?.filterable || !columnFilters[column.field]) {
           return true; // Skip columns without active filters
         }
 
@@ -151,6 +157,18 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
           const rowDate = new Date(row[column.field]).setHours(0, 0, 0, 0);
           const filterDate = new Date(filterValue).setHours(0, 0, 0, 0);
           return rowDate === filterDate; // Compare dates
+        }
+
+        if (column.filterOptions.type === 'dateRange') {
+          console.log('came here');
+          const { start, end } = filterValue || {};
+          if (start || end) {
+            const rowDate = new Date(row[column.field]).getTime();
+            const startDate = start ? new Date(start).getTime() : -Infinity;
+            const endDate = end ? new Date(end).getTime() : Infinity;
+            return rowDate >= startDate && rowDate <= endDate;
+          }
+          return true;
         }
 
         const cellValue = row[column.field]?.toString().toLowerCase();

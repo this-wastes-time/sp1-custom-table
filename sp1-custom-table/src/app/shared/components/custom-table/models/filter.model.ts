@@ -1,4 +1,4 @@
-export declare type FilterType = 'text' | 'select' | 'date';
+export declare type FilterType = 'text' | 'select' | 'date' | 'dateRange';
 
 export interface TableFilter {
   id?: string; // ID for filter input element

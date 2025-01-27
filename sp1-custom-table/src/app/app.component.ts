@@ -213,7 +213,7 @@ export class AppComponent {
           header: 'Date of Birth',
           sortable: true,
           filterOptions: {
-            type: 'text',
+            type: 'dateRange',
             filterable: true,
           }
         },
@@ -311,7 +311,7 @@ export class AppComponent {
   }
 
   private generateRandomDateBetween1940AndToday(): string {
-    const startDate = new Date('1940-01-01');
+    const startDate = new Date('2025-01-02');
     const endDate = new Date(); // Today's date
     return formatDate(this.getRandomDate(startDate, endDate), 'MM/dd/yyyy', 'en-US');
   }

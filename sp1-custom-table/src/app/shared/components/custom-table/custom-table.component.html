@@ -117,6 +117,9 @@
                   @case ('date') {
                     <ng-container *ngTemplateOutlet="dateFilter; context: { $implicit: column, filters: columnFilters }"></ng-container>
                   }
+                  @case ('dateRange') {
+                    <ng-container *ngTemplateOutlet="dateRangeFilter; context: { $implicit: column, filters: columnFilters }"></ng-container>
+                  }
                 }
               </th>
             </ng-container>
@@ -223,6 +226,7 @@
       [(ngModel)]="filters[column.field]"
       [placeholder]="column.filterOptions.placeholder ?? 'Select date'"
       (dateInput)="applyFilters()"/>
+
     @if (filters[column.field]) {
       <button mat-icon-button matSuffix
         (click)="filters[column.field] = ''; applyFilters()"
@@ -230,7 +234,37 @@
         <mat-icon>close</mat-icon>
       </button>
     }
+
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+</ng-template>
+<!-- Date range -->
+<ng-template #dateRangeFilter let-column let-filters="filters">
+  <mat-form-field appearance="outline">
+    <mat-label> {{ column.filterOptions.label ?? 'Filter by ' + column.header.toLowerCase() }} </mat-label>
+    <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+      <input matStartDate formControlName="start" placeholder="Start date" (dateInput)="filters[column.field] = range.value; applyFilters()">
+      <input matEndDate formControlName="end" placeholder="End date" (dateInput)="filters[column.field] = range.value; applyFilters()">
+    </mat-date-range-input>
+
+    @if (filters[column.field]) {
+      <button mat-icon-button matSuffix
+        (click)="filters[column.field] = ''; range.reset(); applyFilters()"
+        [attr.aria-label]="'Clear {{column.header}} filter'">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+
+    <!-- <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint> -->
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-date-range-picker #picker></mat-date-range-picker>
+  
+    @if (range.controls.start.hasError('matStartDateInvalid')) {
+      <mat-error>Invalid start date</mat-error>
+    }
+    @if (range.controls.end.hasError('matEndDateInvalid')) {
+      <mat-error>Invalid end date</mat-error>
+    }
   </mat-form-field>
 </ng-template>
