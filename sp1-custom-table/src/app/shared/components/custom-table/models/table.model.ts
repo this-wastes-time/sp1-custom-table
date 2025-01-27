@@ -1,7 +1,7 @@
 import { Pagination } from '../../custom-paginator/models/paginator.model';
 import { ColumnsConfig } from './column.model';
 import { TableFilter } from './filter.model';
-import { RowActionsConfig } from './row-action.model';
+import { RowActionsConfig, TableAction } from './actions.model';
 import { SortConfig } from './sort.model';
 
 export interface Table {
@@ -11,6 +11,7 @@ export interface Table {
   showRowNumbers?: boolean; // Whether to display a numbered row
   rowClass?: (row: any) => string | string[]; // Function to determine CSS class for a row
   sortOptions?: SortConfig; // Configuration for sorting
+  tableActions?: TableAction[]; // Array of table actions. Some batch row action or clearing all filters.
   rowActions?: RowActionsConfig; // Configuration for row actions
   filterOptions?: TableFilter; // Configuration for table filter
   pagination?: Pagination; // Configuration for pagination
