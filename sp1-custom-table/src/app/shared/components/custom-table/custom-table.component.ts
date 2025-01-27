@@ -7,7 +7,6 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { SearchBoxComponent } from '../search-box/search-box.component';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatCheckboxChange } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-custom-table',
@@ -206,11 +205,6 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
 
     // Emit current filters to parent component.
     this.currentFilters.emit(this.columnFilters);
-  }
-
-  protected ignoreCheckboxEvent(event: MatCheckboxChange): void {
-    // Revert checkbox state to "ignore" change event.
-    event.source.checked = !event.checked;
   }
 
   protected selectRow(checked: boolean, row: any): void {

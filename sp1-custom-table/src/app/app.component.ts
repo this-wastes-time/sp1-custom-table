@@ -221,6 +221,14 @@ export class AppComponent {
           field: 'married',
           header: 'Married',
           sortable: true,
+          cellTemplate: 'checkbox',
+          templateInputs(row): Record<string, unknown> {
+            return { checked: row.married };
+          },
+          filterOptions: {
+            type: 'select',
+            filterable: true,
+          }
         },
         {
           field: 'company',
@@ -297,7 +305,7 @@ export class AppComponent {
       career: CAREERS[Math.round(Math.random() * (CAREERS.length - 1))],
       online: pos % 4 === 0,
       dob: this.generateRandomDateBetween1940AndToday(),
-      married: name.charAt(0) === 'P' ? 'Yes' : 'No',
+      married: name.charAt(0) === 'P',
       company: COMPANIES[Math.round(Math.random() * (COMPANIES.length - 1))],
     };
   }
