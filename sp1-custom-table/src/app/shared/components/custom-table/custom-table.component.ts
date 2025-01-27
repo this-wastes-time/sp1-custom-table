@@ -8,13 +8,6 @@ import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { SearchBoxComponent } from '../search-box/search-box.component';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 
-interface TableAction {
-  label: string; // The text label displayed for the action
-  description: string; // Optional description of the action
-  action: () => void; // A function executed when the action is triggered
-  disabled?: () => boolean; // A function to determine if the action should be disabled
-}
-
 @Component({
   selector: 'app-custom-table',
   standalone: true,
@@ -42,9 +35,8 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
   columnFilters: Record<string, string> = {}; // Store filters for each column
   columnSelectFilterOptions: Record<string, any[]> = {}; // Store select dropdown filter options for each column
 
-  // Table options.
-  tableMenuOpen!: boolean;
-  tableActions: TableAction[] = [];
+  // Selected rows vars.
+  selectedRows!: any[]; // Store selected rows of table.
 
   constructor(
     private announcer: LiveAnnouncer,
@@ -63,7 +55,7 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
       }
       // If table or column-level filters are present, add action to table.
       if (this.tableConfig.filterOptions || this.displayColumnsFilters.length > 0) {
-        this.tableActions.push({
+        const resetFiltersAction = {
           label: 'Reset filters',
           description: 'Clear all filters and search terms',
           action: () => {
@@ -72,7 +64,12 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
             this.columnFilters = {};
             this.applyFilters();
           }
-        });
+        };
+
+        this.tableConfig.tableActions = [
+          resetFiltersAction,
+          ...(this.tableConfig.tableActions || [])
+        ];
       }
     }
 
@@ -98,6 +95,11 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
     // Include the row number column.
     if (this.tableConfig.showRowNumbers) {
       this.displayColumns.unshift('#');
+    }
+
+    // Include the multi-row select column.
+    if (this.tableConfig.tableActions) {
+      this.displayColumns.unshift('select');
     }
 
     // Include the action column.
@@ -192,4 +194,24 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
     // Revert checkbox state to "ignore" change event.
     event.source.checked = !event.checked;
   }
+
+  protected selectRow(checked: boolean, row: any): void {
+    row.selected = checked;
+    this.selectedRows = this.dataSource.data.filter(row => row.selected);
+  }
+
+  protected toggleAllSelection(checked: boolean): void {
+    this.dataSource._pageData(this.dataSource.data).map((row) => row.selected = checked);
+    this.selectedRows = this.dataSource.data.filter(row => row.selected);
+  }
+
+  // Just playing around with different function signatures..
+  protected readonly allSelected = () => {
+    return this.dataSource._pageData(this.dataSource.data).every((row) => row.selected);
+  };
+
+  protected readonly someSelected = () => {
+    return this.dataSource._pageData(this.dataSource.data).some((row) => row.selected) &&
+      !this.dataSource._pageData(this.dataSource.data).every((row) => row.selected);
+  };
 }

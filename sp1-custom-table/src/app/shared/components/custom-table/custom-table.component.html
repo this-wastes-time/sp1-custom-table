@@ -2,12 +2,13 @@
   <div class="table-paginator-container">
     <div class="spinner-div" appGeneralSpinner
       [spinnerBusy]="loading" [spinnerColor]="'accent'"
+      [style.background]="loading ? 'var(--spinner-background)' : 'none'"
       [style.z-index]="loading ? 110 : -1"></div>
 
     @if (tableConfig.filterOptions) {
       <div class="table-filter-container">
         <!-- Table filter -->
-        <div class="filter-search-box" [class.table-menu-showing]="tableActions.length > 0">
+        <div class="filter-search-box" [class.table-menu-showing]="(tableConfig.tableActions?.length ?? 0) > 0">
           <app-search-box #searchBox [id]="tableConfig.filterOptions.id ?? ''"
             [label]="tableConfig.filterOptions.label ?? ''"
             [placeholder]="tableConfig.filterOptions.placeholder ?? ''"
@@ -15,16 +16,16 @@
             (inputChange)="applyFilter($event)">
           </app-search-box>
         </div>
-        @if (tableActions.length > 0) {
-          <!-- Table menu -->
+        <!-- Table menu -->
+        @if ((tableConfig.tableActions?.length ?? 0) > 0) {
           <div class="table-menu">
             <button mat-icon-button [color]="'accent'" [matMenuTriggerFor]="tableMenu">
-              <mat-icon>menu</mat-icon>
+              <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #tableMenu="matMenu">
-              @for (action of tableActions; track action) {
-                <span [class.disabled-wrapper]="action.disabled">
-                  <button mat-menu-item [attr.aria-label]="action.description" [disabled]="action.disabled" (click)="action.action()">
+              @for (action of tableConfig.tableActions; track action) {
+                <span [class.disabled-wrapper]="action.disabled?.(selectedRows)">
+                  <button mat-menu-item [attr.aria-label]="action.description" [disabled]="action.disabled?.(selectedRows)" (click)="action.action(selectedRows)">
                     <span> {{ action.label }}</span>
                   </button>
                 </span>
@@ -36,7 +37,6 @@
     }
 
     <div class="table-container">
-
       <table mat-table [dataSource]="dataSource" matSort
         [matSortActive]="tableConfig.sortOptions?.initialSort?.active ?? ''"
         [matSortDirection]="tableConfig.sortOptions?.initialSort?.direction ?? ''"
@@ -45,6 +45,25 @@
 
         <!--- Note that these columns can be defined in any order.
               The actual rendered columns are set as a property on the row definition" -->
+
+        <!-- Column for multiple row checkbox selection. -->
+        @if ((tableConfig.tableActions?.length ?? 0) > 0) {
+          <ng-container matColumnDef="select">
+            <th class="non-filter-header" mat-header-cell *matHeaderCellDef>
+              <mat-checkbox [checked]="allSelected()" [indeterminate]="someSelected()" (change)="toggleAllSelection($event.checked)"></mat-checkbox>
+            </th>
+            <td mat-cell *matCellDef="let row">
+              <mat-checkbox [checked]="row.selected" (change)="selectRow($event.checked, row)"></mat-checkbox>
+            </td>
+          </ng-container>
+  
+          <!-- Filter column for numbered rows. -->
+          @if (displayColumnsFilters.length > 0) {
+            <ng-container matColumnDef="select-filter">
+              <th mat-header-cell *matHeaderCellDef></th>
+            </ng-container>
+          }
+        }
 
         <!-- Column for numbered rows. -->
         @if (tableConfig.showRowNumbers) {
