@@ -54,7 +54,7 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
     if (changes['tableConfig']?.currentValue) {
       this.generateDisplayColumns();
       // If any column has a filter, generate the filter columns.
-      if (this.tableConfig.columnsConfig.columns.some((col) => col.filterOptions?.filterable)) {
+      if (this.tableConfig.columnsConfig.columns.some((col) => col.filterOptions)) {
         this.generateDisplayColumnsFilters();
       }
       // If table or column-level filters are present, add action to table.
@@ -142,7 +142,7 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
 
       // Apply column-specific filters
       return this.tableConfig.columnsConfig.columns.every((column) => {
-        if (!column.filterOptions?.filterable || !columnFilters[column.field]) {
+        if (!column.filterOptions || !columnFilters[column.field] || (Array.isArray(columnFilters[column.field]) ? !columnFilters[column.field].length : !Object.keys(columnFilters[column.field]).length)) {
           return true; // Skip columns without active filters
         }
 

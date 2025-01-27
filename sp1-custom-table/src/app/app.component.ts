@@ -150,7 +150,6 @@ export class AppComponent {
           sortable: true,
           filterOptions: {
             type: 'select',
-            filterable: true,
           }
         },
         {
@@ -159,7 +158,6 @@ export class AppComponent {
           sortable: true,
           filterOptions: {
             type: 'text',
-            filterable: true,
             label: 'Filter Weight (>=)',
             filterPredicate: (row: any, filter: string) => {
               const filterNumber = parseInt(filter, 10);
@@ -173,7 +171,6 @@ export class AppComponent {
           sortable: true,
           filterOptions: {
             type: 'select',
-            filterable: true,
           }
         },
         {
@@ -193,7 +190,6 @@ export class AppComponent {
           sortable: true,
           filterOptions: {
             type: 'select',
-            filterable: true,
           }
         },
         {
@@ -205,7 +201,6 @@ export class AppComponent {
           }),
           filterOptions: {
             type: 'select',
-            filterable: true,
           }
         },
         {
@@ -214,7 +209,6 @@ export class AppComponent {
           sortable: true,
           filterOptions: {
             type: 'dateRange',
-            filterable: true,
           }
         },
         {
@@ -227,7 +221,6 @@ export class AppComponent {
           },
           filterOptions: {
             type: 'select',
-            filterable: true,
           }
         },
         {
@@ -236,7 +229,6 @@ export class AppComponent {
           sortable: true,
           filterOptions: {
             type: 'select',
-            filterable: true,
           }
         },
       ],
