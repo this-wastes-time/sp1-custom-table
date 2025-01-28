@@ -6,7 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort, Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { SearchBoxComponent } from '../search-box/search-box.component';
-import { MatCheckboxChange } from '@angular/material/checkbox';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-custom-table',
@@ -34,6 +34,13 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
   displayColumnsFilters: string[] = [];
   columnFilters: Record<string, string> = {}; // Store filters for each column
   columnSelectFilterOptions: Record<string, any[]> = {}; // Store select dropdown filter options for each column
+  readonly single = new FormGroup({
+    date: new FormControl<Date | null>(null),
+  });
+  readonly range = new FormGroup({
+    start: new FormControl<Date | null>(null),
+    end: new FormControl<Date | null>(null),
+  });
 
   // Selected rows vars.
   selectedRows!: any[]; // Store selected rows of table.
@@ -50,7 +57,7 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
     if (changes['tableConfig']?.currentValue) {
       this.generateDisplayColumns();
       // If any column has a filter, generate the filter columns.
-      if (this.tableConfig.columnsConfig.columns.some((col) => col.filterOptions?.filterable)) {
+      if (this.tableConfig.columnsConfig.columns.some((col) => col.filterOptions)) {
         this.generateDisplayColumnsFilters();
       }
       // If table or column-level filters are present, add action to table.
@@ -62,6 +69,7 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
             this.globalFilter = '';
             this.searchBox.clear();
             this.columnFilters = {};
+            this.range.reset();
             this.applyFilters();
           }
         };
@@ -88,6 +96,63 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
     this.dataSource.sort = this.sort;
     this.detector.detectChanges();
   }
+
+  protected getRowNumber(index: number): number {
+    return this.paginator?.pageIndex * this.paginator?.pageSize + index + 1;
+  }
+
+  protected sortChange(event: Sort): void {
+    this.loading = true;
+    const sortDirection = event.direction ? `${event.direction}ending` : 'cleared';
+    this.announcer.announce(`Sorting by ${event.active} ${sortDirection}`);
+    this.loading = false;
+  }
+
+  protected applyFilter(filterString: string): void {
+    this.globalFilter = filterString;
+    this.applyFilters();
+  }
+
+  protected sanitize(column: string, columnFilter: Record<string, string>): void {
+    // If the filter is "empty", delete it to not clutter the output emitted
+    if (this.isEmpty(columnFilter)) {
+      delete this.columnFilters[column];
+    }
+    this.applyFilters();
+  }
+
+  protected applyFilters() {
+    this.loading = true;
+    // Combine global and column filters into one object for MatTableDataSource
+    this.dataSource.filter = JSON.stringify({
+      globalFilter: this.globalFilter,
+      columnFilters: this.columnFilters,
+    });
+    this.loading = false;
+
+    // Emit current filters to parent component.
+    this.currentFilters.emit(this.columnFilters);
+  }
+
+  protected selectRow(checked: boolean, row: any): void {
+    row.selected = checked;
+    this.selectedRows = this.dataSource.data.filter(row => row.selected);
+  }
+
+  protected toggleAllSelection(checked: boolean): void {
+    this.dataSource._pageData(this.dataSource.data).map((row) => row.selected = checked);
+    this.selectedRows = this.dataSource.data.filter(row => row.selected);
+  }
+
+  // Just playing around with different function signatures..
+  protected readonly allSelected = () => {
+    return this.dataSource._pageData(this.dataSource.data).every((row) => row.selected);
+  };
+
+  protected readonly someSelected = () => {
+    return this.dataSource._pageData(this.dataSource.data).some((row) => row.selected) &&
+      !this.dataSource._pageData(this.dataSource.data).every((row) => row.selected);
+  };
 
   private generateDisplayColumns(): void {
     this.displayColumns = this.tableConfig.columnsConfig.columns.map(col => col.field);
@@ -137,7 +202,7 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
 
       // Apply column-specific filters
       return this.tableConfig.columnsConfig.columns.every((column) => {
-        if (!column.filterOptions?.filterable || !columnFilters[column.field]?.length) {
+        if (!column.filterOptions || !columnFilters[column.field]) {
           return true; // Skip columns without active filters
         }
 
@@ -147,10 +212,21 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
           return filterValue.includes(row[column.field]); // Check if the row's value matches any selected option
         }
 
-        if (column.filterOptions.type === 'date') {
+        if (column.filterOptions.type === 'singleDate') {
           const rowDate = new Date(row[column.field]).setHours(0, 0, 0, 0);
           const filterDate = new Date(filterValue).setHours(0, 0, 0, 0);
           return rowDate === filterDate; // Compare dates
+        }
+
+        if (column.filterOptions.type === 'dateRange') {
+          const { start, end } = filterValue || {};
+          if (start || end) {
+            const rowDate = new Date(row[column.field]).getTime();
+            const startDate = start ? new Date(start).getTime() : -Infinity;
+            const endDate = end ? new Date(end).getTime() : Infinity;
+            return rowDate >= startDate && rowDate <= endDate;
+          }
+          return true;
         }
 
         const cellValue = row[column.field]?.toString().toLowerCase();
@@ -161,57 +237,19 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
     };
   }
 
-  protected getRowNumber(index: number): number {
-    return this.paginator?.pageIndex * this.paginator?.pageSize + index + 1;
+  private isEmpty(value: any): boolean {
+    if (value === null || value === undefined) {
+      return true;
+    }
+    if (Array.isArray(value)) {
+      return value.length === 0;
+    }
+    if (typeof value === 'string') {
+      return value.trim().length === 0;
+    }
+    if (typeof value === 'object' && Object.keys(value).length) {
+      return Object.keys(value).every((key) => this.isEmpty(value[key]));
+    }
+    return !value;
   }
-
-  protected sortChange(event: Sort): void {
-    this.loading = true;
-    const sortDirection = event.direction ? `${event.direction}ending` : 'cleared';
-    this.announcer.announce(`Sorting by ${event.active} ${sortDirection}`);
-    this.loading = false;
-  }
-
-  protected applyFilter(filterString: string): void {
-    this.globalFilter = filterString;
-    this.applyFilters();
-  }
-
-  protected applyFilters() {
-    this.loading = true;
-    // Combine global and column filters into one object for MatTableDataSource
-    this.dataSource.filter = JSON.stringify({
-      globalFilter: this.globalFilter,
-      columnFilters: this.columnFilters,
-    });
-    this.loading = false;
-
-    // Emit current filters to parent component.
-    this.currentFilters.emit(this.columnFilters);
-  }
-
-  protected ignoreCheckboxEvent(event: MatCheckboxChange): void {
-    // Revert checkbox state to "ignore" change event.
-    event.source.checked = !event.checked;
-  }
-
-  protected selectRow(checked: boolean, row: any): void {
-    row.selected = checked;
-    this.selectedRows = this.dataSource.data.filter(row => row.selected);
-  }
-
-  protected toggleAllSelection(checked: boolean): void {
-    this.dataSource._pageData(this.dataSource.data).map((row) => row.selected = checked);
-    this.selectedRows = this.dataSource.data.filter(row => row.selected);
-  }
-
-  // Just playing around with different function signatures..
-  protected readonly allSelected = () => {
-    return this.dataSource._pageData(this.dataSource.data).every((row) => row.selected);
-  };
-
-  protected readonly someSelected = () => {
-    return this.dataSource._pageData(this.dataSource.data).some((row) => row.selected) &&
-      !this.dataSource._pageData(this.dataSource.data).every((row) => row.selected);
-  };
 }
