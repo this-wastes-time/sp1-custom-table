@@ -150,7 +150,6 @@ export class AppComponent {
           sortable: true,
           filterOptions: {
             type: 'select',
-            filterable: true,
           }
         },
         {
@@ -159,7 +158,6 @@ export class AppComponent {
           sortable: true,
           filterOptions: {
             type: 'text',
-            filterable: true,
             label: 'Filter Weight (>=)',
             filterPredicate: (row: any, filter: string) => {
               const filterNumber = parseInt(filter, 10);
@@ -173,13 +171,15 @@ export class AppComponent {
           sortable: true,
           filterOptions: {
             type: 'select',
-            filterable: true,
           }
         },
         {
           field: 'discoveredBy',
           header: 'Discovered By',
           sortable: true,
+          filterOptions: {
+            type: 'text',
+          }
         },
         {
           field: 'discoveryLocation',
@@ -193,7 +193,6 @@ export class AppComponent {
           sortable: true,
           filterOptions: {
             type: 'select',
-            filterable: true,
           }
         },
         {
@@ -205,7 +204,6 @@ export class AppComponent {
           }),
           filterOptions: {
             type: 'select',
-            filterable: true,
           }
         },
         {
@@ -213,14 +211,20 @@ export class AppComponent {
           header: 'Date of Birth',
           sortable: true,
           filterOptions: {
-            type: 'text',
-            filterable: true,
+            type: 'dateRange',
           }
         },
         {
           field: 'married',
           header: 'Married',
           sortable: true,
+          cellTemplate: 'checkbox',
+          templateInputs(row): Record<string, unknown> {
+            return { checked: row.married };
+          },
+          filterOptions: {
+            type: 'select',
+          }
         },
         {
           field: 'company',
@@ -228,7 +232,6 @@ export class AppComponent {
           sortable: true,
           filterOptions: {
             type: 'select',
-            filterable: true,
           }
         },
       ],
@@ -297,7 +300,7 @@ export class AppComponent {
       career: CAREERS[Math.round(Math.random() * (CAREERS.length - 1))],
       online: pos % 4 === 0,
       dob: this.generateRandomDateBetween1940AndToday(),
-      married: name.charAt(0) === 'P' ? 'Yes' : 'No',
+      married: name.charAt(0) === 'P',
       company: COMPANIES[Math.round(Math.random() * (COMPANIES.length - 1))],
     };
   }
@@ -311,7 +314,7 @@ export class AppComponent {
   }
 
   private generateRandomDateBetween1940AndToday(): string {
-    const startDate = new Date('1940-01-01');
+    const startDate = new Date('2025-01-02');
     const endDate = new Date(); // Today's date
     return formatDate(this.getRandomDate(startDate, endDate), 'MM/dd/yyyy', 'en-US');
   }
