@@ -34,6 +34,9 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
   displayColumnsFilters: string[] = [];
   columnFilters: Record<string, string> = {}; // Store filters for each column
   columnSelectFilterOptions: Record<string, any[]> = {}; // Store select dropdown filter options for each column
+  readonly single = new FormGroup({
+    date: new FormControl<Date | null>(null),
+  });
   readonly range = new FormGroup({
     start: new FormControl<Date | null>(null),
     end: new FormControl<Date | null>(null),

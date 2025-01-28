@@ -200,7 +200,10 @@
       (keyup)="sanitize(column.field, filters[column.field])"/>
     @if (filters[column.field]) {
       <button mat-icon-button matSuffix
-        (click)="filters[column.field] = ''; sanitize(column.field, filters[column.field])"
+        (click)="
+          filters[column.field] = '';
+          sanitize(column.field, filters[column.field])
+        "
         [attr.aria-label]="'Clear {{column.header}} filter'">
         <mat-icon>close</mat-icon>
       </button>
@@ -220,37 +223,60 @@
 </ng-template>
 <!-- Date -->
 <ng-template #singleDateFilter let-column let-filters="filters">
-  <mat-form-field class="date-column-filter" appearance="outline">
-    <mat-label> {{ column.filterOptions.label ?? 'Filter by ' + column.header.toLowerCase() }} </mat-label>
-    <input matInput [matDatepicker]="picker"
-      [(ngModel)]="filters[column.field]"
-      [placeholder]="column.filterOptions.placeholder ?? 'Select date'"
-      (dateInput)="sanitize(column.field, filters[column.field])"/>
-
-    @if (filters[column.field]) {
-      <button mat-icon-button matSuffix
-        (click)="filters[column.field] = ''; sanitize(column.field, filters[column.field])"
-        [attr.aria-label]="'Clear {{column.header}} filter'">
-        <mat-icon>close</mat-icon>
-      </button>
-    }
-
-    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker></mat-datepicker>
-  </mat-form-field>
+  <form [formGroup]="single">
+    <mat-form-field class="date-column-filter" appearance="outline">
+      <mat-label> {{ column.filterOptions.label ?? 'Filter by ' + column.header.toLowerCase() }} </mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="date" [placeholder]="column.filterOptions.placeholder ?? 'Select date'"
+        (dateInput)="
+          filters[column.field] = $event.value;
+          sanitize(column.field, filters[column.field])
+        "/>
+  
+      @if (filters[column.field]) {
+        <button mat-icon-button matSuffix
+          (click)="
+            filters[column.field] = '';
+            single.reset();
+            sanitize(column.field, filters[column.field])
+          "
+          [attr.aria-label]="'Clear {{column.header}} filter'">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+  
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+  
+      @if (single.invalid) {
+        <mat-error>Invalid date</mat-error>
+      }
+    </mat-form-field>
+  </form>
 </ng-template>
 <!-- Date range -->
 <ng-template #dateRangeFilter let-column let-filters="filters">
   <mat-form-field appearance="outline">
     <mat-label> {{ column.filterOptions.label ?? 'Filter by ' + column.header.toLowerCase() }} </mat-label>
     <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
-      <input matStartDate formControlName="start" placeholder="Start date" (dateInput)="filters[column.field] = range.value; sanitize(column.field, filters[column.field])">
-      <input matEndDate formControlName="end" placeholder="End date" (dateInput)="filters[column.field] = range.value; sanitize(column.field, filters[column.field])">
+      <input matStartDate formControlName="start" placeholder="Start date"
+        (dateInput)="
+          filters[column.field] = range.value;
+          sanitize(column.field, filters[column.field])
+        ">
+      <input matEndDate formControlName="end" placeholder="End date"
+        (dateInput)="
+          filters[column.field] = range.value;
+          sanitize(column.field, filters[column.field])
+        ">
     </mat-date-range-input>
 
     @if (filters[column.field]) {
       <button mat-icon-button matSuffix
-        (click)="filters[column.field] = ''; range.reset(); sanitize(column.field, filters[column.field])"
+        (click)="
+          filters[column.field] = '';
+          range.reset();
+          sanitize(column.field, filters[column.field])
+        "
         [attr.aria-label]="'Clear {{column.header}} filter'">
         <mat-icon>close</mat-icon>
       </button>
