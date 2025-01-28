@@ -94,6 +94,63 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
     this.detector.detectChanges();
   }
 
+  protected getRowNumber(index: number): number {
+    return this.paginator?.pageIndex * this.paginator?.pageSize + index + 1;
+  }
+
+  protected sortChange(event: Sort): void {
+    this.loading = true;
+    const sortDirection = event.direction ? `${event.direction}ending` : 'cleared';
+    this.announcer.announce(`Sorting by ${event.active} ${sortDirection}`);
+    this.loading = false;
+  }
+
+  protected applyFilter(filterString: string): void {
+    this.globalFilter = filterString;
+    this.applyFilters();
+  }
+
+  protected sanitize(column: string, columnFilter: Record<string, string>): void {
+    // If the filter is "empty", delete it to not clutter the output emitted
+    if (this.isEmpty(columnFilter)) {
+      delete this.columnFilters[column];
+    }
+    this.applyFilters();
+  }
+
+  protected applyFilters() {
+    this.loading = true;
+    // Combine global and column filters into one object for MatTableDataSource
+    this.dataSource.filter = JSON.stringify({
+      globalFilter: this.globalFilter,
+      columnFilters: this.columnFilters,
+    });
+    this.loading = false;
+
+    // Emit current filters to parent component.
+    this.currentFilters.emit(this.columnFilters);
+  }
+
+  protected selectRow(checked: boolean, row: any): void {
+    row.selected = checked;
+    this.selectedRows = this.dataSource.data.filter(row => row.selected);
+  }
+
+  protected toggleAllSelection(checked: boolean): void {
+    this.dataSource._pageData(this.dataSource.data).map((row) => row.selected = checked);
+    this.selectedRows = this.dataSource.data.filter(row => row.selected);
+  }
+
+  // Just playing around with different function signatures..
+  protected readonly allSelected = () => {
+    return this.dataSource._pageData(this.dataSource.data).every((row) => row.selected);
+  };
+
+  protected readonly someSelected = () => {
+    return this.dataSource._pageData(this.dataSource.data).some((row) => row.selected) &&
+      !this.dataSource._pageData(this.dataSource.data).every((row) => row.selected);
+  };
+
   private generateDisplayColumns(): void {
     this.displayColumns = this.tableConfig.columnsConfig.columns.map(col => col.field);
 
@@ -152,7 +209,7 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
           return filterValue.includes(row[column.field]); // Check if the row's value matches any selected option
         }
 
-        if (column.filterOptions.type === 'date') {
+        if (column.filterOptions.type === 'singleDate') {
           const rowDate = new Date(row[column.field]).setHours(0, 0, 0, 0);
           const filterDate = new Date(filterValue).setHours(0, 0, 0, 0);
           return rowDate === filterDate; // Compare dates
@@ -176,63 +233,6 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
       });
     };
   }
-
-  protected getRowNumber(index: number): number {
-    return this.paginator?.pageIndex * this.paginator?.pageSize + index + 1;
-  }
-
-  protected sortChange(event: Sort): void {
-    this.loading = true;
-    const sortDirection = event.direction ? `${event.direction}ending` : 'cleared';
-    this.announcer.announce(`Sorting by ${event.active} ${sortDirection}`);
-    this.loading = false;
-  }
-
-  protected applyFilter(filterString: string): void {
-    this.globalFilter = filterString;
-    this.applyFilters();
-  }
-
-  protected sanitize(column: string, columnFilter: Record<string, string>): void {
-    // If the filter is "empty", delete it to not clutter the output emitted
-    if (this.isEmpty(columnFilter)) {
-      delete this.columnFilters[column];
-    }
-    this.applyFilters();
-  }
-
-  protected applyFilters() {
-    this.loading = true;
-    // Combine global and column filters into one object for MatTableDataSource
-    this.dataSource.filter = JSON.stringify({
-      globalFilter: this.globalFilter,
-      columnFilters: this.columnFilters,
-    });
-    this.loading = false;
-
-    // Emit current filters to parent component.
-    this.currentFilters.emit(this.columnFilters);
-  }
-
-  protected selectRow(checked: boolean, row: any): void {
-    row.selected = checked;
-    this.selectedRows = this.dataSource.data.filter(row => row.selected);
-  }
-
-  protected toggleAllSelection(checked: boolean): void {
-    this.dataSource._pageData(this.dataSource.data).map((row) => row.selected = checked);
-    this.selectedRows = this.dataSource.data.filter(row => row.selected);
-  }
-
-  // Just playing around with different function signatures..
-  protected readonly allSelected = () => {
-    return this.dataSource._pageData(this.dataSource.data).every((row) => row.selected);
-  };
-
-  protected readonly someSelected = () => {
-    return this.dataSource._pageData(this.dataSource.data).some((row) => row.selected) &&
-      !this.dataSource._pageData(this.dataSource.data).every((row) => row.selected);
-  };
 
   private isEmpty(value: any): boolean {
     if (value === null || value === undefined) {

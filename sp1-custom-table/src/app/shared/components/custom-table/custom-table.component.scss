@@ -61,6 +61,14 @@ table {
   .mat-mdc-form-field {
     margin-top: .625rem;
     min-width: 250px;
+
+    &.date-column-filter {
+      min-width: 280px;
+    }
+
+    &.mat-mdc-form-field-type-mat-date-range-input {
+      min-width: 300px;
+    }
   }
 }
 
