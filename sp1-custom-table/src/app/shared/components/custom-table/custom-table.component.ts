@@ -142,7 +142,7 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
 
       // Apply column-specific filters
       return this.tableConfig.columnsConfig.columns.every((column) => {
-        if (!column.filterOptions || !columnFilters[column.field] || (Array.isArray(columnFilters[column.field]) ? !columnFilters[column.field].length : !Object.keys(columnFilters[column.field]).length)) {
+        if (!column.filterOptions || !columnFilters[column.field]) {
           return true; // Skip columns without active filters
         }
 
@@ -159,7 +159,6 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
         }
 
         if (column.filterOptions.type === 'dateRange') {
-          console.log('came here');
           const { start, end } = filterValue || {};
           if (start || end) {
             const rowDate = new Date(row[column.field]).getTime();
@@ -191,6 +190,14 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
 
   protected applyFilter(filterString: string): void {
     this.globalFilter = filterString;
+    this.applyFilters();
+  }
+
+  protected sanitize(column: string, columnFilter: Record<string, string>): void {
+    // If the filter is "empty", delete it to not clutter the output emitted
+    if (this.isEmpty(columnFilter)) {
+      delete this.columnFilters[column];
+    }
     this.applyFilters();
   }
 
@@ -226,4 +233,20 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
     return this.dataSource._pageData(this.dataSource.data).some((row) => row.selected) &&
       !this.dataSource._pageData(this.dataSource.data).every((row) => row.selected);
   };
+
+  private isEmpty(value: any): boolean {
+    if (value === null || value === undefined) {
+      return true;
+    }
+    if (Array.isArray(value)) {
+      return value.length === 0;
+    }
+    if (typeof value === 'string') {
+      return value.trim().length === 0;
+    }
+    if (typeof value === 'object' && Object.keys(value).length) {
+      return Object.keys(value).every((key) => this.isEmpty(value[key]));
+    }
+    return !value;
+  }
 }

@@ -197,10 +197,10 @@
   <mat-form-field appearance="outline">
     <mat-label> {{ column.filterOptions.label ?? 'Filter by ' + column.header.toLowerCase() }} </mat-label>
     <input matInput type="text" [(ngModel)]="filters[column.field]" [placeholder]="column.filterOptions.placeholder ?? ''"
-      (keyup)="applyFilters()"/>
+      (keyup)="sanitize(column.field, filters[column.field])"/>
     @if (filters[column.field]) {
       <button mat-icon-button matSuffix
-        (click)="filters[column.field] = ''; applyFilters()"
+        (click)="filters[column.field] = ''; sanitize(column.field, filters[column.field])"
         [attr.aria-label]="'Clear {{column.header}} filter'">
         <mat-icon>close</mat-icon>
       </button>
@@ -211,7 +211,7 @@
 <ng-template #selectFilter let-column let-filters="filters">
   <mat-form-field appearance="outline">
     <mat-label> {{ column.filterOptions.label ?? 'Filter by ' + column.header.toLowerCase() }} </mat-label>
-    <mat-select [(ngModel)]="filters[column.field]" (selectionChange)="applyFilters()" multiple>
+    <mat-select [(ngModel)]="filters[column.field]" (selectionChange)="sanitize(column.field, filters[column.field])" multiple>
       @for (option of columnSelectFilterOptions[column.field]; track option) {
         <mat-option [value]="option"> {{ option }} </mat-option>
       }
@@ -225,11 +225,11 @@
     <input matInput [matDatepicker]="picker"
       [(ngModel)]="filters[column.field]"
       [placeholder]="column.filterOptions.placeholder ?? 'Select date'"
-      (dateInput)="applyFilters()"/>
+      (dateInput)="sanitize(column.field, filters[column.field])"/>
 
     @if (filters[column.field]) {
       <button mat-icon-button matSuffix
-        (click)="filters[column.field] = ''; applyFilters()"
+        (click)="filters[column.field] = ''; sanitize(column.field, filters[column.field])"
         [attr.aria-label]="'Clear {{column.header}} filter'">
         <mat-icon>close</mat-icon>
       </button>
@@ -244,13 +244,13 @@
   <mat-form-field appearance="outline">
     <mat-label> {{ column.filterOptions.label ?? 'Filter by ' + column.header.toLowerCase() }} </mat-label>
     <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
-      <input matStartDate formControlName="start" placeholder="Start date" (dateInput)="filters[column.field] = range.value; applyFilters()">
-      <input matEndDate formControlName="end" placeholder="End date" (dateInput)="filters[column.field] = range.value; applyFilters()">
+      <input matStartDate formControlName="start" placeholder="Start date" (dateInput)="filters[column.field] = range.value; sanitize(column.field, filters[column.field])">
+      <input matEndDate formControlName="end" placeholder="End date" (dateInput)="filters[column.field] = range.value; sanitize(column.field, filters[column.field])">
     </mat-date-range-input>
 
     @if (filters[column.field]) {
       <button mat-icon-button matSuffix
-        (click)="filters[column.field] = ''; range.reset(); applyFilters()"
+        (click)="filters[column.field] = ''; range.reset(); sanitize(column.field, filters[column.field])"
         [attr.aria-label]="'Clear {{column.header}} filter'">
         <mat-icon>close</mat-icon>
       </button>

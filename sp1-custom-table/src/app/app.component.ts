@@ -177,6 +177,9 @@ export class AppComponent {
           field: 'discoveredBy',
           header: 'Discovered By',
           sortable: true,
+          filterOptions: {
+            type: 'text',
+          }
         },
         {
           field: 'discoveryLocation',
