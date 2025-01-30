@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Table } from './shared/components/custom-table/models/table.model';
 import { CustomTableComponent } from './shared/components/custom-table/custom-table.component';
 import { MockDataService, MockModel } from './mock-data.service';
@@ -10,7 +10,7 @@ import { MockDataService, MockModel } from './mock-data.service';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   tableConfig: Table = {
     id: 'test-table',
     caption: 'User data table with actions.',
@@ -155,8 +155,9 @@ export class AppComponent {
     },
     pagination: {
       accessibleLabel: 'custom paginator label',
-      pageSize: 11,
-      pageSizeOptions: [11, 25, 50, 100],
+      pageSize: 10,
+      pageSizeOptions: [5, 10, 25, 50, 100],
+      showFirstLast: true,
     }
   };
 
@@ -165,8 +166,18 @@ export class AppComponent {
   constructor(
     private mockService: MockDataService,
   ) {
-    mockService.fetchData(1, 11)
-      .pipe().subscribe(fetchedData => this.data = fetchedData.items);
+    // Server side pagination test.
+    // mockService.fetchData(1, 11)
+    //   .pipe().subscribe(fetchedData => this.data = fetchedData.items);
+  }
+
+  async ngOnInit(): Promise<void> {
+    await this.loadData();
+  }
+
+  async loadData(): Promise<void> {
+    // Client side pagination test.
+    this.data = await this.mockService.fetchAll();
   }
 
   protected printFilters(filters: Record<string, string>): void {

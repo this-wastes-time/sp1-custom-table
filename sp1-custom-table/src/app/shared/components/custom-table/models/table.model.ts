@@ -1,8 +1,8 @@
-import { Pagination } from '../../custom-paginator/models/paginator.model';
 import { ColumnsConfig } from './column.model';
 import { TableFilter } from './filter.model';
 import { RowActionsConfig, TableAction } from './actions.model';
 import { SortConfig } from './sort.model';
+import { Pagination } from './paginator.model';
 
 export interface Table {
   id: string; // ID for table element
@@ -14,5 +14,5 @@ export interface Table {
   tableActions?: TableAction[]; // Array of table actions. Some batch row action or clearing all filters.
   rowActions?: RowActionsConfig; // Configuration for row actions
   filterOptions?: TableFilter; // Configuration for table filter
-  pagination?: Pagination; // Configuration for pagination
+  pagination?: Pagination; // Configuration for CLIENT SIDE pagination, this configuration is not for SERVER SIDE pagination.
 }

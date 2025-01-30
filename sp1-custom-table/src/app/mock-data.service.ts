@@ -151,7 +151,7 @@ const COMPANIES = [
 })
 export class MockDataService {
 
-  data = Array.from({ length: 10000 }, (_, k) => this.genData(k + 1));
+  data = Array.from({ length: 100000 }, (_, k) => this.genData(k + 1));
 
   private genData(pos: number): MockModel {
     const name = NAMES[Math.round(Math.random() * (NAMES.length - 1))];
@@ -185,6 +185,16 @@ export class MockDataService {
     return formatDate(this.getRandomDate(startDate, endDate), 'MM/dd/yyyy', 'en-US');
   }
 
+  /**
+   * Mimicks a backend request for data.
+   * @param page 
+   * @param pageSize 
+   * @param sortBy 
+   * @param sortDirection 
+   * @param globalFilter 
+   * @param filters 
+   * @returns An Observable of MockResponse.
+   */
   fetchData(
     page: number,
     pageSize: number,
@@ -271,5 +281,13 @@ export class MockDataService {
       items: paginatedData,
       count: totalCount,
     });
+  }
+
+  /**
+   * Returns all the data the "server" has.
+   * @returns 
+   */
+  async fetchAll(): Promise<MockModel[]> {
+    return Promise.resolve(this.data);
   }
 }
