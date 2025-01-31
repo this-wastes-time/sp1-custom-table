@@ -27,20 +27,13 @@ export class AppComponent implements OnInit {
           sortable: true,
           filterOptions: {
             type: 'select',
+            selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.name))).sort(),
           }
         },
         {
           field: 'weight',
           header: 'Weight',
           sortable: true,
-          filterOptions: {
-            type: 'text',
-            label: 'Filter Weight (>=)',
-            filterPredicate: (row: any, filter: string) => {
-              const filterNumber = parseInt(filter, 10);
-              return row.weight >= filterNumber; // Example: Show rows where weight is greater than or equal to the filter
-            },
-          }
         },
         {
           field: 'symbol',
@@ -48,6 +41,7 @@ export class AppComponent implements OnInit {
           sortable: true,
           filterOptions: {
             type: 'select',
+            selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.symbol))).sort(),
           }
         },
         {
@@ -70,6 +64,7 @@ export class AppComponent implements OnInit {
           sortable: true,
           filterOptions: {
             type: 'select',
+            selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.career))).sort(),
           }
         },
         {
@@ -81,6 +76,7 @@ export class AppComponent implements OnInit {
           }),
           filterOptions: {
             type: 'select',
+            selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.online))).sort(),
           }
         },
         {
@@ -101,6 +97,7 @@ export class AppComponent implements OnInit {
           },
           filterOptions: {
             type: 'select',
+            selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.married))).sort(),
           }
         },
         {
@@ -109,6 +106,7 @@ export class AppComponent implements OnInit {
           sortable: true,
           filterOptions: {
             type: 'select',
+            selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.company))).sort(),
           }
         },
       ],
@@ -158,6 +156,7 @@ export class AppComponent implements OnInit {
 
   // Table data.
   data!: MockModel[];
+  filteredData!: MockModel[];
   paginatedData!: MockModel[];
 
   // Paginator vars.
@@ -183,6 +182,7 @@ export class AppComponent implements OnInit {
   async loadData(): Promise<void> {
     // Client side pagination test.
     this.data = await this.mockService.fetchAll();
+    this.filteredData = this.data;
   }
 
   protected updateData(newData: MockModel[]): void {
@@ -190,7 +190,81 @@ export class AppComponent implements OnInit {
     this.detector.detectChanges();
   }
 
-  protected printFilters(filters: Record<string, string>): void {
-    console.log('Filters:', filters);
+  protected tableDataRequest(tableState: Record<string, any>): void {
+    let filteredData = [...this.data];
+
+    // Store filtering and sorting options.
+    const globalFilter = tableState['globalFilter'];
+    const columnFilters = tableState['columnFilters'];
+    const sortBy = tableState['sortBy'];
+    const sortDirection = tableState['sortDirection'];
+
+    // Apply global filter, if provided
+    if (globalFilter) {
+      const searchTerm = globalFilter.toLowerCase();
+      filteredData = filteredData.filter((item) =>
+        Object.values(item).some((value) =>
+          value !== null &&
+          value !== undefined &&
+          value.toString().toLowerCase().includes(searchTerm)
+        )
+      );
+    }
+
+    // Apply filters, if provided
+    if (columnFilters) {
+      Object.keys(columnFilters).forEach((key) => {
+        const filterValue = columnFilters[key];
+        filteredData = filteredData.filter((item) => {
+          const itemValue = item[key as keyof MockModel];
+
+          // Handle range filter (e.g., "dob")
+          if (filterValue?.start || filterValue?.end) {
+            const { start, end } = filterValue;
+            const itemDate = new Date(itemValue as string).getTime();
+            return (
+              // Check if itemDate is >= start (if start exists)
+              (!start || itemDate >= start) &&
+              // Check if itemDate is <= end (if end exists)
+              (!end || itemDate <= end)
+            );
+          }
+
+          // Handle multiple values filtering (e.g., "name": ["Aluminum", "Beryllium"])
+          if (Array.isArray(filterValue)) {
+            return filterValue.includes(itemValue);
+          }
+
+          // Handle string matching (case-insensitive)
+          if (typeof itemValue === 'string') {
+            return itemValue.toLowerCase().includes(String(filterValue).toLowerCase());
+          }
+
+          // Handle direct equality checks for booleans and numbers
+          const filterPred = this.tableConfig.columnsConfig.columns.find(c => c.field === key)?.filterOptions?.filterPredicate;
+          return filterPred ? filterPred(item, filterValue) : itemValue === filterValue;
+        });
+      });
+    }
+
+    // Sort if sortBy is provided
+    if (sortBy) {
+      const direction = sortDirection === 'desc' ? -1 : sortDirection === 'asc' ? 1 : 0;
+      filteredData.sort((a, b) => {
+        const aValue = a[sortBy as keyof MockModel];
+        const bValue = b[sortBy as keyof MockModel];
+
+        if (typeof aValue === 'number' && typeof bValue === 'number') {
+          return (aValue - bValue) * direction;
+        } else if (typeof aValue === 'boolean' && typeof bValue === 'boolean') {
+          return (Number(aValue) - Number(bValue)) * direction;
+        } else if (typeof aValue === 'string' && typeof bValue === 'string') {
+          return aValue.localeCompare(bValue) * direction;
+        }
+        return 0;
+      });
+    }
+
+    this.filteredData = filteredData;
   }
 }

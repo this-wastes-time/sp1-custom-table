@@ -12,4 +12,5 @@ export interface ColumnFilter {
   label?: string; // Label for filter input
   placeholder?: string; // Placeholder text for filter input
   filterPredicate?: (data: any, filter: string) => boolean; // Custom filter logic
+  selectValues?: () => any[]; // Values for filter select
 }

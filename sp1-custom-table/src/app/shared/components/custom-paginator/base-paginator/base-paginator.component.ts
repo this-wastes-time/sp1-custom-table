@@ -111,7 +111,7 @@ export class BasePaginatorComponent {
   }
 
   protected hasPrev(): boolean {
-    return this.pageIndex <= 1;
+    return this.pageIndex <= 0;
   }
 
   protected hasNext(): boolean {

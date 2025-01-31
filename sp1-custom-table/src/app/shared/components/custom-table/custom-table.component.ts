@@ -2,10 +2,17 @@ import { Component, Input, OnChanges, SimpleChanges, ViewChild, AfterViewInit, C
 import { CustomTableModule } from './custom-table.module';
 import { Table } from './models/table.model';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatSort, Sort } from '@angular/material/sort';
+import { Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { SearchBoxComponent } from '../search-box/search-box.component';
 import { FormControl, FormGroup } from '@angular/forms';
+
+interface TableFilters {
+  sortBy: string;
+  sortDirection: string;
+  globalFilter: string;
+  columnFilters: Record<string, string>;
+}
 
 @Component({
   selector: 'app-custom-table',
@@ -17,9 +24,8 @@ import { FormControl, FormGroup } from '@angular/forms';
 export class CustomTableComponent implements OnChanges, AfterViewInit {
   @Input({ required: true }) tableConfig!: Table;
   @Input({ required: true }) tableData!: any[];
-  @Output() currentFilters = new EventEmitter<Record<string, string>>();
+  @Output() getDataForTable = new EventEmitter<TableFilters>();
 
-  @ViewChild(MatSort) sort!: MatSort;
   @ViewChild('searchBox') searchBox!: SearchBoxComponent;
 
   // Table data vars.
@@ -39,16 +45,15 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
     start: new FormControl<Date | null>(null),
     end: new FormControl<Date | null>(null),
   });
+  currentSort!: Sort;
 
   // Selected rows vars.
   selectedRows!: any[]; // Store selected rows of table.
 
   constructor(
     private announcer: LiveAnnouncer,
-    private detector: ChangeDetectorRef
-  ) {
-    this.dataSource.filterPredicate = this.createFilterPredicate();
-  }
+    private detector: ChangeDetectorRef,
+  ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     // When a table configuration comes in, set the columns.
@@ -77,22 +82,23 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
           ...(this.tableConfig.tableActions || [])
         ];
       }
+      // Set sort properties if available.
+      this.currentSort = {
+        active: this.tableConfig.sortOptions?.initialSort?.active ?? '',
+        direction: this.tableConfig.sortOptions?.initialSort?.direction ?? '',
+      };
       this.detector.detectChanges();
     }
 
     // When the data for the table comes in, update the Observable.
     if (changes['tableData']?.currentValue) {
-      this.loading = true;
-      this.dataSource.data = changes['tableData']?.currentValue ?? this.dataSource.data;
-      this.generateColumnSelectFilterOptions();
-      this.loading = false;
+      this.dataSource = new MatTableDataSource(changes['tableData']?.currentValue);
       this.detector.detectChanges();
     }
   }
 
   ngAfterViewInit() {
     this.dataSource.sortingDataAccessor = this.tableConfig.sortOptions?.sortFunc ?? ((data, sortHeaderId) => data[sortHeaderId]);
-    this.dataSource.sort = this.sort;
     this.detector.detectChanges();
   }
 
@@ -101,10 +107,10 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
   }
 
   protected sortChange(event: Sort): void {
-    this.loading = true;
     const sortDirection = event.direction ? `${event.direction}ending` : 'cleared';
     this.announcer.announce(`Sorting by ${event.active} ${sortDirection}`);
-    this.loading = false;
+    this.currentSort = event;
+    this.requestNewData();
   }
 
   protected applyFilter(filterString: string): void {
@@ -112,25 +118,8 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
     this.applyFilters();
   }
 
-  protected sanitize(column: string, columnFilter: Record<string, string>): void {
-    // If the filter is "empty", delete it to not clutter the output emitted
-    if (this.isEmpty(columnFilter)) {
-      delete this.columnFilters[column];
-    }
-    this.applyFilters();
-  }
-
   protected applyFilters() {
-    this.loading = true;
-    // Combine global and column filters into one object for MatTableDataSource
-    this.dataSource.filter = JSON.stringify({
-      globalFilter: this.globalFilter,
-      columnFilters: this.columnFilters,
-    });
-    this.loading = false;
-
-    // Emit current filters to parent component.
-    this.currentFilters.emit(this.columnFilters);
+    this.sanitizeFilters();
   }
 
   protected selectRow(checked: boolean, row: any): void {
@@ -176,66 +165,6 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
     this.displayColumnsFilters = this.displayColumns.map(col => `${col}-filter`);
   }
 
-  private generateColumnSelectFilterOptions(): void {
-    this.tableConfig.columnsConfig.columns.forEach((column) => {
-      if (column.filterOptions?.type === 'select') {
-        const uniqueValues = Array.from(new Set(this.dataSource.data.map((row) => row[column.field]))).sort();
-        this.columnSelectFilterOptions[column.field] = uniqueValues;
-      }
-    });
-  }
-
-  private createFilterPredicate(): (row: any, filter: string) => boolean {
-    return (row: any, filter: string): boolean => {
-      const { globalFilter, columnFilters } = JSON.parse(filter);
-
-      // Apply global filter (matches any column)
-      if (globalFilter) {
-        const matchesGlobal = Object.keys(row).some((key) =>
-          row[key]?.toString().toLowerCase().includes(globalFilter.toLowerCase())
-        );
-        if (!matchesGlobal) {
-          return false;
-        }
-      }
-
-      // Apply column-specific filters
-      return this.tableConfig.columnsConfig.columns.every((column) => {
-        if (!column.filterOptions || !columnFilters[column.field]) {
-          return true; // Skip columns without active filters
-        }
-
-        const filterValue = columnFilters[column.field];
-
-        if (column.filterOptions.type === 'select') {
-          return filterValue.includes(row[column.field]); // Check if the row's value matches any selected option
-        }
-
-        if (column.filterOptions.type === 'singleDate') {
-          const rowDate = new Date(row[column.field]).setHours(0, 0, 0, 0);
-          const filterDate = new Date(filterValue).setHours(0, 0, 0, 0);
-          return rowDate === filterDate; // Compare dates
-        }
-
-        if (column.filterOptions.type === 'dateRange') {
-          const { start, end } = filterValue || {};
-          if (start || end) {
-            const rowDate = new Date(row[column.field]).getTime();
-            const startDate = start ? new Date(start).getTime() : -Infinity;
-            const endDate = end ? new Date(end).getTime() : Infinity;
-            return rowDate >= startDate && rowDate <= endDate;
-          }
-          return true;
-        }
-
-        const cellValue = row[column.field]?.toString().toLowerCase();
-        return column.filterOptions.filterPredicate
-          ? column.filterOptions.filterPredicate(row, filterValue)
-          : cellValue.includes(filterValue);
-      });
-    };
-  }
-
   private isEmpty(value: any): boolean {
     if (value === null || value === undefined) {
       return true;
@@ -250,5 +179,25 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
       return Object.keys(value).every((key) => this.isEmpty(value[key]));
     }
     return !value;
+  }
+
+  private sanitizeFilters(): void {
+    // Sanitize table state before emitting.
+    Object.keys(this.columnFilters).every((key) => {
+      if (this.isEmpty(this.columnFilters[key])) {
+        delete this.columnFilters[key];
+      }
+    });
+
+    this.requestNewData();
+  }
+
+  private requestNewData(): void {
+    this.getDataForTable.emit({
+      sortBy: this.currentSort.active,
+      sortDirection: this.currentSort.direction,
+      globalFilter: this.globalFilter,
+      columnFilters: this.columnFilters,
+    });
   }
 }

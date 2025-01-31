@@ -3,7 +3,7 @@
     <app-custom-table
       [tableConfig]="tableConfig"
       [tableData]="paginatedData"
-      (currentFilters)="printFilters($event)">
+      (getDataForTable)="tableDataRequest($event)">
     </app-custom-table>
     
     <app-client-paginator
@@ -12,7 +12,7 @@
       [pageSize]="pageSize"
       [pageSizeOptions]="pageSizeOptions"
       [showFirstLastButtons]="showFirstLast"
-      [data]="data"
+      [totalData]="filteredData"
       (paginatedData)="updateData($event)">
     </app-client-paginator>
   </div>
