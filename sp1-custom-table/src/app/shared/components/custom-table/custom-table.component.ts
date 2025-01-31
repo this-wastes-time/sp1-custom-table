@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges, ViewChild, AfterViewInit, ChangeDetectorRef, EventEmitter, Output } from '@angular/core';
 import { CustomTableModule } from './custom-table.module';
-import { Table } from './models/table.model';
+import { TableConfig } from './models/table.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
@@ -23,7 +23,7 @@ interface TableFilters {
   styleUrl: './custom-table.component.scss'
 })
 export class CustomTableComponent implements OnChanges, AfterViewInit {
-  @Input({ required: true }) tableConfig!: Table;
+  @Input({ required: true }) tableConfig!: TableConfig;
   @Input({ required: true }) columnsConfig!: ColumnsConfig;
   @Input({ required: true }) tableData!: any[];
   @Output() getDataForTable = new EventEmitter<TableFilters>();
