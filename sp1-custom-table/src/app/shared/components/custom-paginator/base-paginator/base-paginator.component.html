@@ -1,0 +1,76 @@
+<nav [attr.aria-label]="accessibleLabel">
+  <div class="paginator">
+    <div class="paginator-outer-container">
+      <div class="paginator-container">
+        <!-- Can hide pag esize -->
+        @if (!hidePageSize) {
+          <div class="paginator-page-size">
+            <div class="paginator-size-label">
+              {{ paginatorIntl.itemsPerPageLabel }}
+            </div>
+  
+            <mat-form-field class="paginator-page-size-select">
+              <mat-select
+                [value]="pageSize"
+                (selectionChange)="onPageSizeChange($event.value)">
+                @for (size of pageSizeOptions; track size) {
+                  <mat-option [value]="size">
+                    {{ size }}
+                  </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+  
+          @if (pageSizeOptions.length <= 1) {
+            <div class="mat-mdc-paginator-page-size-value">{{ pageSize }}</div>
+          }
+        }
+        <div class="paginator-range-actions">
+          <div class="paginator-range-label" aria-live="polite">
+            {{paginatorIntl.getRangeLabel(pageIndex, pageSize, length)}}
+          </div>
+  
+          @if (showFirstLastButtons) {
+            <button
+              mat-icon-button
+              [matTooltip]="firstPageTooltip"
+              [disabled]="hasPrev()"
+              [attr.aria-label]="firstPageTooltip"
+              (click)="paginate(0)">
+              <mat-icon class="paginator-icon">first_page</mat-icon>
+            </button>
+          }
+  
+          <button
+            mat-icon-button
+            [matTooltip]="previousPageTooltip"
+            [disabled]="hasPrev()"
+            [attr.aria-label]="previousPageTooltip"
+            (click)="paginate(pageIndex-1)">
+            <mat-icon class="paginator-icon">keyboard_arrow_left</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            [matTooltip]="nextPageTooltip"
+            [disabled]="hasNext()"
+            [attr.aria-label]="nextPageTooltip"
+            (click)="paginate(pageIndex+1)">
+            <mat-icon class="paginator-icon">keyboard_arrow_right</mat-icon>
+          </button>
+  
+          @if (showFirstLastButtons) {
+            <button
+              mat-icon-button
+              [matTooltip]="lastPageTooltip"
+              [disabled]="hasNext()"
+              [attr.aria-label]="lastPageTooltip"
+              (click)="paginate(totalPages)">
+              <mat-icon class="paginator-icon">last_page</mat-icon>
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

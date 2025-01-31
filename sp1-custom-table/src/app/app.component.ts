@@ -6,7 +6,7 @@ import { MockDataService, MockModel } from './mock-data.service';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CustomTableComponent],
+  imports: [CustomTableComponent,],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -161,7 +161,15 @@ export class AppComponent implements OnInit {
     }
   };
 
+  // Table data.
   data!: MockModel[];
+
+  // Paginator vars.
+  accessibleLabel = 'test paginator label';
+  pageSize = 10;
+  pageIndex = 0;
+  pageSizeOptions = [10, 15, 20, 25];
+  showFirstLast = true;
 
   constructor(
     private mockService: MockDataService,
