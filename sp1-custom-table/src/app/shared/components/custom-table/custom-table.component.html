@@ -39,7 +39,6 @@
     <table mat-table [dataSource]="dataSource" matSort
       [matSortActive]="tableConfig.sortOptions?.initialSort?.active ?? ''"
       [matSortDirection]="tableConfig.sortOptions?.initialSort?.direction ?? ''"
-      [matSortDisabled]="tableConfig.sortOptions?.disabled"
       (matSortChange)="sortChange($event)">
 
       <!--- Note that these columns can be defined in any order.
