@@ -2,6 +2,7 @@
   <div class="table-paginator-container">
     <app-custom-table
       [tableConfig]="tableConfig"
+      [columnsConfig]="columnsConfig"
       [tableData]="paginatedData"
       (getDataForTable)="tableDataRequest($event)">
     </app-custom-table>
