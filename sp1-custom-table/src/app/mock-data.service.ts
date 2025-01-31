@@ -151,7 +151,7 @@ const COMPANIES = [
 })
 export class MockDataService {
 
-  data = Array.from({ length: 100000 }, (_, k) => this.genData(k + 1));
+  data = Array.from({ length: 1000 }, (_, k) => this.genData(k + 1));
 
   private genData(pos: number): MockModel {
     const name = NAMES[Math.round(Math.random() * (NAMES.length - 1))];

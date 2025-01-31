@@ -4,7 +4,6 @@ import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
-import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { SearchBoxComponent } from '../search-box/search-box.component';
@@ -24,7 +23,6 @@ import { GeneralSpinnerDirective } from '../../directives/general-spinner.direct
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
-    MatPaginatorModule,
     MatSortModule,
     MatCheckboxModule,
     SearchBoxComponent,
@@ -43,7 +41,6 @@ import { GeneralSpinnerDirective } from '../../directives/general-spinner.direct
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
-    MatPaginatorModule,
     MatSortModule,
     MatCheckboxModule,
     SearchBoxComponent,

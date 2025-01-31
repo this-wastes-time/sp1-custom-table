@@ -1,38 +1,27 @@
-.outer-table-container {
-  margin: .625rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  overflow: hidden;
+.table-filter-container {
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  align-items: center;
 
-  .table-paginator-container {
-    position: relative;
+  .filter-search-box {
+    width: 100%;
 
-    .table-filter-container {
-      border-bottom: 1px solid #ccc;
-      display: flex;
-      align-items: center;
-
-      .filter-search-box {
-        width: 100%;
-
-        &.table-menu-showing {
-          border-right: 1px solid #ccc;
-        }
-      }
-
-      .table-menu {
-        width: 85px;
-        min-width: 80.5px;
-        display: flex;
-        justify-content: center;
-      }
-    }
-
-    .table-container {
-      margin: 0 auto;
-      overflow: auto;
+    &.table-menu-showing {
+      border-right: 1px solid #ccc;
     }
   }
+
+  .table-menu {
+    width: 85px;
+    min-width: 80.5px;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.table-container {
+  margin: 0 auto;
+  overflow: auto;
 }
 
 .spinner-div {

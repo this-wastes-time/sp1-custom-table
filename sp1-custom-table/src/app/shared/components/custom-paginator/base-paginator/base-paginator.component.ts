@@ -1,6 +1,5 @@
 import { booleanAttribute, ChangeDetectorRef, Component, EventEmitter, inject, Input, numberAttribute, Output } from '@angular/core';
 import { CustomPaginatorModule } from '../custom-paginator.module';
-import { MatSelectChange } from '@angular/material/select';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 
 const DEFAULT_PAGE_SIZE = 10;
@@ -9,11 +8,7 @@ const DEFAULT_PAGE_SIZE = 10;
   selector: 'app-paginator',
   standalone: true,
   imports: [CustomPaginatorModule],
-  templateUrl: './base-paginator.component.html',
-  styleUrl: './base-paginator.component.scss',
-  host: {
-    role: 'group',
-  }
+  template: ``,
 })
 export class BasePaginatorComponent {
 
@@ -38,7 +33,7 @@ export class BasePaginatorComponent {
   }
   private _length = 0;
 
-  /** Number of items to display on a page. By default set to 50. */
+  /** Number of items to display on a page. By default set to 10. */
   @Input({ transform: numberAttribute })
   get pageSize(): number {
     return this._pageSize;
@@ -60,7 +55,6 @@ export class BasePaginatorComponent {
   }
   private _pageSizeOptions: number[] = [];
 
-  /** The set of provided page size options to display to the user. */
   @Input({ required: true })
   get accessibleLabel(): string {
     return this._accessibleLabel;
@@ -87,7 +81,6 @@ export class BasePaginatorComponent {
 
   readonly paginatorIntl = inject(MatPaginatorIntl);
   protected _displayedPageSizeOptions!: number[];
-  readonly totalItems!: number;
 
   // Tooltips.
   firstPageTooltip = 'First page';
@@ -99,10 +92,17 @@ export class BasePaginatorComponent {
     private detector: ChangeDetectorRef,
   ) { }
 
-  protected onPageSizeChange(event: MatSelectChange): void { }
+  protected onPageSizeChange(newPageSize: number): void {
+    // Current page needs to be updated to reflect the new page size. Navigate to the page
+    // containing the previous page's first item.
+    const startIndex = this.pageIndex * this.pageSize;
+
+    this.pageIndex = Math.floor(startIndex / newPageSize) || 0;
+    this.pageSize = newPageSize;
+  }
 
   protected get totalPages(): number {
-    return Math.ceil(this.totalItems / this.pageSize) || 1;
+    return Math.ceil(this.length / this.pageSize) || 0;
   }
 
   protected paginate(targetPage: number): void {
@@ -115,7 +115,7 @@ export class BasePaginatorComponent {
   }
 
   protected hasNext(): boolean {
-    return this.pageIndex === this.totalPages;
+    return this.pageIndex >= (this.totalPages - 1);
   }
 
   private _updatePageSizeOptions() {

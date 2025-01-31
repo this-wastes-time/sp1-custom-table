@@ -1,7 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges, ViewChild, AfterViewInit, ChangeDetectorRef, EventEmitter, Output } from '@angular/core';
 import { CustomTableModule } from './custom-table.module';
 import { Table } from './models/table.model';
-import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort, Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
@@ -20,7 +19,6 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
   @Input({ required: true }) tableData!: any[];
   @Output() currentFilters = new EventEmitter<Record<string, string>>();
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild('searchBox') searchBox!: SearchBoxComponent;
 
@@ -79,6 +77,7 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
           ...(this.tableConfig.tableActions || [])
         ];
       }
+      this.detector.detectChanges();
     }
 
     // When the data for the table comes in, update the Observable.
@@ -87,18 +86,18 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
       this.dataSource.data = changes['tableData']?.currentValue ?? this.dataSource.data;
       this.generateColumnSelectFilterOptions();
       this.loading = false;
+      this.detector.detectChanges();
     }
   }
 
   ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
     this.dataSource.sortingDataAccessor = this.tableConfig.sortOptions?.sortFunc ?? ((data, sortHeaderId) => data[sortHeaderId]);
     this.dataSource.sort = this.sort;
     this.detector.detectChanges();
   }
 
   protected getRowNumber(index: number): number {
-    return this.paginator?.pageIndex * this.paginator?.pageSize + index + 1;
+    return index + 1;
   }
 
   protected sortChange(event: Sort): void {
