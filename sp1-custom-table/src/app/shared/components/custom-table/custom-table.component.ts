@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges, ViewChild, AfterViewInit, ChangeDetectorRef, EventEmitter, Output } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, ViewChild, ChangeDetectorRef, EventEmitter, Output } from '@angular/core';
 import { CustomTableModule } from './custom-table.module';
 import { TableConfig } from './models/table.model';
 import { MatTableDataSource } from '@angular/material/table';
@@ -21,7 +21,7 @@ interface TableFilters {
   templateUrl: './custom-table.component.html',
   styleUrl: './custom-table.component.scss'
 })
-export class CustomTableComponent implements OnChanges, AfterViewInit {
+export class CustomTableComponent implements OnChanges {
   @Input()
   get tableConfig(): TableConfig {
     return this._tableConfig;
@@ -69,10 +69,10 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
   ngOnChanges(changes: SimpleChanges): void {
     // When a table configuration comes in, set the columns.
     if (changes['tableConfig']?.currentValue) {
-      this.generateDisplayColumns();
+      this._generateDisplayColumns();
       // If any column has a filter, generate the filter columns.
       if (this.tableConfig.columnsConfig.columns.some((col) => col.filterOptions)) {
-        this.generateDisplayColumnsFilters();
+        this._generateDisplayColumnsFilters();
       }
       // If table or column-level filters are present, add action to table.
       if (this.tableConfig?.filterOptions || this.displayColumnsFilters.length > 0) {
@@ -108,11 +108,6 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  ngAfterViewInit() {
-    this.dataSource.sortingDataAccessor = this.tableConfig?.sortOptions?.sortFunc ?? ((data, sortHeaderId) => data[sortHeaderId]);
-    this.detector.detectChanges();
-  }
-
   protected getRowNumber(index: number): number {
     return this.pageIndex * this.pageSize + index + 1;
   }
@@ -121,7 +116,7 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
     const sortDirection = event.direction ? `${event.direction}ending` : 'cleared';
     this.announcer.announce(`Sorting by ${event.active} ${sortDirection}`);
     this.currentSort = event;
-    this.requestNewData();
+    this._requestNewData();
   }
 
   protected applyFilter(filterString: string): void {
@@ -130,7 +125,7 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
   }
 
   protected applyFilters() {
-    this.sanitizeFilters();
+    this._sanitizeFilters();
   }
 
   protected selectRow(checked: boolean, row: any): void {
@@ -153,7 +148,7 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
       !this.dataSource._pageData(this.dataSource.data).every((row) => row.selected);
   };
 
-  private generateDisplayColumns(): void {
+  private _generateDisplayColumns(): void {
     this.displayColumns = this.tableConfig.columnsConfig.columns.map(col => col.field);
 
     // Include the row number column.
@@ -172,11 +167,11 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  private generateDisplayColumnsFilters(): void {
+  private _generateDisplayColumnsFilters(): void {
     this.displayColumnsFilters = this.displayColumns.map(col => `${col}-filter`);
   }
 
-  private isEmpty(value: any): boolean {
+  private _isEmpty(value: any): boolean {
     if (value === null || value === undefined) {
       return true;
     }
@@ -187,23 +182,23 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
       return value.trim().length === 0;
     }
     if (typeof value === 'object' && Object.keys(value).length) {
-      return Object.keys(value).every((key) => this.isEmpty(value[key]));
+      return Object.keys(value).every((key) => this._isEmpty(value[key]));
     }
     return !value;
   }
 
-  private sanitizeFilters(): void {
+  private _sanitizeFilters(): void {
     // Sanitize table state before emitting.
     Object.keys(this.columnFilters).every((key) => {
-      if (this.isEmpty(this.columnFilters[key])) {
+      if (this._isEmpty(this.columnFilters[key])) {
         delete this.columnFilters[key];
       }
     });
 
-    this.requestNewData();
+    this._requestNewData();
   }
 
-  private requestNewData(): void {
+  private _requestNewData(): void {
     this.getDataForTable.emit({
       sortBy: this.currentSort.active,
       sortDirection: this.currentSort.direction,
