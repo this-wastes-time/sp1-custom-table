@@ -30,7 +30,10 @@ export class AppComponent implements OnInit {
           sortable: true,
           filterOptions: {
             type: 'select',
-            selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.name))).sort(),
+            templateInputs: () => ({
+              selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.name))).sort(),
+              multiple: true,
+            }),
           }
         },
         {
@@ -44,7 +47,10 @@ export class AppComponent implements OnInit {
           sortable: true,
           filterOptions: {
             type: 'select',
-            selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.symbol))).sort(),
+            templateInputs: () => ({
+              selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.symbol))).sort(),
+              multiple: true,
+            })
           }
         },
         {
@@ -67,7 +73,10 @@ export class AppComponent implements OnInit {
           sortable: true,
           filterOptions: {
             type: 'select',
-            selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.career))).sort(),
+            templateInputs: () => ({
+              selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.career))).sort(),
+              multiple: true,
+            }),
           }
         },
         {
@@ -79,7 +88,10 @@ export class AppComponent implements OnInit {
           }),
           filterOptions: {
             type: 'select',
-            selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.online))).sort(),
+            templateInputs: () => ({
+              selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.online))).sort(),
+              multiple: true,
+            }),
           }
         },
         {
@@ -100,7 +112,10 @@ export class AppComponent implements OnInit {
           },
           filterOptions: {
             type: 'select',
-            selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.married))).sort(),
+            templateInputs: () => ({
+              selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.married))).sort(),
+              multiple: true,
+            }),
           }
         },
         {
@@ -109,7 +124,10 @@ export class AppComponent implements OnInit {
           sortable: true,
           filterOptions: {
             type: 'select',
-            selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.company))).sort(),
+            templateInputs: () => ({
+              selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.company))).sort(),
+              multiple: true,
+            }),
           }
         },
       ],
@@ -153,7 +171,6 @@ export class AppComponent implements OnInit {
       id: 'table-filter',
       label: 'Filter entire table',
       placeholder: 'Example: Hydrogen',
-      instantSearch: true,
     },
   };
 

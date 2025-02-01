@@ -14,6 +14,6 @@ interface Column {
   valueGetter?: (row: any) => any; // Function to determine the displayed value in the cell
   sortable?: boolean; // Whether the column is sortable
   cellTemplate?: CellTemplate; // Custom template for rendering column content
-  templateInputs?: (row: any) => Record<string, unknown>; // Function to determine inputs to pass to the component
+  templateInputs?: (row: any) => Record<string, unknown>; // Function to determine inputs to pass to the template
   filterOptions?: ColumnFilter; // Configuration for column filter
 }

@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, Output, OnInit, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Subject } from 'rxjs';
@@ -13,16 +14,18 @@ const DEBOUNCEWAIT = 250;
   standalone: true,
   imports: [MatInputModule, MatButtonModule, MatIconModule, FormsModule],
   templateUrl: './search-box.component.html',
-  styleUrl: './search-box.component.scss'
+  styleUrl: './search-box.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush, // Enable OnPush
 })
 export class SearchBoxComponent implements OnInit, OnDestroy {
   @Input() id = 'search-box';
+  @Input() appearance: MatFormFieldAppearance = 'fill';
+  @Input() subscriptSizing: 'fixed' | 'dynamic' = 'fixed';
   @Input() label = 'Search';
   @Input() placeholder = 'Search...';
+  @Input() value!: string;
   @Input() instantSearch = false;
-  @Output() inputChange = new EventEmitter<string>();
-
-  protected text!: string;
+  @Output() valueChange = new EventEmitter<string>();
 
   private inputSubject = new Subject<string>();
   private inputSubscription: any;
@@ -32,7 +35,7 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
       debounceTime(this.instantSearch ? 0 : DEBOUNCEWAIT),
       distinctUntilChanged()
     ).subscribe(value => {
-      this.inputChange.emit(value);
+      this.valueChange.emit(value);
     });
   }
 
@@ -49,7 +52,7 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
   }
 
   clear(): void {
-    this.text = '';
-    this.inputSubject.next(this.text);
+    this.value = '';
+    this.inputSubject.next(this.value);
   }
 }

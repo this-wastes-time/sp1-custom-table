@@ -1,7 +1,7 @@
-<mat-form-field [subscriptSizing]="'dynamic'">
+<mat-form-field [id]="id" [appearance]="appearance" [subscriptSizing]="subscriptSizing">
   <mat-label> {{ label }} </mat-label>
-  <input [id]="id" matInput type="text" [(ngModel)]="text" [placeholder]="placeholder" (keyup)="onInputChange(getValue($event))"/>
-  @if (text) {
+  <input matInput type="text" [(ngModel)]="value" [placeholder]="placeholder" (keyup)="onInputChange(getValue($event))"/>
+  @if (value) {
     <button mat-icon-button matSuffix
       (click)="clear()"
       aria-label="Clear search box">
