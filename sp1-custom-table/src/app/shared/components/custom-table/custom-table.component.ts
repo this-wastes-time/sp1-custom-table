@@ -6,7 +6,6 @@ import { Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { SearchBoxComponent } from '../search-box/search-box.component';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ColumnsConfig } from './models/column.model';
 
 interface TableFilters {
   sortBy: string;
@@ -32,7 +31,6 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
   }
   private _tableConfig!: TableConfig;
 
-  @Input({ required: true }) columnsConfig!: ColumnsConfig;
   @Input({ required: true }) tableData!: any[];
   @Output() getDataForTable = new EventEmitter<TableFilters>();
 
@@ -70,7 +68,7 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
     if (changes['tableConfig']) {
       this.generateDisplayColumns();
       // If any column has a filter, generate the filter columns.
-      if (this.columnsConfig.columns.some((col) => col.filterOptions)) {
+      if (this.tableConfig.columnsConfig.columns.some((col) => col.filterOptions)) {
         this.generateDisplayColumnsFilters();
       }
       // If table or column-level filters are present, add action to table.
@@ -153,7 +151,7 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
   };
 
   private generateDisplayColumns(): void {
-    this.displayColumns = this.columnsConfig.columns.map(col => col.field);
+    this.displayColumns = this.tableConfig.columnsConfig.columns.map(col => col.field);
 
     // Include the row number column.
     if (this.tableConfig?.showRowNumbers) {

@@ -3,7 +3,6 @@ import { TableConfig } from './shared/components/custom-table/models/table.model
 import { CustomTableComponent } from './shared/components/custom-table/custom-table.component';
 import { MockDataService, MockModel } from './mock-data.service';
 import { ClientPaginatorComponent } from './shared/components/custom-paginator/client-paginator/client-paginator.component';
-import { ColumnsConfig } from './shared/components/custom-table/models/column.model';
 
 @Component({
   selector: 'app-root',
@@ -15,105 +14,144 @@ import { ColumnsConfig } from './shared/components/custom-table/models/column.mo
 export class AppComponent implements OnInit {
   tableConfig: TableConfig = {
     id: 'test-table',
-    caption: 'User data table with actions.'
-  };
-
-  columnsConfig: ColumnsConfig = {
-    columns: [
-      {
-        field: 'position',
-        header: 'Position',
-      },
-      {
-        field: 'name',
-        header: 'Name',
-        sortable: true,
-        filterOptions: {
-          type: 'select',
-          selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.name))).sort(),
-        }
-      },
-      {
-        field: 'weight',
-        header: 'Weight',
-        sortable: true,
-      },
-      {
-        field: 'symbol',
-        header: 'Symbol',
-        sortable: true,
-        filterOptions: {
-          type: 'select',
-          selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.symbol))).sort(),
-        }
-      },
-      {
-        field: 'discoveredBy',
-        header: 'Discovered By',
-        sortable: true,
-        filterOptions: {
-          type: 'text',
-        }
-      },
-      {
-        field: 'discoveryLocation',
-        header: 'Discovery Location',
-        valueGetter: (row) => `${row.university} (${row.country})`,
-        sortable: true,
-      },
-      {
-        field: 'career',
-        header: 'Career',
-        sortable: true,
-        filterOptions: {
-          type: 'select',
-          selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.career))).sort(),
-        }
-      },
-      {
-        field: 'online',
-        header: 'Online Graduate',
-        cellTemplate: 'checkbox',
-        templateInputs: (row) => ({
-          checked: row.online,
-        }),
-        filterOptions: {
-          type: 'select',
-          selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.online))).sort(),
-        }
-      },
-      {
-        field: 'dob',
-        header: 'Date of Birth',
-        sortable: true,
-        filterOptions: {
-          type: 'dateRange',
-        }
-      },
-      {
-        field: 'married',
-        header: 'Married',
-        sortable: true,
-        cellTemplate: 'checkbox',
-        templateInputs(row): Record<string, unknown> {
-          return { checked: row.married };
+    caption: 'User data table with actions.',
+    columnsConfig: {
+      columns: [
+        {
+          field: 'position',
+          header: 'Position',
         },
-        filterOptions: {
-          type: 'select',
-          selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.married))).sort(),
+        {
+          field: 'name',
+          header: 'Name',
+          sortable: true,
+          filterOptions: {
+            type: 'select',
+            selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.name))).sort(),
+          }
+        },
+        {
+          field: 'weight',
+          header: 'Weight',
+          sortable: true,
+        },
+        {
+          field: 'symbol',
+          header: 'Symbol',
+          sortable: true,
+          filterOptions: {
+            type: 'select',
+            selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.symbol))).sort(),
+          }
+        },
+        {
+          field: 'discoveredBy',
+          header: 'Discovered By',
+          sortable: true,
+          filterOptions: {
+            type: 'text',
+          }
+        },
+        {
+          field: 'discoveryLocation',
+          header: 'Discovery Location',
+          valueGetter: (row) => `${row.university} (${row.country})`,
+          sortable: true,
+        },
+        {
+          field: 'career',
+          header: 'Career',
+          sortable: true,
+          filterOptions: {
+            type: 'select',
+            selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.career))).sort(),
+          }
+        },
+        {
+          field: 'online',
+          header: 'Online Graduate',
+          cellTemplate: 'checkbox',
+          templateInputs: (row) => ({
+            checked: row.online,
+          }),
+          filterOptions: {
+            type: 'select',
+            selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.online))).sort(),
+          }
+        },
+        {
+          field: 'dob',
+          header: 'Date of Birth',
+          sortable: true,
+          filterOptions: {
+            type: 'dateRange',
+          }
+        },
+        {
+          field: 'married',
+          header: 'Married',
+          sortable: true,
+          cellTemplate: 'checkbox',
+          templateInputs(row): Record<string, unknown> {
+            return { checked: row.married };
+          },
+          filterOptions: {
+            type: 'select',
+            selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.married))).sort(),
+          }
+        },
+        {
+          field: 'company',
+          header: 'Company',
+          sortable: true,
+          filterOptions: {
+            type: 'select',
+            selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.company))).sort(),
+          }
+        },
+      ],
+      stickyHeaders: true,
+    },
+    // showRowNumbers: true,
+    rowClass: (row) => (row.name === 'Calcium' ? ['gold', 'bold'] : ''),
+    sortOptions: {
+      sortFunc(item, property) {
+        if (property === 'discoveryLocation') {
+          return `${item.university} ${item.country}`;
         }
+        return item[property];
+      },
+    },
+    tableActions: [
+      {
+        label: 'Delete rows',
+        description: 'Delete selected rows',
+        action: (rows?: any[]) => rows?.map((row) => console.log('Deleting:', row)),
+        disabled: (rows?: any[]) => !rows || rows.length === 0,
       },
       {
-        field: 'company',
-        header: 'Company',
-        sortable: true,
-        filterOptions: {
-          type: 'select',
-          selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.company))).sort(),
-        }
+        label: 'Export rows',
+        description: 'Export selected rows',
+        action: () => console.log('Exporting selected rows'),
+        disabled: (rows?: any[]) => !rows || rows.length === 0,
       },
     ],
-    stickyHeaders: true,
+    rowActions: {
+      stickyActions: true,
+      actions: [
+        {
+          label: 'Show details',
+          description: 'Show more details',
+          action: (row) => console.log('Showing details:', row),
+        },
+      ],
+    },
+    filterOptions: {
+      id: 'table-filter',
+      label: 'Filter entire table',
+      placeholder: 'Example: Hydrogen',
+      instantSearch: true,
+    },
   };
 
   // Table data.
@@ -203,7 +241,7 @@ export class AppComponent implements OnInit {
           }
 
           // Handle direct equality checks for booleans and numbers
-          const filterPred = this.columnsConfig.columns.find(c => c.field === key)?.filterOptions?.filterPredicate;
+          const filterPred = this.tableConfig.columnsConfig.columns.find(c => c.field === key)?.filterOptions?.filterPredicate;
           return filterPred ? filterPred(item, filterValue) : itemValue === filterValue;
         });
       });
