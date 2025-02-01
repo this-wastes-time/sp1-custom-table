@@ -15,47 +15,7 @@ import { ColumnsConfig } from './shared/components/custom-table/models/column.mo
 export class AppComponent implements OnInit {
   tableConfig: TableConfig = {
     id: 'test-table',
-    caption: 'User data table with actions.',
-    // showRowNumbers: true,
-    rowClass: (row) => (row.name === 'Calcium' ? ['gold', 'bold'] : ''),
-    sortOptions: {
-      sortFunc(item, property) {
-        if (property === 'discoveryLocation') {
-          return `${item.university} ${item.country}`;
-        }
-        return item[property];
-      },
-    },
-    tableActions: [
-      {
-        label: 'Delete rows',
-        description: 'Delete selected rows',
-        action: (rows?: any[]) => rows?.map((row) => console.log('Deleting:', row)),
-        disabled: (rows?: any[]) => !rows || rows.length === 0,
-      },
-      {
-        label: 'Export rows',
-        description: 'Export selected rows',
-        action: () => console.log('Exporting selected rows'),
-        disabled: (rows?: any[]) => !rows || rows.length === 0,
-      },
-    ],
-    rowActions: {
-      stickyActions: true,
-      actions: [
-        {
-          label: 'Show details',
-          description: 'Show more details',
-          action: (row) => console.log('Showing details:', row),
-        },
-      ],
-    },
-    filterOptions: {
-      id: 'table-filter',
-      label: 'Filter entire table',
-      placeholder: 'Example: Hydrogen',
-      instantSearch: true,
-    },
+    caption: 'User data table with actions.'
   };
 
   columnsConfig: ColumnsConfig = {

@@ -23,7 +23,15 @@ interface TableFilters {
   styleUrl: './custom-table.component.scss'
 })
 export class CustomTableComponent implements OnChanges, AfterViewInit {
-  @Input({ required: true }) tableConfig!: TableConfig;
+  @Input()
+  get tableConfig(): TableConfig {
+    return this._tableConfig;
+  }
+  set tableConfig(value: TableConfig) {
+    this._tableConfig = value;
+  }
+  private _tableConfig!: TableConfig;
+
   @Input({ required: true }) columnsConfig!: ColumnsConfig;
   @Input({ required: true }) tableData!: any[];
   @Output() getDataForTable = new EventEmitter<TableFilters>();
@@ -59,14 +67,14 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
 
   ngOnChanges(changes: SimpleChanges): void {
     // When a table configuration comes in, set the columns.
-    if (changes['tableConfig']?.currentValue) {
+    if (changes['tableConfig']) {
       this.generateDisplayColumns();
       // If any column has a filter, generate the filter columns.
       if (this.columnsConfig.columns.some((col) => col.filterOptions)) {
         this.generateDisplayColumnsFilters();
       }
       // If table or column-level filters are present, add action to table.
-      if (this.tableConfig.filterOptions || this.displayColumnsFilters.length > 0) {
+      if (this.tableConfig?.filterOptions || this.displayColumnsFilters.length > 0) {
         const resetFiltersAction = {
           label: 'Reset filters',
           description: 'Clear all filters and search terms',
@@ -79,15 +87,15 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
           }
         };
 
-        this.tableConfig.tableActions = [
+        this.tableConfig!.tableActions = [
           resetFiltersAction,
-          ...(this.tableConfig.tableActions || [])
+          ...(this.tableConfig!.tableActions || [])
         ];
       }
       // Set sort properties if available.
       this.currentSort = {
-        active: this.tableConfig.sortOptions?.initialSort?.active ?? '',
-        direction: this.tableConfig.sortOptions?.initialSort?.direction ?? '',
+        active: this.tableConfig?.sortOptions?.initialSort?.active ?? '',
+        direction: this.tableConfig?.sortOptions?.initialSort?.direction ?? '',
       };
       this.detector.detectChanges();
     }
@@ -100,7 +108,7 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.dataSource.sortingDataAccessor = this.tableConfig.sortOptions?.sortFunc ?? ((data, sortHeaderId) => data[sortHeaderId]);
+    this.dataSource.sortingDataAccessor = this.tableConfig?.sortOptions?.sortFunc ?? ((data, sortHeaderId) => data[sortHeaderId]);
     this.detector.detectChanges();
   }
 
@@ -148,17 +156,17 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
     this.displayColumns = this.columnsConfig.columns.map(col => col.field);
 
     // Include the row number column.
-    if (this.tableConfig.showRowNumbers) {
+    if (this.tableConfig?.showRowNumbers) {
       this.displayColumns.unshift('#');
     }
 
     // Include the multi-row select column.
-    if (this.tableConfig.tableActions) {
+    if (this.tableConfig?.tableActions) {
       this.displayColumns.unshift('select');
     }
 
     // Include the action column.
-    if (this.tableConfig.rowActions) {
+    if (this.tableConfig?.rowActions) {
       this.displayColumns.push('actions');
     }
   }
