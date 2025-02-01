@@ -17,7 +17,7 @@ export class ClientPaginatorComponent extends BasePaginatorComponent implements 
   @Output() paginatedData = new EventEmitter<any[]>();
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['totalData'].currentValue) {
+    if (changes['totalData']?.currentValue) {
       this.length = changes['totalData'].currentValue.length;
       this.emitPaginatedData();
     }

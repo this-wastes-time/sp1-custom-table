@@ -32,6 +32,8 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
   private _tableConfig!: TableConfig;
 
   @Input({ required: true }) tableData!: any[];
+  @Input() pageIndex!: number;
+  @Input() pageSize!: number;
   @Output() getDataForTable = new EventEmitter<TableFilters>();
 
   @ViewChild('searchBox') searchBox!: SearchBoxComponent;
@@ -65,7 +67,7 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
 
   ngOnChanges(changes: SimpleChanges): void {
     // When a table configuration comes in, set the columns.
-    if (changes['tableConfig']) {
+    if (changes['tableConfig']?.currentValue) {
       this.generateDisplayColumns();
       // If any column has a filter, generate the filter columns.
       if (this.tableConfig.columnsConfig.columns.some((col) => col.filterOptions)) {
@@ -111,7 +113,7 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
   }
 
   protected getRowNumber(index: number): number {
-    return index + 1;
+    return this.pageIndex * this.pageSize + index + 1;
   }
 
   protected sortChange(event: Sort): void {

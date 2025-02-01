@@ -6,7 +6,7 @@ import { SortConfig } from './sort.model';
 export interface TableConfig {
   id: string; // ID for table element
   caption: string; // Accessibility caption for the table
-  columnsConfig: ColumnsConfig;
+  columnsConfig: ColumnsConfig; // Configuration for columns
   showRowNumbers?: boolean; // Whether to display a numbered row
   rowClass?: (row: any) => string | string[]; // Function to determine CSS class for a row
   sortOptions?: SortConfig; // Configuration for sorting

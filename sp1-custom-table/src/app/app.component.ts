@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { TableConfig } from './shared/components/custom-table/models/table.model';
 import { CustomTableComponent } from './shared/components/custom-table/custom-table.component';
 import { MockDataService, MockModel } from './mock-data.service';
@@ -12,6 +12,8 @@ import { ClientPaginatorComponent } from './shared/components/custom-paginator/c
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
+  @ViewChild(ClientPaginatorComponent) paginator!: ClientPaginatorComponent;
+
   tableConfig: TableConfig = {
     id: 'test-table',
     caption: 'User data table with actions.',
@@ -112,7 +114,7 @@ export class AppComponent implements OnInit {
       ],
       stickyHeaders: true,
     },
-    // showRowNumbers: true,
+    showRowNumbers: true,
     rowClass: (row) => (row.name === 'Calcium' ? ['gold', 'bold'] : ''),
     sortOptions: {
       sortFunc(item, property) {
@@ -187,6 +189,8 @@ export class AppComponent implements OnInit {
 
   protected updateData(newData: MockModel[]): void {
     this.paginatedData = [...newData];
+    this.pageIndex = this.paginator.pageIndex;
+    this.pageSize = this.paginator.pageSize;
     this.detector.detectChanges();
   }
 

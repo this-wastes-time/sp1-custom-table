@@ -3,6 +3,8 @@
     <app-custom-table
       [tableConfig]="tableConfig"
       [tableData]="paginatedData"
+      [pageIndex]="pageIndex"
+      [pageSize]="pageSize"
       (getDataForTable)="tableDataRequest($event)">
     </app-custom-table>
     
