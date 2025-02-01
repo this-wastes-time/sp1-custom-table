@@ -1,19 +1,21 @@
-<div class="outer-table-container">
-  <div class="table-paginator-container">
+@if (tableConfig) {
+  <div [style.position]="'relative'">
     <div class="spinner-div" appGeneralSpinner
       [spinnerBusy]="loading" [spinnerColor]="'accent'"
       [style.background]="loading ? 'var(--spinner-background)' : 'none'"
       [style.z-index]="loading ? 110 : -1"></div>
-
+  
     @if (tableConfig.filterOptions) {
       <div class="table-filter-container">
         <!-- Table filter -->
         <div class="filter-search-box" [class.table-menu-showing]="(tableConfig.tableActions?.length ?? 0) > 0">
-          <app-search-box #searchBox [id]="tableConfig.filterOptions.id ?? ''"
+          <app-search-box #searchBox
+            [subscriptSizing]="'dynamic'"
+            [id]="tableConfig.filterOptions.id ?? ''"
             [label]="tableConfig.filterOptions.label ?? ''"
             [placeholder]="tableConfig.filterOptions.placeholder ?? ''"
             [instantSearch]="tableConfig.filterOptions.instantSearch ?? false"
-            (inputChange)="applyFilter($event)">
+            (valueChange)="applyFilter($event)">
           </app-search-box>
         </div>
         <!-- Table menu -->
@@ -35,17 +37,16 @@
         }
       </div>
     }
-
+  
     <div class="table-container">
       <table mat-table [dataSource]="dataSource" matSort
         [matSortActive]="tableConfig.sortOptions?.initialSort?.active ?? ''"
         [matSortDirection]="tableConfig.sortOptions?.initialSort?.direction ?? ''"
-        [matSortDisabled]="tableConfig.sortOptions?.disabled"
         (matSortChange)="sortChange($event)">
-
+  
         <!--- Note that these columns can be defined in any order.
               The actual rendered columns are set as a property on the row definition" -->
-
+  
         <!-- Column for multiple row checkbox selection. -->
         @if ((tableConfig.tableActions?.length ?? 0) > 0) {
           <ng-container matColumnDef="select">
@@ -64,7 +65,7 @@
             </ng-container>
           }
         }
-
+  
         <!-- Column for numbered rows. -->
         @if (tableConfig.showRowNumbers) {
           <ng-container matColumnDef="#">
@@ -79,7 +80,7 @@
             </ng-container>
           }
         }
-
+  
         <!-- Columns generated from table configuration. -->
         @for (column of tableConfig.columnsConfig.columns; track column) {
           <ng-container matColumnDef="{{ column.field }}">
@@ -102,30 +103,46 @@
             </td>
           </ng-container>
         }
-
+  
         @if (displayColumnsFilters.length > 0) {
           @for (column of tableConfig.columnsConfig.columns; track column; let i = $index) {
             <ng-container matColumnDef="{{ column.field }}-filter">
               <th mat-header-cell *matHeaderCellDef>
-                @switch (column.filterOptions?.type) {
-                  @case ('text') {
-                    <ng-container *ngTemplateOutlet="textFilter; context: { $implicit: column, filters: columnFilters }"></ng-container>
-                  }
-                  @case ('select') {
-                    <ng-container *ngTemplateOutlet="selectFilter; context: { $implicit: column, filters: columnFilters }"></ng-container>
-                  }
-                  @case ('singleDate') {
-                    <ng-container *ngTemplateOutlet="singleDateFilter; context: { $implicit: column, filters: columnFilters }"></ng-container>
-                  }
-                  @case ('dateRange') {
-                    <ng-container *ngTemplateOutlet="dateRangeFilter; context: { $implicit: column, filters: columnFilters }"></ng-container>
-                  }
+                @if (column.filterOptions) {
+                  <div class="column-filter-container">
+                    @switch (column.filterOptions.type) {
+                      @case ('text') {
+                        <ng-container
+                          *ngTemplateOutlet="textFilter;
+                            context: { $implicit: column, filters: columnFilters, inputs: column.filterOptions.templateInputs }">
+                        </ng-container>
+                      }
+                      @case ('select') {
+                        <ng-container
+                          *ngTemplateOutlet="selectFilter;
+                            context: { $implicit: column, filters: columnFilters, inputs: column.filterOptions.templateInputs }">
+                        </ng-container>
+                      }
+                      @case ('singleDate') {
+                        <ng-container
+                          *ngTemplateOutlet="singleDateFilter;
+                            context: { $implicit: column, filters: columnFilters, inputs: column.filterOptions.templateInputs }">
+                        </ng-container>
+                      }
+                      @case ('dateRange') {
+                        <ng-container
+                          *ngTemplateOutlet="dateRangeFilter;
+                            context: { $implicit: column, filters: columnFilters, inputs: column.filterOptions.templateInputs }">
+                        </ng-container>
+                      }
+                    }
+                  </div>
                 }
               </th>
             </ng-container>
           }
         }
-
+  
         <!-- Column for row actions. -->
         @if (tableConfig.rowActions) {
           <ng-container matColumnDef="actions" [stickyEnd]="tableConfig.rowActions.stickyActions">
@@ -153,7 +170,7 @@
             </ng-container>
           }
         }
-
+  
         <tr mat-header-row *matHeaderRowDef="displayColumns; sticky: tableConfig.columnsConfig.stickyHeaders"></tr>
         @if (displayColumnsFilters.length > 0) {
           <tr mat-header-row *matHeaderRowDef="displayColumnsFilters; sticky: tableConfig.columnsConfig.stickyHeaders"></tr>
@@ -164,20 +181,8 @@
         <tr *matNoDataRow>No data to display</tr>
       </table>
     </div>
-
-    <div class="paginator-container">
-      <!-- Place holder pagination for sizing.. -->
-      <nav>
-        <mat-paginator [length]="dataSource.data.length"
-          [pageSize]="tableConfig.pagination?.pageSize ?? 10"
-          [pageSizeOptions]="tableConfig.pagination?.pageSizeOptions ?? [5, 10, 25, 100]"
-          [attr.aria-label]="tableConfig.pagination?.accessibleLabel"
-          showFirstLastButtons="true">
-        </mat-paginator>
-      </nav>
-    </div>
   </div>
-</div>
+}
 
 <!-- Defined Cell Templates -->
 <!-- Button -->
@@ -192,30 +197,27 @@
 </ng-template>
 
 <!-- Defined Column Filter Templates -->
-<!-- Text, maybe tweak SearchBox so it can be utilized here? -->
+<!-- Text -->
 <ng-template #textFilter let-column let-filters="filters">
-  <mat-form-field appearance="outline">
-    <mat-label> {{ column.filterOptions.label ?? 'Filter by ' + column.header.toLowerCase() }} </mat-label>
-    <input matInput type="text" [(ngModel)]="filters[column.field]" [placeholder]="column.filterOptions.placeholder ?? ''"
-      (keyup)="sanitize(column.field, filters[column.field])"/>
-    @if (filters[column.field]) {
-      <button mat-icon-button matSuffix
-        (click)="
-          filters[column.field] = '';
-          sanitize(column.field, filters[column.field])
-        "
-        [attr.aria-label]="'Clear {{column.header}} filter'">
-        <mat-icon>close</mat-icon>
-      </button>
-    }
-  </mat-form-field>
+  <app-search-box
+    [appearance]="'outline'"
+    [id]="'search-' + column"
+    [label]="column.filterOptions.label ?? 'Filter by ' + column.header.toLowerCase()"
+    [placeholder]="column.filterOptions.placeholder ?? ''"
+    [instantSearch]="column.filterOptions.instantSearch ?? false"
+    [(value)]="filters[column.field]"
+    (valueChange)="applyFilters()">
+  </app-search-box>
 </ng-template>
 <!-- Select -->
-<ng-template #selectFilter let-column let-filters="filters">
+<ng-template #selectFilter let-column let-filters="filters" let-inputs="inputs">
   <mat-form-field appearance="outline">
     <mat-label> {{ column.filterOptions.label ?? 'Filter by ' + column.header.toLowerCase() }} </mat-label>
-    <mat-select [(ngModel)]="filters[column.field]" (selectionChange)="sanitize(column.field, filters[column.field])" multiple>
-      @for (option of columnSelectFilterOptions[column.field]; track option) {
+    <mat-select
+      [(ngModel)]="filters[column.field]"
+      (selectionChange)="applyFilters()"
+      [multiple]="inputs?.().multiple">
+      @for (option of inputs?.().selectValues?.(); track option) {
         <mat-option [value]="option"> {{ option }} </mat-option>
       }
     </mat-select>
@@ -226,10 +228,13 @@
   <form [formGroup]="single">
     <mat-form-field class="date-column-filter" appearance="outline">
       <mat-label> {{ column.filterOptions.label ?? 'Filter by ' + column.header.toLowerCase() }} </mat-label>
-      <input matInput [matDatepicker]="picker" formControlName="date" [placeholder]="column.filterOptions.placeholder ?? 'Select date'"
+      <input matInput
+        [matDatepicker]="picker"
+        formControlName="date"
+        [placeholder]="column.filterOptions.placeholder ?? 'Select date'"
         (dateInput)="
           filters[column.field] = $event.value;
-          sanitize(column.field, filters[column.field])
+          applyFilters()
         "/>
   
       @if (filters[column.field]) {
@@ -237,7 +242,7 @@
           (click)="
             filters[column.field] = '';
             single.reset();
-            sanitize(column.field, filters[column.field])
+            applyFilters()
           "
           [attr.aria-label]="'Clear {{column.header}} filter'">
           <mat-icon>close</mat-icon>
@@ -258,15 +263,19 @@
   <mat-form-field appearance="outline">
     <mat-label> {{ column.filterOptions.label ?? 'Filter by ' + column.header.toLowerCase() }} </mat-label>
     <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
-      <input matStartDate formControlName="start" placeholder="Start date"
+      <input matStartDate
+        formControlName="start"
+        placeholder="Start date"
         (dateInput)="
           filters[column.field] = range.value;
-          sanitize(column.field, filters[column.field])
+          applyFilters()
         ">
-      <input matEndDate formControlName="end" placeholder="End date"
+      <input matEndDate
+        formControlName="end"
+        placeholder="End date"
         (dateInput)="
           filters[column.field] = range.value;
-          sanitize(column.field, filters[column.field])
+          applyFilters()
         ">
     </mat-date-range-input>
 
@@ -275,14 +284,14 @@
         (click)="
           filters[column.field] = '';
           range.reset();
-          sanitize(column.field, filters[column.field])
+          applyFilters()
         "
         [attr.aria-label]="'Clear {{column.header}} filter'">
         <mat-icon>close</mat-icon>
       </button>
     }
 
-    <!-- <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint> -->
+    <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-date-range-picker #picker></mat-date-range-picker>
   

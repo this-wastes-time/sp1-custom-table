@@ -12,4 +12,5 @@ export interface ColumnFilter {
   label?: string; // Label for filter input
   placeholder?: string; // Placeholder text for filter input
   filterPredicate?: (data: any, filter: string) => boolean; // Custom filter logic
+  templateInputs?: () => Record<string, unknown>; // Function to determine inputs to pass to the template
 }

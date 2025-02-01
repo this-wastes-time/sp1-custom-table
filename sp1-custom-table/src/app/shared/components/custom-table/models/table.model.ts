@@ -1,10 +1,9 @@
-import { Pagination } from '../../custom-paginator/models/paginator.model';
-import { ColumnsConfig } from './column.model';
 import { TableFilter } from './filter.model';
+import { ColumnsConfig } from './column.model';
 import { RowActionsConfig, TableAction } from './actions.model';
 import { SortConfig } from './sort.model';
 
-export interface Table {
+export interface TableConfig {
   id: string; // ID for table element
   caption: string; // Accessibility caption for the table
   columnsConfig: ColumnsConfig; // Configuration for columns
@@ -14,5 +13,4 @@ export interface Table {
   tableActions?: TableAction[]; // Array of table actions. Some batch row action or clearing all filters.
   rowActions?: RowActionsConfig; // Configuration for row actions
   filterOptions?: TableFilter; // Configuration for table filter
-  pagination?: Pagination; // Configuration for pagination
 }

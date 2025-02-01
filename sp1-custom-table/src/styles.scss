@@ -5,6 +5,9 @@
 
 :root {
   --spinner-background: rgba(255, 255, 255, 0.6);
+  --paginator-height: 56px;
+  --paginator-mat-form-field-height: 41px;
+  --paginator-range-actions-height: 40px;
 }
 
 html,
@@ -30,7 +33,21 @@ body {
   font-weight: bold !important;
 }
 
+.spinner-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
 /* Angular overrides */
 .mdc-button {
   border-radius: 8px !important;
+}
+
+mat-form-field.small {
+  --mat-form-field-container-height: 41px;
+  --mat-form-field-container-vertical-padding: 8px;
 }

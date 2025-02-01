@@ -1,0 +1,58 @@
+.paginator {
+  display: block;
+  height: var(--paginator-height);
+  font-size: 12px;
+  font-weight: 100;
+  line-height: 16px;
+  letter-spacing: 0.4px;
+}
+
+.paginator-outer-container {
+  display: flex;
+  height: inherit;
+}
+
+.paginator-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 8px;
+  flex-wrap: wrap;
+  width: 100%;
+  height: inherit;
+  min-height: inherit;
+}
+
+.paginator-page-size {
+  display: flex;
+  align-items: baseline;
+  margin-right: .5rem;
+}
+
+.paginator-size-label {
+  margin: 0 .25rem;
+}
+
+.paginator-page-size-select {
+  margin: 0 .25rem;
+  width: 84px;
+}
+
+.paginator-range-actions {
+  display: flex;
+  align-items: center;
+  height: var(--paginator-range-actions-height);
+}
+
+.paginator-range-label {
+  margin: 0 2rem 0 1.5rem;
+}
+
+.paginator-icon {
+  width: 28px;
+}
+
+.mat-mdc-select {
+  line-height: 1.5;
+  font-size: 12px;
+}
