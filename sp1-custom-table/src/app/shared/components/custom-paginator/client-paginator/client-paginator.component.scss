@@ -1,6 +1,6 @@
 .paginator {
   display: block;
-  height: 56px;
+  height: var(--paginator-height);
   font-size: 12px;
   font-weight: 100;
   line-height: 16px;
@@ -9,6 +9,7 @@
 
 .paginator-outer-container {
   display: flex;
+  height: inherit;
 }
 
 .paginator-container {
@@ -18,6 +19,7 @@
   padding: 0 8px;
   flex-wrap: wrap;
   width: 100%;
+  height: inherit;
   min-height: inherit;
 }
 
@@ -39,6 +41,7 @@
 .paginator-range-actions {
   display: flex;
   align-items: center;
+  height: var(--paginator-range-actions-height);
 }
 
 .paginator-range-label {

@@ -256,10 +256,10 @@ export class MockDataService {
 
     // Sort if sortBy is provided
     if (sortBy) {
-      const direction = sortDirection === 'desc' ? -1 : 1; // Default to 'asc' if undefined
+      const direction = sortDirection === 'desc' ? -1 : sortDirection === 'asc' ? 1 : 0;
       filteredData.sort((a, b) => {
-        const aValue = a[sortBy];
-        const bValue = b[sortBy];
+        const aValue = a[sortBy as keyof MockModel];
+        const bValue = b[sortBy as keyof MockModel];
 
         if (typeof aValue === 'number' && typeof bValue === 'number') {
           return (aValue - bValue) * direction;
