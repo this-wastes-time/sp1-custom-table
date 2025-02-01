@@ -31,7 +31,7 @@ export class AppComponent implements OnInit {
           filterOptions: {
             type: 'select',
             templateInputs: () => ({
-              selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.name))).sort(),
+              selectValues: () => Array.from(new Set(this.data?.map(e => e.name))).sort(),
               multiple: true,
             }),
           }
@@ -48,7 +48,7 @@ export class AppComponent implements OnInit {
           filterOptions: {
             type: 'select',
             templateInputs: () => ({
-              selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.symbol))).sort(),
+              selectValues: () => Array.from(new Set(this.data?.map(e => e.symbol))).sort(),
               multiple: true,
             })
           }
@@ -74,7 +74,7 @@ export class AppComponent implements OnInit {
           filterOptions: {
             type: 'select',
             templateInputs: () => ({
-              selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.career))).sort(),
+              selectValues: () => Array.from(new Set(this.data?.map(e => e.career))).sort(),
               multiple: true,
             }),
           }
@@ -89,7 +89,7 @@ export class AppComponent implements OnInit {
           filterOptions: {
             type: 'select',
             templateInputs: () => ({
-              selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.online))).sort(),
+              selectValues: () => Array.from(new Set(this.data?.map(e => e.online))).sort(),
               multiple: true,
             }),
           }
@@ -113,7 +113,7 @@ export class AppComponent implements OnInit {
           filterOptions: {
             type: 'select',
             templateInputs: () => ({
-              selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.married))).sort(),
+              selectValues: () => Array.from(new Set(this.data?.map(e => e.married))).sort(),
               multiple: true,
             }),
           }
@@ -125,7 +125,7 @@ export class AppComponent implements OnInit {
           filterOptions: {
             type: 'select',
             templateInputs: () => ({
-              selectValues: () => Array.from(new Set(this.filteredData?.map(e => e.company))).sort(),
+              selectValues: () => Array.from(new Set(this.data?.map(e => e.company))).sort(),
               multiple: true,
             }),
           }
