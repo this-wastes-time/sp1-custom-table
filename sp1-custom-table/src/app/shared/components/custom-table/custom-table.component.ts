@@ -31,9 +31,11 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
   }
   private _tableConfig!: TableConfig;
 
-  @Input({ required: true }) tableData!: any[];
+  @Input() tableData: any[] = [];
   @Input() pageIndex!: number;
   @Input() pageSize!: number;
+  @Input() loading!: boolean;
+
   @Output() getDataForTable = new EventEmitter<TableFilters>();
 
   @ViewChild('searchBox') searchBox!: SearchBoxComponent;
@@ -41,7 +43,6 @@ export class CustomTableComponent implements OnChanges, AfterViewInit {
   // Table data vars.
   dataSource = new MatTableDataSource<any>(); // MatTableDataSource instance
   globalFilter!: string; // Filter string from main search box
-  loading!: boolean; // Loading state for the table
 
   // Table column vars.
   displayColumns: string[] = [];

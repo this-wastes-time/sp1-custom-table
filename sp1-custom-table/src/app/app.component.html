@@ -1,6 +1,7 @@
 <div class="outer-table-container">
   <div class="table-paginator-container">
     <app-custom-table
+      [loading]="loading"
       [tableConfig]="tableConfig"
       [tableData]="paginatedData"
       [pageIndex]="pageIndex"

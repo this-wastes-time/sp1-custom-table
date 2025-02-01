@@ -157,7 +157,7 @@ export class MockDataService {
     const name = NAMES[Math.round(Math.random() * (NAMES.length - 1))];
 
     return {
-      position: pos,
+      position: (pos * 55) % 17,
       name: name,
       weight: WEIGHTS[Math.round(Math.random() * (WEIGHTS.length - 1))],
       symbol: name.charAt(0),

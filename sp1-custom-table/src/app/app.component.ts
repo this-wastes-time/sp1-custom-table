@@ -14,6 +14,7 @@ import { ClientPaginatorComponent } from './shared/components/custom-paginator/c
 export class AppComponent implements OnInit {
   @ViewChild(ClientPaginatorComponent) paginator!: ClientPaginatorComponent;
 
+  // Table component configuation.
   tableConfig: TableConfig = {
     id: 'test-table',
     caption: 'User data table with actions.',
@@ -167,6 +168,9 @@ export class AppComponent implements OnInit {
   pageSize = 10;
   pageSizeOptions = [10, 15, 20, 25];
   showFirstLast = true;
+
+  // Loading spinner var.
+  loading!: boolean;
 
   constructor(
     private mockService: MockDataService,
