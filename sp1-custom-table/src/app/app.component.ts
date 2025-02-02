@@ -4,7 +4,7 @@ import { CustomTableComponent } from './shared/components/custom-table/custom-ta
 import { MockDataService, MockModel } from './mock-data.service';
 import { ClientPaginatorComponent } from './shared/components/custom-paginator/client-paginator/client-paginator.component';
 import { ServerPaginatorComponent } from './shared/components/custom-paginator/server-paginator/server-paginator.component';
-import { catchError, finalize, Observable, of } from 'rxjs';
+import { catchError, finalize, map, Observable, of } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
@@ -189,7 +189,7 @@ export class AppComponent {
   accessibleLabel = 'test paginator label';
   pageIndex = 0;
   pageSize = 10;
-  pageSizeOptions = [10, 15, 20, 25];
+  pageSizeOptions = [10, 20, 40, 80, 100];
   showFirstLast = true;
 
   // Loading spinner var.
@@ -200,7 +200,7 @@ export class AppComponent {
     private detector: ChangeDetectorRef,
   ) {
     this.loading = true;
-    // Server side pagination test.
+    // Mock server data retrieval wait.
     setTimeout(() => {
       this.serverData$ = this.mockService.fetchData(this.pageIndex, this.pageSize).pipe(
         catchError(() => {
@@ -237,14 +237,24 @@ export class AppComponent {
     this.pageIndex = this.serverPaginator.pageIndex;
     this.pageSize = this.serverPaginator.pageSize;
 
-    this.serverData$ = this.mockService.fetchData(this.pageIndex, this.pageSize).pipe(
-      catchError(() => {
-        return of([]); // Return an empty array in case of error
-      }),
-      finalize(() => {
-        this.loading = false;
-      })
-    );
+    setTimeout(() => {
+      this.serverData$ = this.mockService.fetchData(this.pageIndex, this.pageSize).pipe(
+        map(data => {
+          if (data.length < this.pageSize) {
+            const count = (this.pageIndex * this.pageSize) + data.length;
+            this.serverPaginator.totalItems = count;
+          }
+          return data;
+        }),
+        catchError(() => {
+          return of([]); // Return an empty array in case of error
+        }),
+        finalize(() => {
+          this.loading = false;
+          this.detector.detectChanges();
+        })
+      );
+    }, 500);
   }
 
   protected tableDataRequestClient(tableState: Record<string, any>): void {
@@ -328,6 +338,8 @@ export class AppComponent {
   protected tableDataRequestServer(tableState: Record<string, any>): void {
 
     this.loading = true;
+    // Reset if paginator knows the data limit.
+    this.serverPaginator.totalItemsKnown = false;
 
     // Store filtering and sorting options.
     const globalFilter = tableState['globalFilter'];
@@ -335,13 +347,16 @@ export class AppComponent {
     const sortBy = tableState['sortBy'];
     const sortDirection = tableState['sortDirection'];
 
-    this.serverData$ = this.mockService.fetchData(this.pageIndex, this.pageSize, sortBy, sortDirection, globalFilter, columnFilters).pipe(
-      catchError(() => {
-        return of([]); // Return an empty array in case of error
-      }),
-      finalize(() => {
-        this.loading = false;
-      })
-    );
+    setTimeout(() => {
+      this.serverData$ = this.mockService.fetchData(this.pageIndex, this.pageSize, sortBy, sortDirection, globalFilter, columnFilters).pipe(
+        catchError(() => {
+          return of([]); // Return an empty array in case of error
+        }),
+        finalize(() => {
+          this.loading = false;
+          this.detector.detectChanges();
+        })
+      );
+    }, 500);
   }
 }

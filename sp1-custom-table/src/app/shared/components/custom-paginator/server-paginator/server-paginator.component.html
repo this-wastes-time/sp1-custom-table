@@ -6,7 +6,7 @@
         @if (!hidePageSize) {
           <div class="paginator-page-size">
             <div class="paginator-size-label">
-              {{ paginatorIntl.itemsPerPageLabel }}
+              {{ itemsPerPageLabel }}
             </div>
   
             <mat-form-field class="paginator-page-size-select small"
@@ -31,7 +31,7 @@
         }
         <div class="paginator-range-actions">
           <div class="paginator-range-label" aria-live="polite">
-            {{ paginatorIntl.getRangeLabel(pageIndex, pageSize, length) }}
+            {{ getRangeLabel(pageIndex, pageSize) }}
           </div>
   
           @if (showFirstLastButtons) {
@@ -66,9 +66,9 @@
             <button
               mat-icon-button
               [matTooltip]="lastPageTooltip"
-              [disabled]="hasNext() || disabled"
+              [disabled]="hasLast() || disabled"
               [attr.aria-label]="lastPageTooltip"
-              (click)="paginate(totalPages-1)">
+              (click)="paginate(totalPageCount)">
               <mat-icon class="paginator-icon">last_page</mat-icon>
             </button>
           }
