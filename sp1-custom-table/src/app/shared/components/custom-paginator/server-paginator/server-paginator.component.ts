@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { BasePaginatorComponent } from '../base-paginator/base-paginator.component';
 import { CustomPaginatorModule } from '../custom-paginator.module';
+import { ServerPaginatorIntl } from './custom-paginator-intl';
+import { MatPaginatorIntl } from '@angular/material/paginator';
 
 interface PaginatorState {
   pageIndex: number;
@@ -10,9 +12,12 @@ interface PaginatorState {
 @Component({
   selector: 'app-server-paginator',
   standalone: true,
-  imports: [CustomPaginatorModule],
+  imports: [CustomPaginatorModule,],
   templateUrl: './server-paginator.component.html',
-  styleUrl: './server-paginator.component.scss'
+  styleUrl: './server-paginator.component.scss',
+  providers: [
+    { provide: MatPaginatorIntl, useClass: ServerPaginatorIntl },
+  ]
 })
 export class ServerPaginatorComponent extends BasePaginatorComponent {
   @Output() fetchData = new EventEmitter<PaginatorState>();

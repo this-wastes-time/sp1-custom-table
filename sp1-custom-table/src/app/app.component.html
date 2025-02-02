@@ -2,18 +2,17 @@
   <div class="table-paginator-container">
     <!-- Client paging setup -->
     <!-- <app-custom-table
-      [loading]="loading"
       [tableConfig]="tableConfig"
       [tableData]="clientData"
       [pageIndex]="pageIndex"
       [pageSize]="pageSize"
       (getDataForTable)="tableDataRequestClient($event)">
-    </app-custom-table> -->
+    </app-custom-table>
     
-    <!-- <app-client-paginator
+    <app-client-paginator
       [accessibleLabel]="accessibleLabel"
-      [(pageIndex)]="pageIndex"
-      [(pageSize)]="pageSize"
+      [pageIndex]="pageIndex"
+      [pageSize]="pageSize"
       [pageSizeOptions]="pageSizeOptions"
       [showFirstLastButtons]="showFirstLast"
       [totalData]="filteredData"
