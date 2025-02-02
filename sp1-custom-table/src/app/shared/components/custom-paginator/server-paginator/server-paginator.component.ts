@@ -49,6 +49,10 @@ export class ServerPaginatorComponent extends BasePaginatorComponent {
 
   protected override onPageSizeChange(newPageSize: number): void {
     super.onPageSizeChange(newPageSize);
+    // Recalculate total page count, if known.
+    if (this.totalItemsKnown) {
+      this.totalPageCount = Math.floor(this.totalItems! / this.pageSize);
+    }
     this.emitPaginatedData();
   }
 
