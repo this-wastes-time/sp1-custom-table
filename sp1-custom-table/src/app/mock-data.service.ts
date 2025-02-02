@@ -151,7 +151,8 @@ const COMPANIES = [
 })
 export class MockDataService {
 
-  data = Array.from({ length: 100000 }, (_, k) => this.genData(k + 1));
+  clientData = Array.from({ length: 100000 }, (_, k) => this.genData(k + 1));
+  serverData = Array.from({ length: 1500000 }, (_, k) => this.genData(k + 1));
 
   private genData(pos: number): MockModel {
     const name = NAMES[Math.round(Math.random() * (NAMES.length - 1))];
@@ -202,8 +203,8 @@ export class MockDataService {
     sortDirection?: SortDirection,
     globalFilter?: string,
     filters?: Record<string, any>
-  ): Observable<MockResponse> {
-    let filteredData = [...this.data];
+  ): Observable<MockModel[]> {
+    let filteredData = [...this.serverData];
 
     // Apply global filter, if provided
     if (globalFilter) {
@@ -252,7 +253,7 @@ export class MockDataService {
     }
 
     // Store total count before pagination
-    const totalCount = filteredData.length;
+    // const totalCount = filteredData.length;
 
     // Sort if sortBy is provided
     if (sortBy) {
@@ -273,14 +274,15 @@ export class MockDataService {
     }
 
     // Paginate data
-    const startIndex = (page - 1) * pageSize;
+    const startIndex = page * pageSize;
     const paginatedData = filteredData.slice(startIndex, startIndex + pageSize);
 
     // Return the data as an Observable<MockResponse>
-    return of({
-      items: paginatedData,
-      count: totalCount,
-    });
+    // return of({
+    //   items: paginatedData,
+    //   count: totalCount,
+    // });
+    return of(paginatedData);
   }
 
   /**
@@ -288,6 +290,6 @@ export class MockDataService {
    * @returns 
    */
   async fetchAll(): Promise<MockModel[]> {
-    return Promise.resolve(this.data);
+    return Promise.resolve(this.clientData);
   }
 }

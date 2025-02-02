@@ -33,7 +33,7 @@ export class ClientPaginatorComponent extends BasePaginatorComponent implements 
     this.emitPaginatedData();
   }
 
-  protected emitPaginatedData(): void {
+  protected override emitPaginatedData(): void {
     const startIndex = this.pageIndex * this.pageSize;
     const endIndex = startIndex + this.pageSize;
     this.paginatedData.emit(this.totalData.slice(startIndex, endIndex));

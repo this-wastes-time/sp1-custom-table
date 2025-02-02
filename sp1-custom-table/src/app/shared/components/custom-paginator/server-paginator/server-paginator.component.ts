@@ -1,6 +1,11 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { BasePaginatorComponent } from '../base-paginator/base-paginator.component';
 import { CustomPaginatorModule } from '../custom-paginator.module';
+
+interface PaginatorState {
+  pageIndex: number;
+  pageSize: number;
+}
 
 @Component({
   selector: 'app-server-paginator',
@@ -9,15 +14,8 @@ import { CustomPaginatorModule } from '../custom-paginator.module';
   templateUrl: './server-paginator.component.html',
   styleUrl: './server-paginator.component.scss'
 })
-export class ServerPaginatorComponent extends BasePaginatorComponent implements OnChanges {
-  @Input() data: any[] = [];
-  @Output() paginatedData = new EventEmitter<any[]>();
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['data']?.currentValue) {
-      this.emitPaginatedData();
-    }
-  }
+export class ServerPaginatorComponent extends BasePaginatorComponent {
+  @Output() fetchData = new EventEmitter<PaginatorState>();
 
   override paginate(page: number): void {
     super.paginate(page);
@@ -29,9 +27,10 @@ export class ServerPaginatorComponent extends BasePaginatorComponent implements 
     this.emitPaginatedData();
   }
 
-  protected emitPaginatedData(): void {
-    const startIndex = this.pageIndex * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    this.paginatedData.emit(this.data.slice(startIndex, endIndex));
+  protected override emitPaginatedData(): void {
+    this.fetchData.emit({
+      pageIndex: this.pageIndex,
+      pageSize: this.pageSize,
+    });
   }
 }

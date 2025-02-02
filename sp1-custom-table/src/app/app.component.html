@@ -1,22 +1,42 @@
 <div class="outer-table-container">
   <div class="table-paginator-container">
+    <!-- Client paging setup -->
+    <!-- <app-custom-table
+      [loading]="loading"
+      [tableConfig]="tableConfig"
+      [tableData]="clientData"
+      [pageIndex]="pageIndex"
+      [pageSize]="pageSize"
+      (getDataForTable)="tableDataRequestClient($event)">
+    </app-custom-table> -->
+    
+    <!-- <app-client-paginator
+      [accessibleLabel]="accessibleLabel"
+      [(pageIndex)]="pageIndex"
+      [(pageSize)]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      [showFirstLastButtons]="showFirstLast"
+      [totalData]="filteredData"
+      (paginatedData)="updateDataClient($event)">
+    </app-client-paginator> -->
+
+    <!-- Server paging setup -->
     <app-custom-table
       [loading]="loading"
       [tableConfig]="tableConfig"
-      [tableData]="paginatedData"
+      [tableData]="(serverData$ | async) ?? []"
       [pageIndex]="pageIndex"
       [pageSize]="pageSize"
-      (getDataForTable)="tableDataRequest($event)">
+      (getDataForTable)="tableDataRequestServer($event)">
     </app-custom-table>
-    
-    <app-client-paginator
+
+    <app-server-paginator
       [accessibleLabel]="accessibleLabel"
       [pageIndex]="pageIndex"
       [pageSize]="pageSize"
       [pageSizeOptions]="pageSizeOptions"
-      [showFirstLastButtons]="showFirstLast"
-      [totalData]="filteredData"
-      (paginatedData)="updateData($event)">
-    </app-client-paginator>
+      [disabled]="loading"
+      (fetchData)="updateDataServer()">
+    </app-server-paginator>
   </div>
 </div>
