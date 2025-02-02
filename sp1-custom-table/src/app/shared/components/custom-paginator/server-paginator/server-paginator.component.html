@@ -41,7 +41,7 @@
               [disabled]="hasPrev() || disabled"
               [attr.aria-label]="firstPageTooltip"
               (click)="paginate(0)">
-              <mat-icon class="paginator-icon">first_page</mat-icon>
+              <mat-icon>first_page</mat-icon>
             </button>
           }
   
@@ -51,7 +51,7 @@
             [disabled]="hasPrev() || disabled"
             [attr.aria-label]="previousPageTooltip"
             (click)="paginate(pageIndex-1)">
-            <mat-icon class="paginator-icon">keyboard_arrow_left</mat-icon>
+            <mat-icon>keyboard_arrow_left</mat-icon>
           </button>
           <button
             mat-icon-button
@@ -59,7 +59,7 @@
             [disabled]="hasNext() || disabled"
             [attr.aria-label]="nextPageTooltip"
             (click)="paginate(pageIndex+1)">
-            <mat-icon class="paginator-icon">keyboard_arrow_right</mat-icon>
+            <mat-icon>keyboard_arrow_right</mat-icon>
           </button>
   
           @if (showFirstLastButtons) {
@@ -69,7 +69,7 @@
               [disabled]="hasLast() || disabled"
               [attr.aria-label]="lastPageTooltip"
               (click)="paginate(totalPageCount-1)">
-              <mat-icon class="paginator-icon">last_page</mat-icon>
+              <mat-icon>last_page</mat-icon>
             </button>
           }
         </div>

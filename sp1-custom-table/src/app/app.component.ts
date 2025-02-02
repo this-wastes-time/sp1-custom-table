@@ -14,8 +14,7 @@ import { AsyncPipe } from '@angular/common';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-// export class AppComponent implements OnInit {
-export class AppComponent {
+export class AppComponent implements OnInit {
   @ViewChild(ClientPaginatorComponent) clientPaginator!: ClientPaginatorComponent;
   @ViewChild(ServerPaginatorComponent) serverPaginator!: ServerPaginatorComponent;
 
@@ -214,10 +213,10 @@ export class AppComponent {
     }, 2500);
   }
 
-  // async ngOnInit(): Promise<void> {
-  //   // Client side pagination start.
-  //   await this.loadData();
-  // }
+  async ngOnInit(): Promise<void> {
+    // Client side pagination start.
+    await this.loadData();
+  }
 
   async loadData(): Promise<void> {
     // Client side pagination test.
