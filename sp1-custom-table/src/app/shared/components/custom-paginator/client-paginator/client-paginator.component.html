@@ -14,6 +14,7 @@
               subscriptSizing="dynamic">
               <mat-select
                 [value]="pageSize"
+                [disabled]="disabled"
                 (selectionChange)="onPageSizeChange($event.value)">
                 @for (size of pageSizeOptions; track size) {
                   <mat-option [value]="size">
@@ -37,7 +38,7 @@
             <button
               mat-icon-button
               [matTooltip]="firstPageTooltip"
-              [disabled]="hasPrev()"
+              [disabled]="hasPrev()  || disabled"
               [attr.aria-label]="firstPageTooltip"
               (click)="paginate(0)">
               <mat-icon class="paginator-icon">first_page</mat-icon>
@@ -47,7 +48,7 @@
           <button
             mat-icon-button
             [matTooltip]="previousPageTooltip"
-            [disabled]="hasPrev()"
+            [disabled]="hasPrev()  || disabled"
             [attr.aria-label]="previousPageTooltip"
             (click)="paginate(pageIndex-1)">
             <mat-icon class="paginator-icon">keyboard_arrow_left</mat-icon>
@@ -55,7 +56,7 @@
           <button
             mat-icon-button
             [matTooltip]="nextPageTooltip"
-            [disabled]="hasNext()"
+            [disabled]="hasNext()  || disabled"
             [attr.aria-label]="nextPageTooltip"
             (click)="paginate(pageIndex+1)">
             <mat-icon class="paginator-icon">keyboard_arrow_right</mat-icon>
@@ -65,7 +66,7 @@
             <button
               mat-icon-button
               [matTooltip]="lastPageTooltip"
-              [disabled]="hasNext()"
+              [disabled]="hasNext()  || disabled"
               [attr.aria-label]="lastPageTooltip"
               (click)="paginate(totalPages-1)">
               <mat-icon class="paginator-icon">last_page</mat-icon>
