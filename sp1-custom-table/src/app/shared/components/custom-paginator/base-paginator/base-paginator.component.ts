@@ -93,11 +93,8 @@ export abstract class BasePaginatorComponent {
   ) { }
 
   protected onPageSizeChange(newPageSize: number): void {
-    // Current page needs to be updated to reflect the new page size. Navigate to the page
-    // containing the previous page's first item.
-    const startIndex = this.pageIndex * this.pageSize;
-
-    this.pageIndex = Math.floor(startIndex / newPageSize) || 0;
+    // Go to first page.
+    this.pageIndex = 0;
     this.pageSize = newPageSize;
   }
 

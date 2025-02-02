@@ -197,8 +197,6 @@ export class MockDataService {
           if (filterValue?.start || filterValue?.end) {
             const { start, end } = filterValue || {};
             const itemDate = new Date(itemValue as string).getTime();
-            // const startDate = start ? new Date(filterValue.start).getTime() : -Infinity;
-            // const endDate = end ? new Date(filterValue.end).getTime() : -Infinity;
             const startDate = start ?? -Infinity;
             const endDate = end ?? -Infinity;
             return itemDate >= startDate && itemDate <= endDate;
@@ -245,10 +243,10 @@ export class MockDataService {
     const startIndex = page * pageSize;
     const paginatedData = filteredData.slice(startIndex, startIndex + pageSize);
 
-    // Mock new data being added at random times
+    // Mock random length (0-50) new data being added at random times (0-10s)
     if (startIndex + pageSize > this.serverData.length) {
       setTimeout(() => {
-        this._extendDataset(this.serverData, 10);
+        this._extendDataset(this.serverData, Math.ceil(Math.random() * 50));
       }, Math.floor(Math.random() * 10001));
     }
 

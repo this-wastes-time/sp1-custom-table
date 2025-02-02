@@ -37,7 +37,6 @@ export class ServerPaginatorComponent extends BasePaginatorComponent {
       // Check if last page is necessary
       if (value === (this.pageIndex * this.pageSize)) {
         this.totalPageCount--;
-        // this.paginate(--this.pageIndex);
       }
     }
   }
