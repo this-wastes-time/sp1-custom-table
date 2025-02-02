@@ -151,39 +151,8 @@ const COMPANIES = [
 })
 export class MockDataService {
 
-  data = Array.from({ length: 100000 }, (_, k) => this.genData(k + 1));
-
-  private genData(pos: number): MockModel {
-    const name = NAMES[Math.round(Math.random() * (NAMES.length - 1))];
-
-    return {
-      position: (pos * 55) % 17,
-      name: name,
-      weight: WEIGHTS[Math.round(Math.random() * (WEIGHTS.length - 1))],
-      symbol: name.charAt(0),
-      university: UNIVERSITIES[Math.round(Math.random() * (UNIVERSITIES.length - 1))],
-      country: COUNTIRES[Math.round(Math.random() * (COUNTIRES.length - 1))],
-      discoveredBy: DISCOVERERS[Math.round(Math.random() * (DISCOVERERS.length - 1))],
-      career: CAREERS[Math.round(Math.random() * (CAREERS.length - 1))],
-      online: pos % 4 === 0,
-      dob: this.generateRandomDateBetween1940AndToday(),
-      married: name.charAt(0) === 'P',
-      company: COMPANIES[Math.round(Math.random() * (COMPANIES.length - 1))],
-    };
-  }
-
-  private getRandomDate(startDate: Date, endDate: Date): Date {
-    const startTime = startDate.getTime();
-    const endTime = endDate.getTime();
-    const randomTime = Math.random() * (endTime - startTime) + startTime;
-    return new Date(randomTime);
-  }
-
-  private generateRandomDateBetween1940AndToday(): string {
-    const startDate = new Date('2025-01-02');
-    const endDate = new Date(); // Today's date
-    return formatDate(this.getRandomDate(startDate, endDate), 'MM/dd/yyyy', 'en-US');
-  }
+  clientData = Array.from({ length: 100000 }, (_, k) => this.genData(k + 1));
+  serverData = Array.from({ length: 500 }, (_, k) => this.genData(k + 1));
 
   /**
    * Mimicks a backend request for data.
@@ -202,8 +171,8 @@ export class MockDataService {
     sortDirection?: SortDirection,
     globalFilter?: string,
     filters?: Record<string, any>
-  ): Observable<MockResponse> {
-    let filteredData = [...this.data];
+  ): Observable<MockModel[]> {
+    let filteredData = [...this.serverData];
 
     // Apply global filter, if provided
     if (globalFilter) {
@@ -228,8 +197,6 @@ export class MockDataService {
           if (filterValue?.start || filterValue?.end) {
             const { start, end } = filterValue || {};
             const itemDate = new Date(itemValue as string).getTime();
-            // const startDate = start ? new Date(filterValue.start).getTime() : -Infinity;
-            // const endDate = end ? new Date(filterValue.end).getTime() : -Infinity;
             const startDate = start ?? -Infinity;
             const endDate = end ?? -Infinity;
             return itemDate >= startDate && itemDate <= endDate;
@@ -252,7 +219,7 @@ export class MockDataService {
     }
 
     // Store total count before pagination
-    const totalCount = filteredData.length;
+    // const totalCount = filteredData.length;
 
     // Sort if sortBy is provided
     if (sortBy) {
@@ -273,14 +240,22 @@ export class MockDataService {
     }
 
     // Paginate data
-    const startIndex = (page - 1) * pageSize;
+    const startIndex = page * pageSize;
     const paginatedData = filteredData.slice(startIndex, startIndex + pageSize);
 
+    // Mock random length (0-50) new data being added at random times (0-10s)
+    if (startIndex + pageSize > this.serverData.length) {
+      setTimeout(() => {
+        this._extendDataset(this.serverData, Math.ceil(Math.random() * 50));
+      }, Math.floor(Math.random() * 10001));
+    }
+
     // Return the data as an Observable<MockResponse>
-    return of({
-      items: paginatedData,
-      count: totalCount,
-    });
+    // return of({
+    //   items: paginatedData,
+    //   count: totalCount,
+    // });
+    return of(paginatedData);
   }
 
   /**
@@ -288,6 +263,43 @@ export class MockDataService {
    * @returns 
    */
   async fetchAll(): Promise<MockModel[]> {
-    return Promise.resolve(this.data);
+    return Promise.resolve(this.clientData);
+  }
+
+  private genData(index: number): MockModel {
+    const name = NAMES[Math.round(Math.random() * (NAMES.length - 1))];
+
+    return {
+      position: (index * 55) % 17,
+      name: name,
+      weight: WEIGHTS[Math.round(Math.random() * (WEIGHTS.length - 1))],
+      symbol: name.charAt(0),
+      university: UNIVERSITIES[Math.round(Math.random() * (UNIVERSITIES.length - 1))],
+      country: COUNTIRES[Math.round(Math.random() * (COUNTIRES.length - 1))],
+      discoveredBy: DISCOVERERS[Math.round(Math.random() * (DISCOVERERS.length - 1))],
+      career: CAREERS[Math.round(Math.random() * (CAREERS.length - 1))],
+      online: index % 4 === 0,
+      dob: this.generateRandomDateBetween1940AndToday(),
+      married: name.charAt(0) === 'P',
+      company: COMPANIES[Math.round(Math.random() * (COMPANIES.length - 1))],
+    };
+  }
+
+  private getRandomDate(startDate: Date, endDate: Date): Date {
+    const startTime = startDate.getTime();
+    const endTime = endDate.getTime();
+    const randomTime = Math.random() * (endTime - startTime) + startTime;
+    return new Date(randomTime);
+  }
+
+  private generateRandomDateBetween1940AndToday(): string {
+    const startDate = new Date('2025-01-02');
+    const endDate = new Date(); // Today's date
+    return formatDate(this.getRandomDate(startDate, endDate), 'MM/dd/yyyy', 'en-US');
+  }
+
+  private _extendDataset(dataset: MockModel[], newLength: number): void {
+    const newData = Array.from({ length: newLength }, (_, k) => this.genData(k + 1));
+    dataset.push(...newData);
   }
 }

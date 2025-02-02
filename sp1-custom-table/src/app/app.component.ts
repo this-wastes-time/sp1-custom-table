@@ -3,16 +3,20 @@ import { TableConfig } from './shared/components/custom-table/models/table.model
 import { CustomTableComponent } from './shared/components/custom-table/custom-table.component';
 import { MockDataService, MockModel } from './mock-data.service';
 import { ClientPaginatorComponent } from './shared/components/custom-paginator/client-paginator/client-paginator.component';
+import { ServerPaginatorComponent } from './shared/components/custom-paginator/server-paginator/server-paginator.component';
+import { catchError, finalize, map, Observable, of } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CustomTableComponent, ClientPaginatorComponent],
+  imports: [CustomTableComponent, ClientPaginatorComponent, ServerPaginatorComponent, AsyncPipe],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
-  @ViewChild(ClientPaginatorComponent) paginator!: ClientPaginatorComponent;
+  @ViewChild(ClientPaginatorComponent) clientPaginator!: ClientPaginatorComponent;
+  @ViewChild(ServerPaginatorComponent) serverPaginator!: ServerPaginatorComponent;
 
   // Table component configuation.
   tableConfig: TableConfig = {
@@ -31,7 +35,7 @@ export class AppComponent implements OnInit {
           filterOptions: {
             type: 'select',
             templateInputs: () => ({
-              selectValues: () => Array.from(new Set(this.data?.map(e => e.name))).sort(),
+              selectValues: () => Array.from(new Set(this.clientData?.map(e => e.name))).sort(),
               multiple: true,
             }),
           }
@@ -48,7 +52,7 @@ export class AppComponent implements OnInit {
           filterOptions: {
             type: 'select',
             templateInputs: () => ({
-              selectValues: () => Array.from(new Set(this.data?.map(e => e.symbol))).sort(),
+              selectValues: () => Array.from(new Set(this.clientData?.map(e => e.symbol))).sort(),
               multiple: true,
             })
           }
@@ -74,7 +78,7 @@ export class AppComponent implements OnInit {
           filterOptions: {
             type: 'select',
             templateInputs: () => ({
-              selectValues: () => Array.from(new Set(this.data?.map(e => e.career))).sort(),
+              selectValues: () => Array.from(new Set(this.clientData?.map(e => e.career))).sort(),
               multiple: true,
             }),
           }
@@ -89,7 +93,7 @@ export class AppComponent implements OnInit {
           filterOptions: {
             type: 'select',
             templateInputs: () => ({
-              selectValues: () => Array.from(new Set(this.data?.map(e => e.online))).sort(),
+              selectValues: () => Array.from(new Set(this.clientData?.map(e => e.online))).sort(),
               multiple: true,
             }),
           }
@@ -113,7 +117,7 @@ export class AppComponent implements OnInit {
           filterOptions: {
             type: 'select',
             templateInputs: () => ({
-              selectValues: () => Array.from(new Set(this.data?.map(e => e.married))).sort(),
+              selectValues: () => Array.from(new Set(this.clientData?.map(e => e.married))).sort(),
               multiple: true,
             }),
           }
@@ -125,7 +129,7 @@ export class AppComponent implements OnInit {
           filterOptions: {
             type: 'select',
             templateInputs: () => ({
-              selectValues: () => Array.from(new Set(this.data?.map(e => e.company))).sort(),
+              selectValues: () => Array.from(new Set(this.clientData?.map(e => e.company))).sort(),
               multiple: true,
             }),
           }
@@ -175,15 +179,16 @@ export class AppComponent implements OnInit {
   };
 
   // Table data.
-  data!: MockModel[];
+  clientData!: MockModel[];
   filteredData!: MockModel[];
   paginatedData!: MockModel[];
+  serverData$!: Observable<MockModel[]>;
 
   // Paginator vars.
   accessibleLabel = 'test paginator label';
   pageIndex = 0;
   pageSize = 10;
-  pageSizeOptions = [10, 15, 20, 25];
+  pageSizeOptions = [10, 20, 40, 80, 100];
   showFirstLast = true;
 
   // Loading spinner var.
@@ -193,30 +198,66 @@ export class AppComponent implements OnInit {
     private mockService: MockDataService,
     private detector: ChangeDetectorRef,
   ) {
-    // Server side pagination test.
-    // mockService.fetchData(1, 11)
-    //   .pipe().subscribe(fetchedData => this.data = fetchedData.items);
+    this.loading = true;
+    // Mock server data retrieval wait.
+    setTimeout(() => {
+      this.serverData$ = this.mockService.fetchData(this.pageIndex, this.pageSize).pipe(
+        catchError(() => {
+          return of([]); // Return an empty array in case of error
+        }),
+        finalize(() => {
+          this.loading = false;
+          detector.detectChanges();
+        })
+      );
+    }, 2500);
   }
 
   async ngOnInit(): Promise<void> {
+    // Client side pagination start.
     await this.loadData();
   }
 
   async loadData(): Promise<void> {
     // Client side pagination test.
-    this.data = await this.mockService.fetchAll();
-    this.filteredData = this.data;
+    this.clientData = await this.mockService.fetchAll();
+    this.filteredData = this.clientData;
   }
 
-  protected updateData(newData: MockModel[]): void {
+  protected updateDataClient(newData: MockModel[]): void {
     this.paginatedData = [...newData];
-    this.pageIndex = this.paginator.pageIndex;
-    this.pageSize = this.paginator.pageSize;
+    this.pageIndex = this.clientPaginator.pageIndex;
+    this.pageSize = this.clientPaginator.pageSize;
     this.detector.detectChanges();
   }
 
-  protected tableDataRequest(tableState: Record<string, any>): void {
-    let filteredData = [...this.data];
+  protected updateDataServer(): void {
+    this.loading = true;
+    this.pageIndex = this.serverPaginator.pageIndex;
+    this.pageSize = this.serverPaginator.pageSize;
+
+    setTimeout(() => {
+      this.serverData$ = this.mockService.fetchData(this.pageIndex, this.pageSize).pipe(
+        map(data => {
+          if (data.length < this.pageSize) {
+            const count = (this.pageIndex * this.pageSize) + data.length;
+            this.serverPaginator.totalItems = count;
+          }
+          return data;
+        }),
+        catchError(() => {
+          return of([]); // Return an empty array in case of error
+        }),
+        finalize(() => {
+          this.loading = false;
+          this.detector.detectChanges();
+        })
+      );
+    }, this._getRandomNumber(275, 1000));
+  }
+
+  protected tableDataRequestClient(tableState: Record<string, any>): void {
+    let filteredData = [...this.clientData];
 
     // Store filtering and sorting options.
     const globalFilter = tableState['globalFilter'];
@@ -291,5 +332,34 @@ export class AppComponent implements OnInit {
     }
 
     this.filteredData = filteredData;
+  }
+
+  protected tableDataRequestServer(tableState: Record<string, any>): void {
+
+    this.loading = true;
+    // Reset if paginator knows the data limit.
+    this.serverPaginator.totalItemsKnown = false;
+
+    // Store filtering and sorting options.
+    const globalFilter = tableState['globalFilter'];
+    const columnFilters = tableState['columnFilters'];
+    const sortBy = tableState['sortBy'];
+    const sortDirection = tableState['sortDirection'];
+
+    setTimeout(() => {
+      this.serverData$ = this.mockService.fetchData(this.pageIndex, this.pageSize, sortBy, sortDirection, globalFilter, columnFilters).pipe(
+        catchError(() => {
+          return of([]); // Return an empty array in case of error
+        }),
+        finalize(() => {
+          this.loading = false;
+          this.detector.detectChanges();
+        })
+      );
+    }, this._getRandomNumber(275, 1000));
+  }
+
+  private _getRandomNumber(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 }

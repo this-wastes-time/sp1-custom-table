@@ -6,7 +6,7 @@
         @if (!hidePageSize) {
           <div class="paginator-page-size">
             <div class="paginator-size-label">
-              {{ paginatorIntl.itemsPerPageLabel }}
+              {{ itemsPerPageLabel }}
             </div>
   
             <mat-form-field class="paginator-page-size-select small"
@@ -31,14 +31,14 @@
         }
         <div class="paginator-range-actions">
           <div class="paginator-range-label" aria-live="polite">
-            {{ paginatorIntl.getRangeLabel(pageIndex, pageSize, length) }}
+            {{ getRangeLabel(pageIndex, pageSize) }}
           </div>
   
           @if (showFirstLastButtons) {
             <button
               mat-icon-button
               [matTooltip]="firstPageTooltip"
-              [disabled]="hasPrev()  || disabled"
+              [disabled]="hasPrev() || disabled"
               [attr.aria-label]="firstPageTooltip"
               (click)="paginate(0)">
               <mat-icon>first_page</mat-icon>
@@ -48,7 +48,7 @@
           <button
             mat-icon-button
             [matTooltip]="previousPageTooltip"
-            [disabled]="hasPrev()  || disabled"
+            [disabled]="hasPrev() || disabled"
             [attr.aria-label]="previousPageTooltip"
             (click)="paginate(pageIndex-1)">
             <mat-icon>keyboard_arrow_left</mat-icon>
@@ -56,7 +56,7 @@
           <button
             mat-icon-button
             [matTooltip]="nextPageTooltip"
-            [disabled]="hasNext()  || disabled"
+            [disabled]="hasNext() || disabled"
             [attr.aria-label]="nextPageTooltip"
             (click)="paginate(pageIndex+1)">
             <mat-icon>keyboard_arrow_right</mat-icon>
@@ -66,9 +66,9 @@
             <button
               mat-icon-button
               [matTooltip]="lastPageTooltip"
-              [disabled]="hasNext()  || disabled"
+              [disabled]="hasLast() || disabled"
               [attr.aria-label]="lastPageTooltip"
-              (click)="paginate(totalPages-1)">
+              (click)="paginate(totalPageCount-1)">
               <mat-icon>last_page</mat-icon>
             </button>
           }

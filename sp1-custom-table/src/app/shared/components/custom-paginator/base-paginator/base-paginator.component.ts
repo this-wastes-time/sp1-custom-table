@@ -10,7 +10,7 @@ const DEFAULT_PAGE_SIZE = 10;
   imports: [CustomPaginatorModule],
   template: ``,
 })
-export class BasePaginatorComponent {
+export abstract class BasePaginatorComponent {
 
   @Input({ transform: numberAttribute })
   get pageIndex(): number {
@@ -93,11 +93,8 @@ export class BasePaginatorComponent {
   ) { }
 
   protected onPageSizeChange(newPageSize: number): void {
-    // Current page needs to be updated to reflect the new page size. Navigate to the page
-    // containing the previous page's first item.
-    const startIndex = this.pageIndex * this.pageSize;
-
-    this.pageIndex = Math.floor(startIndex / newPageSize) || 0;
+    // Go to first page.
+    this.pageIndex = 0;
     this.pageSize = newPageSize;
   }
 
@@ -117,6 +114,8 @@ export class BasePaginatorComponent {
   protected hasNext(): boolean {
     return this.pageIndex >= (this.totalPages - 1);
   }
+
+  protected abstract emitPaginatedData(): void;
 
   private _updatePageSizeOptions() {
     // If no page size is provided, use the first page size option or the default page size.

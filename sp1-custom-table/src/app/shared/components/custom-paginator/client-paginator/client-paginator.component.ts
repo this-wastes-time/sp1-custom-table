@@ -19,21 +19,21 @@ export class ClientPaginatorComponent extends BasePaginatorComponent implements 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['totalData']?.currentValue) {
       this.length = changes['totalData'].currentValue.length;
-      this._emitPaginatedData();
+      this.emitPaginatedData();
     }
   }
 
   override paginate(page: number): void {
     super.paginate(page);
-    this._emitPaginatedData();
+    this.emitPaginatedData();
   }
 
   protected override onPageSizeChange(newPageSize: number): void {
     super.onPageSizeChange(newPageSize);
-    this._emitPaginatedData();
+    this.emitPaginatedData();
   }
 
-  private _emitPaginatedData(): void {
+  protected override emitPaginatedData(): void {
     const startIndex = this.pageIndex * this.pageSize;
     const endIndex = startIndex + this.pageSize;
     this.paginatedData.emit(this.totalData.slice(startIndex, endIndex));
