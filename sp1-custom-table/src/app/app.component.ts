@@ -254,7 +254,7 @@ export class AppComponent {
           this.detector.detectChanges();
         })
       );
-    }, 500);
+    }, this._getRandomNumber(275, 1000));
   }
 
   protected tableDataRequestClient(tableState: Record<string, any>): void {
@@ -357,6 +357,10 @@ export class AppComponent {
           this.detector.detectChanges();
         })
       );
-    }, 500);
+    }, this._getRandomNumber(275, 1000));
+  }
+
+  private _getRandomNumber(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 }

@@ -68,7 +68,7 @@
               [matTooltip]="lastPageTooltip"
               [disabled]="hasLast() || disabled"
               [attr.aria-label]="lastPageTooltip"
-              (click)="paginate(totalPageCount)">
+              (click)="paginate(totalPageCount-1)">
               <mat-icon class="paginator-icon">last_page</mat-icon>
             </button>
           }

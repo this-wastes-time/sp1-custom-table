@@ -34,10 +34,6 @@ export class ServerPaginatorComponent extends BasePaginatorComponent {
 
     if (value) {
       this.totalPageCount = Math.floor(value / this.pageSize);
-      // Check if last page is necessary
-      if (value === (this.pageIndex * this.pageSize)) {
-        this.totalPageCount--;
-      }
     }
   }
   private _totalItems: number | null = null;
@@ -57,11 +53,11 @@ export class ServerPaginatorComponent extends BasePaginatorComponent {
   }
 
   protected override hasNext(): boolean {
-    return this.totalItemsKnown === false ? false : this.pageIndex >= this.totalPageCount;
+    return this.totalItemsKnown === false ? false : this.pageIndex >= (this.totalPageCount - 1);
   }
 
   protected hasLast(): boolean {
-    return !this.totalItemsKnown ? true : this.pageIndex >= this.totalPageCount;
+    return !this.totalItemsKnown ? true : this.pageIndex >= (this.totalPageCount - 1);
   }
 
   protected override emitPaginatedData(): void {
