@@ -6,11 +6,12 @@ import { ClientPaginatorComponent } from './shared/components/custom-paginator/c
 import { ServerPaginatorComponent } from './shared/components/custom-paginator/server-paginator/server-paginator.component';
 import { catchError, finalize, map, Observable, of } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CustomTableComponent, ClientPaginatorComponent, ServerPaginatorComponent, AsyncPipe],
+  imports: [CustomTableComponent, ClientPaginatorComponent, ServerPaginatorComponent, AsyncPipe, MatDividerModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
