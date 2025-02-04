@@ -210,7 +210,7 @@ export class AppComponent implements OnInit {
           detector.detectChanges();
         })
       );
-    }, 2500);
+    }, this._getRandomNumber(1000, 2500));
   }
 
   async ngOnInit(): Promise<void> {
@@ -336,6 +336,7 @@ export class AppComponent implements OnInit {
 
   protected tableDataRequestServer(tableState: Record<string, any>): void {
 
+    console.log(tableState);
     this.loading = true;
     // Reset if paginator knows the data limit.
     this.serverPaginator.totalItemsKnown = false;

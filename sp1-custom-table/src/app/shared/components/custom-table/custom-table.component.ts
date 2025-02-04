@@ -189,7 +189,7 @@ export class CustomTableComponent implements OnChanges {
 
   private _sanitizeFilters(): void {
     // Sanitize table state before emitting.
-    Object.keys(this.columnFilters).every((key) => {
+    Object.keys(this.columnFilters).map((key) => {
       if (this._isEmpty(this.columnFilters[key])) {
         delete this.columnFilters[key];
       }
