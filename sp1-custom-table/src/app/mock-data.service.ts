@@ -3,6 +3,19 @@ import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable, of } from 'rxjs';
 
+interface CompoundFieldConfig {
+  properties: (keyof MockModel)[]; // The properties that make up the compound field
+  combiner: (...args: any[]) => string | number; // How to combine them
+};
+
+export const COMPOUND_FIELDS: Record<string, CompoundFieldConfig> = {
+  discoveryLocation: {
+    properties: ['university', 'country'],
+    combiner: (university: string, country: string) => `${university} - ${country}`,
+  },
+  // Add future compound fields here (no code changes needed beyond this config)
+};
+
 export interface MockModel {
   position: number;
   name: string;
@@ -167,7 +180,7 @@ export class MockDataService {
   fetchData(
     page: number,
     pageSize: number,
-    sortBy?: keyof MockModel,
+    sortBy?: string,
     sortDirection?: SortDirection,
     globalFilter?: string,
     filters?: Record<string, any>
@@ -225,8 +238,20 @@ export class MockDataService {
     if (sortBy) {
       const direction = sortDirection === 'desc' ? -1 : sortDirection === 'asc' ? 1 : 0;
       filteredData.sort((a, b) => {
-        const aValue = a[sortBy as keyof MockModel];
-        const bValue = b[sortBy as keyof MockModel];
+        let aValue, bValue;
+
+        // Check if `sortBy` is a compound field
+        if (COMPOUND_FIELDS[sortBy]) {
+          // Extract the config for the compound field
+          const { properties, combiner } = COMPOUND_FIELDS[sortBy];
+          // Combine the properties for comparison
+          aValue = combiner(...properties.map(prop => a[prop]));
+          bValue = combiner(...properties.map(prop => b[prop]));
+        } else {
+          // Handle single property sorting
+          aValue = a[sortBy as keyof MockModel];
+          bValue = b[sortBy as keyof MockModel];
+        }
 
         if (typeof aValue === 'number' && typeof bValue === 'number') {
           return (aValue - bValue) * direction;
