@@ -218,6 +218,9 @@
       [(ngModel)]="filters[column.field]"
       (selectionChange)="applyFilters()"
       [multiple]="inputs?.().multiple">
+      @if (!inputs?.().multiple) {
+        <mat-option [value]=""> -- </mat-option>
+      }
       @for (option of inputs?.().selectValues?.(); track option) {
         <mat-option [value]="option"> {{ option }} </mat-option>
       }

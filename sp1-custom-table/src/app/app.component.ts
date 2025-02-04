@@ -36,7 +36,6 @@ export class AppComponent implements OnInit {
             type: 'select',
             templateInputs: () => ({
               selectValues: () => Array.from(new Set(this.clientData?.map(e => e.name))).sort(),
-              multiple: true,
             }),
           }
         },
