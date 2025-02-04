@@ -5,8 +5,8 @@
       [style.background]="loading ? 'var(--spinner-background)' : 'none'"
       [style.z-index]="loading ? 110 : -1"></div>
   
-    @if (tableConfig.filterOptions) {
-      <div class="table-filter-container">
+    <div class="table-filter-container">
+      @if (tableConfig.filterOptions) {
         <!-- Table filter -->
         <div class="filter-search-box" [class.table-menu-showing]="(tableConfig.tableActions?.length ?? 0) > 0">
           <app-search-box #searchBox
@@ -18,25 +18,26 @@
             (valueChange)="applyFilter($event)">
           </app-search-box>
         </div>
-        <!-- Table menu -->
-        @if ((tableConfig.tableActions?.length ?? 0) > 0) {
-          <div class="table-menu">
-            <button mat-icon-button [color]="'accent'" [matMenuTriggerFor]="tableMenu">
-              <mat-icon>more_vert</mat-icon>
-            </button>
-            <mat-menu #tableMenu="matMenu">
-              @for (action of tableConfig.tableActions; track action) {
-                <span [class.disabled-wrapper]="action.disabled?.(selectedRows)">
-                  <button mat-menu-item [attr.aria-label]="action.description" [disabled]="action.disabled?.(selectedRows)" (click)="action.action(selectedRows)">
-                    <span> {{ action.label }}</span>
-                  </button>
-                </span>
-              }
-            </mat-menu>
-          </div>
-        }
-      </div>
-    }
+      }
+      <span style="flex: 1 1 auto;"></span>
+      <!-- Table menu -->
+      @if ((tableConfig.tableActions?.length ?? 0) > 0) {
+        <div class="table-menu">
+          <button mat-icon-button [color]="'accent'" [matMenuTriggerFor]="tableMenu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #tableMenu="matMenu">
+            @for (action of tableConfig.tableActions; track action) {
+              <span [class.disabled-wrapper]="action.disabled?.(selectedRows)">
+                <button mat-menu-item [attr.aria-label]="action.description" [disabled]="action.disabled?.(selectedRows)" (click)="action.action(selectedRows)">
+                  <span> {{ action.label }}</span>
+                </button>
+              </span>
+            }
+          </mat-menu>
+        </div>
+      }
+    </div>
   
     <div class="table-container">
       <table mat-table [dataSource]="dataSource" matSort
