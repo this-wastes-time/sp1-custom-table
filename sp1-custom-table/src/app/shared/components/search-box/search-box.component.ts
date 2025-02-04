@@ -7,7 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
-const DEBOUNCEWAIT = 250;
+const DEBOUNCEWAIT = 400;
 
 @Component({
   selector: 'app-search-box',

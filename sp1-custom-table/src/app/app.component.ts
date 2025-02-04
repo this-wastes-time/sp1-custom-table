@@ -336,7 +336,6 @@ export class AppComponent implements OnInit {
 
   protected tableDataRequestServer(tableState: Record<string, any>): void {
 
-    console.log(tableState);
     this.loading = true;
     // Reset if paginator knows the data limit.
     this.serverPaginator.totalItemsKnown = false;
