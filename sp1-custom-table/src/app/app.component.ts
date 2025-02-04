@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { TableConfig } from './shared/components/custom-table/models/table.model';
 import { CustomTableComponent } from './shared/components/custom-table/custom-table.component';
-import { MockDataService, MockModel } from './mock-data.service';
+import { MockDataService, MockModel, COMPOUND_FIELDS } from './mock-data.service';
 import { ClientPaginatorComponent } from './shared/components/custom-paginator/client-paginator/client-paginator.component';
 import { ServerPaginatorComponent } from './shared/components/custom-paginator/server-paginator/server-paginator.component';
 import { catchError, finalize, map, Observable, of } from 'rxjs';
@@ -316,8 +316,20 @@ export class AppComponent implements OnInit {
     if (sortBy) {
       const direction = sortDirection === 'desc' ? -1 : sortDirection === 'asc' ? 1 : 0;
       filteredData.sort((a, b) => {
-        const aValue = a[sortBy as keyof MockModel];
-        const bValue = b[sortBy as keyof MockModel];
+        let aValue, bValue;
+
+        // Check if `sortBy` is a compound field
+        if (COMPOUND_FIELDS[sortBy]) {
+          // Extract the config for the compound field
+          const { properties, combiner } = COMPOUND_FIELDS[sortBy];
+          // Combine the properties for comparison
+          aValue = combiner(...properties.map(prop => a[prop]));
+          bValue = combiner(...properties.map(prop => b[prop]));
+        } else {
+          // Handle single property sorting
+          aValue = a[sortBy as keyof MockModel];
+          bValue = b[sortBy as keyof MockModel];
+        }
 
         if (typeof aValue === 'number' && typeof bValue === 'number') {
           return (aValue - bValue) * direction;
