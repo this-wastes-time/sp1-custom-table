@@ -16,6 +16,8 @@ import { MatDividerModule } from '@angular/material/divider';
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
+  @ViewChild('clientTable') clientTable!: CustomTableComponent;
+  @ViewChild('serverTable') serverTable!: CustomTableComponent;
   @ViewChild(ClientPaginatorComponent) clientPaginator!: ClientPaginatorComponent;
   @ViewChild(ServerPaginatorComponent) serverPaginator!: ServerPaginatorComponent;
 
@@ -256,14 +258,16 @@ export class AppComponent implements OnInit {
     }, this._getRandomNumber(275, 1000));
   }
 
-  protected tableDataRequestClient(tableState: Record<string, any>): void {
+  protected tableDataRequestClient(): void {
     let filteredData = [...this.clientData];
+    const filters = this.clientTable.getFilters();
+    const sort = this.clientTable.getSort();
 
     // Store filtering and sorting options.
-    const globalFilter = tableState['globalFilter'];
-    const columnFilters = tableState['columnFilters'];
-    const sortBy = tableState['sortBy'];
-    const sortDirection = tableState['sortDirection'];
+    const globalFilter = filters?.globalFilter;
+    const columnFilters = filters?.columnFilters;
+    const sortBy = sort?.active;
+    const sortDirection = sort?.direction;
 
     // Apply global filter, if provided
     if (globalFilter) {
@@ -346,17 +350,19 @@ export class AppComponent implements OnInit {
     this.filteredData = filteredData;
   }
 
-  protected tableDataRequestServer(tableState: Record<string, any>): void {
+  protected tableDataRequestServer(): void {
 
     this.loading = true;
     // Reset if paginator knows the data limit.
     this.serverPaginator.totalItemsKnown = false;
+    const filters = this.serverTable.getFilters();
+    const sort = this.serverTable.getSort();
 
     // Store filtering and sorting options.
-    const globalFilter = tableState['globalFilter'];
-    const columnFilters = tableState['columnFilters'];
-    const sortBy = tableState['sortBy'];
-    const sortDirection = tableState['sortDirection'];
+    const globalFilter = filters?.globalFilter;
+    const columnFilters = filters?.columnFilters;
+    const sortBy = sort?.active;
+    const sortDirection = sort?.direction;
 
     setTimeout(() => {
       this.serverData$ = this.mockService.fetchData(this.pageIndex, this.pageSize, sortBy, sortDirection, globalFilter, columnFilters).pipe(
