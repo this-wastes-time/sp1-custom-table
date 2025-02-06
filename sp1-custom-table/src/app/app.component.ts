@@ -235,15 +235,14 @@ export class AppComponent implements OnInit {
 
   protected updateDataClient(newData: MockModel[]): void {
     this.paginatedData = [...newData];
-    this.cPageIndex = this.clientPaginator.pageIndex;
-    this.cPageSize = this.clientPaginator.pageSize;
+    // Interesting reassignment with destructuring ..
+    ({ pageIndex: this.cPageIndex, pageSize: this.cPageSize } = this.clientPaginator.getPagination());
     this.detector.detectChanges();
   }
 
   protected updateDataServer(): void {
     this.loading = true;
-    this.sPageIndex = this.serverPaginator.pageIndex;
-    this.sPageSize = this.serverPaginator.pageSize;
+    ({ pageIndex: this.sPageIndex, pageSize: this.sPageSize } = this.serverPaginator.getPagination());
 
     setTimeout(() => {
       this.serverData$ = this.mockService.fetchData(this.sPageIndex, this.sPageSize).pipe(
