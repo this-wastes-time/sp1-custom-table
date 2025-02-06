@@ -5,16 +5,16 @@
     <app-custom-table #clientTable
       [tableConfig]="tableConfig"
       [tableData]="paginatedData"
-      [pageIndex]="pageIndex"
-      [pageSize]="pageSize"
+      [pageIndex]="cPageIndex"
+      [pageSize]="cPageSize"
       (getData)="tableDataRequestClient()">
     </app-custom-table>
     
     <app-client-paginator
       [accessibleLabel]="accessibleLabel"
-      [pageIndex]="pageIndex"
-      [pageSize]="pageSize"
-      [pageSizeOptions]="pageSizeOptions"
+      [pageIndex]="cPageIndex"
+      [pageSize]="cPageSize"
+      [pageSizeOptions]="cPageSizeOptions"
       [showFirstLastButtons]="showFirstLast"
       [totalData]="filteredData"
       (paginatedData)="updateDataClient($event)">
@@ -32,16 +32,16 @@
       [loading]="loading"
       [tableConfig]="tableConfig"
       [tableData]="(serverData$ | async) ?? []"
-      [pageIndex]="pageIndex"
-      [pageSize]="pageSize"
+      [pageIndex]="sPageIndex"
+      [pageSize]="sPageSize"
       (getData)="tableDataRequestServer()">
     </app-custom-table>
 
     <app-server-paginator
       [accessibleLabel]="accessibleLabel"
-      [pageIndex]="pageIndex"
-      [pageSize]="pageSize"
-      [pageSizeOptions]="pageSizeOptions"
+      [pageIndex]="sPageIndex"
+      [pageSize]="sPageSize"
+      [pageSizeOptions]="sPageSizeOptions"
       [disabled]="loading"
       [showFirstLastButtons]="showFirstLast"
       (fetchData)="updateDataServer()">

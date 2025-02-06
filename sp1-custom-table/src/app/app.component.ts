@@ -188,10 +188,17 @@ export class AppComponent implements OnInit {
 
   // Paginator vars.
   accessibleLabel = 'test paginator label';
-  pageIndex = 0;
-  pageSize = 10;
-  pageSizeOptions = [10, 20, 40, 80, 100];
   showFirstLast = true;
+
+  // Client paging vars.
+  cPageIndex = 0;
+  cPageSize = 10;
+  cPageSizeOptions = [10, 20, 40, 80, 100];
+
+  // Server paging vars.
+  sPageIndex = 0;
+  sPageSize = 10;
+  sPageSizeOptions = [5, 10, 20, 45, 100];
 
   // Loading spinner var.
   loading!: boolean;
@@ -203,7 +210,7 @@ export class AppComponent implements OnInit {
     this.loading = true;
     // Mock server data retrieval wait.
     setTimeout(() => {
-      this.serverData$ = this.mockService.fetchData(this.pageIndex, this.pageSize).pipe(
+      this.serverData$ = this.mockService.fetchData(this.sPageIndex, this.sPageSize).pipe(
         catchError(() => {
           return of([]); // Return an empty array in case of error
         }),
@@ -228,21 +235,21 @@ export class AppComponent implements OnInit {
 
   protected updateDataClient(newData: MockModel[]): void {
     this.paginatedData = [...newData];
-    this.pageIndex = this.clientPaginator.pageIndex;
-    this.pageSize = this.clientPaginator.pageSize;
+    this.cPageIndex = this.clientPaginator.pageIndex;
+    this.cPageSize = this.clientPaginator.pageSize;
     this.detector.detectChanges();
   }
 
   protected updateDataServer(): void {
     this.loading = true;
-    this.pageIndex = this.serverPaginator.pageIndex;
-    this.pageSize = this.serverPaginator.pageSize;
+    this.sPageIndex = this.serverPaginator.pageIndex;
+    this.sPageSize = this.serverPaginator.pageSize;
 
     setTimeout(() => {
-      this.serverData$ = this.mockService.fetchData(this.pageIndex, this.pageSize).pipe(
+      this.serverData$ = this.mockService.fetchData(this.sPageIndex, this.sPageSize).pipe(
         map(data => {
-          if (data.length < this.pageSize) {
-            const count = (this.pageIndex * this.pageSize) + data.length;
+          if (data.length < this.sPageSize) {
+            const count = (this.sPageIndex * this.sPageSize) + data.length;
             this.serverPaginator.totalItems = count;
           }
           return data;
@@ -365,7 +372,7 @@ export class AppComponent implements OnInit {
     const sortDirection = sort?.direction;
 
     setTimeout(() => {
-      this.serverData$ = this.mockService.fetchData(this.pageIndex, this.pageSize, sortBy, sortDirection, globalFilter, columnFilters).pipe(
+      this.serverData$ = this.mockService.fetchData(this.sPageIndex, this.sPageSize, sortBy, sortDirection, globalFilter, columnFilters).pipe(
         catchError(() => {
           return of([]); // Return an empty array in case of error
         }),
