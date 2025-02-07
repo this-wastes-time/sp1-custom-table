@@ -154,8 +154,8 @@ export class AppComponent implements OnInit {
         label: 'Refresh table',
         description: 'Update tabe with latest data',
         action: () => {
-          this.clientData = this.mockService.fetchAll();
-          this.filteredData = [...this.clientData];
+          this.loadData();
+          this.tableDataRequestClient();
         }
       },
       {
@@ -230,21 +230,24 @@ export class AppComponent implements OnInit {
     }, this._getRandomNumber(1000, 2500));
   }
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
     // Client side pagination start.
-    await this.loadData();
+    this.loadData();
   }
 
-  async loadData(): Promise<void> {
+  loadData(): void {
     // Client side pagination test.
-    this.clientData = await this.mockService.fetchAll();
+    this.clientData = this.mockService.fetchAll();
     this.filteredData = [...this.clientData];
+    this.detector.detectChanges();
   }
 
   protected updateDataClient(newData: MockModel[]): void {
     this.paginatedData = [...newData];
-    // Interesting reassignment with destructuring ..
-    ({ pageIndex: this.cPageIndex, pageSize: this.cPageSize } = this.clientPaginator.getPagination());
+    if (this.clientPaginator) {
+      // Interesting reassignment with destructuring ..
+      ({ pageIndex: this.cPageIndex, pageSize: this.cPageSize } = this.clientPaginator.getPagination());
+    }
     this.detector.detectChanges();
   }
 
@@ -362,6 +365,11 @@ export class AppComponent implements OnInit {
     }
 
     this.filteredData = [...filteredData];
+
+    // If user was beyond current allowable page range, move them to the last available page.
+    const lastPage = Math.ceil(this.filteredData.length / this.clientPaginator.pageSize);
+    const validatedPage = Math.min(this.clientPaginator.pageIndex, lastPage - 1);
+    this.clientPaginator.pageIndex = validatedPage;
   }
 
   protected tableDataRequestServer(): void {

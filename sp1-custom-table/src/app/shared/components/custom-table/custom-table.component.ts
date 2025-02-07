@@ -90,6 +90,7 @@ export class CustomTableComponent implements OnChanges {
             this.globalFilter = '';
             this.searchBox.clear();
             this.columnFilters = {};
+            this.single.reset();
             this.range.reset();
             this.applyFilters();
           }
