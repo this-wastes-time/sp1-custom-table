@@ -11,6 +11,13 @@
     }
   }
 
+  .auto-refresh-toggle {
+    display: flex;
+    justify-content: center;
+    min-width: max-content;
+    padding: 0 .5em;
+  }
+
   .table-menu {
     width: 85px;
     min-width: 80.5px;

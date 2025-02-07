@@ -164,7 +164,7 @@ const COMPANIES = [
 })
 export class MockDataService {
 
-  clientData = Array.from({ length: 100000 }, (_, k) => this.genData(k + 1));
+  clientData = Array.from({ length: 1000 }, (_, k) => this.genData(k + 1));
   serverData = Array.from({ length: 500 }, (_, k) => this.genData(k + 1));
 
   /**

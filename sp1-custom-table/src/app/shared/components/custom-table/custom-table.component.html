@@ -21,6 +21,15 @@
       }
       <span style="flex: 1 1 auto;"></span>
       <!-- Table menu -->
+      @if (tableConfig.autoRefresh) {
+        <div class="auto-refresh-toggle">
+          <mat-slide-toggle
+            [(ngModel)]="tableConfig.autoRefresh.enabled"
+            (toggleChange)="tableConfig.autoRefresh.autoRefreshFunc(tableConfig.autoRefresh.enabled)">
+            Auto refresh
+          </mat-slide-toggle>
+        </div>
+      }
       @if ((tableConfig.tableActions?.length ?? 0) > 0) {
         <div class="table-menu">
           <button mat-icon-button [color]="'accent'" [matMenuTriggerFor]="tableMenu">

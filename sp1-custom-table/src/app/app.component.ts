@@ -8,6 +8,8 @@ import { catchError, finalize, map, Observable, of } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { MatDividerModule } from '@angular/material/divider';
 
+const AFREFRESH = 2000;
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -140,6 +142,13 @@ export class AppComponent implements OnInit {
       stickyHeaders: true,
     },
     showRowNumbers: true,
+    autoRefresh: {
+      enabled: true,
+      intervalMs: AFREFRESH,
+      autoRefreshFunc: (afState) => {
+        this.toggleAutoRefresh(afState);
+      },
+    },
     rowClass: (row) => (row.name === 'Calcium' ? ['gold', 'bold'] : ''),
     sortOptions: {
       sortFunc(item, property) {
@@ -211,6 +220,9 @@ export class AppComponent implements OnInit {
   // Loading spinner var.
   loading!: boolean;
 
+  // Auto-refresh vars.
+  private _refreshIntervalId!: ReturnType<typeof setTimeout>;;
+
   constructor(
     private mockService: MockDataService,
     private detector: ChangeDetectorRef,
@@ -233,6 +245,11 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     // Client side pagination start.
     this.loadData();
+
+    // Check auto-refresh state.
+    if (this.tableConfig.autoRefresh?.enabled) {
+      this.startAF();
+    }
   }
 
   loadData(): void {
@@ -397,6 +414,25 @@ export class AppComponent implements OnInit {
         })
       );
     }, this._getRandomNumber(275, 1000));
+  }
+
+  protected toggleAutoRefresh(enabled: boolean): void {
+    if (enabled) {
+      this.stopAF();
+    } else {
+      this.startAF();
+    }
+  }
+
+  protected startAF(): void {
+    this._refreshIntervalId = setInterval(() => {
+      this.loadData();
+      this.tableDataRequestClient();
+    }, this.tableConfig.autoRefresh?.intervalMs);
+  }
+
+  protected stopAF(): void {
+    clearInterval(this._refreshIntervalId);
   }
 
   private _getRandomNumber(min: number, max: number): number {
