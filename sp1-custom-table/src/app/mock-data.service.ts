@@ -287,8 +287,12 @@ export class MockDataService {
    * Returns all the data the "server" has.
    * @returns 
    */
-  async fetchAll(): Promise<MockModel[]> {
-    return Promise.resolve(this.clientData);
+  fetchAll(): MockModel[] {
+    // Add data to client data array
+    setTimeout(() => {
+      this._extendDataset(this.clientData, this._getRandomNumber(15, 25));
+    }, this._getRandomNumber(0, 1000));
+    return this.clientData;
   }
 
   private genData(index: number): MockModel {
@@ -326,5 +330,9 @@ export class MockDataService {
   private _extendDataset(dataset: MockModel[], newLength: number): void {
     const newData = Array.from({ length: newLength }, (_, k) => this.genData(k + 1));
     dataset.push(...newData);
+  }
+
+  private _getRandomNumber(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 }

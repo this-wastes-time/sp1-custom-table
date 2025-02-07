@@ -151,6 +151,14 @@ export class AppComponent implements OnInit {
     },
     tableActions: [
       {
+        label: 'Refresh table',
+        description: 'Update tabe with latest data',
+        action: () => {
+          this.clientData = this.mockService.fetchAll();
+          this.filteredData = [...this.clientData];
+        }
+      },
+      {
         label: 'Delete rows',
         description: 'Delete selected rows',
         action: (rows?: any[]) => rows?.map((row) => console.log('Deleting:', row)),
@@ -230,7 +238,7 @@ export class AppComponent implements OnInit {
   async loadData(): Promise<void> {
     // Client side pagination test.
     this.clientData = await this.mockService.fetchAll();
-    this.filteredData = this.clientData;
+    this.filteredData = [...this.clientData];
   }
 
   protected updateDataClient(newData: MockModel[]): void {
@@ -353,7 +361,7 @@ export class AppComponent implements OnInit {
       });
     }
 
-    this.filteredData = filteredData;
+    this.filteredData = [...filteredData];
   }
 
   protected tableDataRequestServer(): void {
