@@ -8,10 +8,8 @@ import { SearchBoxComponent } from '../search-box/search-box.component';
 import { FormControl, FormGroup } from '@angular/forms';
 
 interface TableFilters {
-  sortBy: string;
-  sortDirection: string;
   globalFilter: string;
-  columnFilters: Record<string, string>;
+  columnFilters: Record<string, any>;
 }
 
 @Component({
@@ -36,7 +34,7 @@ export class CustomTableComponent implements OnChanges {
   @Input() pageSize!: number;
   @Input() loading!: boolean;
 
-  @Output() getDataForTable = new EventEmitter<TableFilters>();
+  @Output() getData = new EventEmitter();
 
   @ViewChild('searchBox') searchBox!: SearchBoxComponent;
 
@@ -48,7 +46,7 @@ export class CustomTableComponent implements OnChanges {
   displayColumns: string[] = [];
   displayColumnsFilters: string[] = [];
   columnFilters: Record<string, string> = {}; // Store filters for each column
-  columnSelectFilterOptions: Record<string, any[]> = {}; // Store select dropdown filter options for each column
+  columnSelectFilterOptions: Record<string, any[]> = {}; // Store select dropdown filter options for each column //TODO delete..
   readonly single = new FormGroup({
     date: new FormControl<Date | null>(null),
   });
@@ -57,6 +55,15 @@ export class CustomTableComponent implements OnChanges {
     end: new FormControl<Date | null>(null),
   });
   currentSort!: Sort;
+
+  // Current table filters: global and columns.
+  get filters(): TableFilters | null {
+    return this._filterState;
+  }
+  set filters(value: TableFilters) {
+    this._filterState = value;
+  }
+  private _filterState!: TableFilters | null;
 
   // Selected rows vars.
   selectedRows!: any[]; // Store selected rows of table.
@@ -83,6 +90,7 @@ export class CustomTableComponent implements OnChanges {
             this.globalFilter = '';
             this.searchBox.clear();
             this.columnFilters = {};
+            this.single.reset();
             this.range.reset();
             this.applyFilters();
           }
@@ -106,6 +114,14 @@ export class CustomTableComponent implements OnChanges {
       this.dataSource = new MatTableDataSource(changes['tableData']?.currentValue);
       this.detector.detectChanges();
     }
+  }
+
+  getFilters(): TableFilters | null {
+    return this.filters;
+  }
+
+  getSort(): Sort {
+    return this.currentSort;
   }
 
   protected getRowNumber(index: number): number {
@@ -195,15 +211,16 @@ export class CustomTableComponent implements OnChanges {
       }
     });
 
+    // Update filter state of table.
+    this.filters = {
+      globalFilter: this.globalFilter,
+      columnFilters: this.columnFilters
+    };
+
     this._requestNewData();
   }
 
   private _requestNewData(): void {
-    this.getDataForTable.emit({
-      sortBy: this.currentSort.active,
-      sortDirection: this.currentSort.direction,
-      globalFilter: this.globalFilter,
-      columnFilters: this.columnFilters,
-    });
+    this.getData.emit();
   }
 }

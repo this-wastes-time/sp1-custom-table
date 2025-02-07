@@ -14,6 +14,7 @@ import { MatOptionModule, provideNativeDateAdapter } from '@angular/material/cor
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { GeneralSpinnerDirective } from '../../directives/general-spinner.directive';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [],
@@ -34,6 +35,7 @@ import { GeneralSpinnerDirective } from '../../directives/general-spinner.direct
     MatDatepickerModule,
     GeneralSpinnerDirective,
     ReactiveFormsModule,
+    MatSlideToggleModule,
   ],
   exports: [
     CommonModule,
@@ -51,7 +53,8 @@ import { GeneralSpinnerDirective } from '../../directives/general-spinner.direct
     MatOptionModule,
     MatDatepickerModule,
     GeneralSpinnerDirective,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatSlideToggleModule,
   ],
   providers: [
     provideNativeDateAdapter(),

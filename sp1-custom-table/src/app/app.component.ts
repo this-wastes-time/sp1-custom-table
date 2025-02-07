@@ -8,6 +8,8 @@ import { catchError, finalize, map, Observable, of } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { MatDividerModule } from '@angular/material/divider';
 
+const AFREFRESH = 2000;
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -16,6 +18,8 @@ import { MatDividerModule } from '@angular/material/divider';
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
+  @ViewChild('clientTable') clientTable!: CustomTableComponent;
+  @ViewChild('serverTable') serverTable!: CustomTableComponent;
   @ViewChild(ClientPaginatorComponent) clientPaginator!: ClientPaginatorComponent;
   @ViewChild(ServerPaginatorComponent) serverPaginator!: ServerPaginatorComponent;
 
@@ -138,6 +142,13 @@ export class AppComponent implements OnInit {
       stickyHeaders: true,
     },
     showRowNumbers: true,
+    autoRefresh: {
+      enabled: true,
+      intervalMs: AFREFRESH,
+      autoRefreshFunc: (afState) => {
+        this.toggleAutoRefresh(afState);
+      },
+    },
     rowClass: (row) => (row.name === 'Calcium' ? ['gold', 'bold'] : ''),
     sortOptions: {
       sortFunc(item, property) {
@@ -148,6 +159,14 @@ export class AppComponent implements OnInit {
       },
     },
     tableActions: [
+      {
+        label: 'Refresh table',
+        description: 'Update tabe with latest data',
+        action: () => {
+          this.loadData();
+          this.tableDataRequestClient();
+        }
+      },
       {
         label: 'Delete rows',
         description: 'Delete selected rows',
@@ -186,13 +205,23 @@ export class AppComponent implements OnInit {
 
   // Paginator vars.
   accessibleLabel = 'test paginator label';
-  pageIndex = 0;
-  pageSize = 10;
-  pageSizeOptions = [10, 20, 40, 80, 100];
   showFirstLast = true;
+
+  // Client paging vars.
+  cPageIndex = 0;
+  cPageSize = 10;
+  cPageSizeOptions = [10, 20, 40, 80, 100];
+
+  // Server paging vars.
+  sPageIndex = 0;
+  sPageSize = 10;
+  sPageSizeOptions = [5, 10, 20, 45, 100];
 
   // Loading spinner var.
   loading!: boolean;
+
+  // Auto-refresh vars.
+  private _refreshIntervalId!: ReturnType<typeof setTimeout>;;
 
   constructor(
     private mockService: MockDataService,
@@ -201,7 +230,7 @@ export class AppComponent implements OnInit {
     this.loading = true;
     // Mock server data retrieval wait.
     setTimeout(() => {
-      this.serverData$ = this.mockService.fetchData(this.pageIndex, this.pageSize).pipe(
+      this.serverData$ = this.mockService.fetchData(this.sPageIndex, this.sPageSize).pipe(
         catchError(() => {
           return of([]); // Return an empty array in case of error
         }),
@@ -213,34 +242,41 @@ export class AppComponent implements OnInit {
     }, this._getRandomNumber(1000, 2500));
   }
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
     // Client side pagination start.
-    await this.loadData();
+    this.loadData();
+
+    // Check auto-refresh state.
+    if (this.tableConfig.autoRefresh?.enabled) {
+      this.startAF();
+    }
   }
 
-  async loadData(): Promise<void> {
+  loadData(): void {
     // Client side pagination test.
-    this.clientData = await this.mockService.fetchAll();
-    this.filteredData = this.clientData;
+    this.clientData = this.mockService.fetchAll();
+    this.filteredData = [...this.clientData];
+    this.detector.detectChanges();
   }
 
   protected updateDataClient(newData: MockModel[]): void {
     this.paginatedData = [...newData];
-    this.pageIndex = this.clientPaginator.pageIndex;
-    this.pageSize = this.clientPaginator.pageSize;
+    if (this.clientPaginator) {
+      // Interesting reassignment with destructuring ..
+      ({ pageIndex: this.cPageIndex, pageSize: this.cPageSize } = this.clientPaginator.getPagination());
+    }
     this.detector.detectChanges();
   }
 
   protected updateDataServer(): void {
     this.loading = true;
-    this.pageIndex = this.serverPaginator.pageIndex;
-    this.pageSize = this.serverPaginator.pageSize;
+    ({ pageIndex: this.sPageIndex, pageSize: this.sPageSize } = this.serverPaginator.getPagination());
 
     setTimeout(() => {
-      this.serverData$ = this.mockService.fetchData(this.pageIndex, this.pageSize).pipe(
+      this.serverData$ = this.mockService.fetchData(this.sPageIndex, this.sPageSize).pipe(
         map(data => {
-          if (data.length < this.pageSize) {
-            const count = (this.pageIndex * this.pageSize) + data.length;
+          if (data.length < this.sPageSize) {
+            const count = (this.sPageIndex * this.sPageSize) + data.length;
             this.serverPaginator.totalItems = count;
           }
           return data;
@@ -256,14 +292,16 @@ export class AppComponent implements OnInit {
     }, this._getRandomNumber(275, 1000));
   }
 
-  protected tableDataRequestClient(tableState: Record<string, any>): void {
+  protected tableDataRequestClient(): void {
     let filteredData = [...this.clientData];
+    const filters = this.clientTable.getFilters();
+    const sort = this.clientTable.getSort();
 
     // Store filtering and sorting options.
-    const globalFilter = tableState['globalFilter'];
-    const columnFilters = tableState['columnFilters'];
-    const sortBy = tableState['sortBy'];
-    const sortDirection = tableState['sortDirection'];
+    const globalFilter = filters?.globalFilter;
+    const columnFilters = filters?.columnFilters;
+    const sortBy = sort?.active;
+    const sortDirection = sort?.direction;
 
     // Apply global filter, if provided
     if (globalFilter) {
@@ -343,23 +381,30 @@ export class AppComponent implements OnInit {
       });
     }
 
-    this.filteredData = filteredData;
+    this.filteredData = [...filteredData];
+
+    // If user was beyond current allowable page range, move them to the last available page.
+    const lastPage = Math.ceil(this.filteredData.length / this.clientPaginator.pageSize);
+    const validatedPage = Math.min(this.clientPaginator.pageIndex, lastPage - 1);
+    this.clientPaginator.pageIndex = validatedPage;
   }
 
-  protected tableDataRequestServer(tableState: Record<string, any>): void {
+  protected tableDataRequestServer(): void {
 
     this.loading = true;
     // Reset if paginator knows the data limit.
     this.serverPaginator.totalItemsKnown = false;
+    const filters = this.serverTable.getFilters();
+    const sort = this.serverTable.getSort();
 
     // Store filtering and sorting options.
-    const globalFilter = tableState['globalFilter'];
-    const columnFilters = tableState['columnFilters'];
-    const sortBy = tableState['sortBy'];
-    const sortDirection = tableState['sortDirection'];
+    const globalFilter = filters?.globalFilter;
+    const columnFilters = filters?.columnFilters;
+    const sortBy = sort?.active;
+    const sortDirection = sort?.direction;
 
     setTimeout(() => {
-      this.serverData$ = this.mockService.fetchData(this.pageIndex, this.pageSize, sortBy, sortDirection, globalFilter, columnFilters).pipe(
+      this.serverData$ = this.mockService.fetchData(this.sPageIndex, this.sPageSize, sortBy, sortDirection, globalFilter, columnFilters).pipe(
         catchError(() => {
           return of([]); // Return an empty array in case of error
         }),
@@ -369,6 +414,25 @@ export class AppComponent implements OnInit {
         })
       );
     }, this._getRandomNumber(275, 1000));
+  }
+
+  protected toggleAutoRefresh(enabled: boolean): void {
+    if (enabled) {
+      this.stopAF();
+    } else {
+      this.startAF();
+    }
+  }
+
+  protected startAF(): void {
+    this._refreshIntervalId = setInterval(() => {
+      this.loadData();
+      this.tableDataRequestClient();
+    }, this.tableConfig.autoRefresh?.intervalMs);
+  }
+
+  protected stopAF(): void {
+    clearInterval(this._refreshIntervalId);
   }
 
   private _getRandomNumber(min: number, max: number): number {

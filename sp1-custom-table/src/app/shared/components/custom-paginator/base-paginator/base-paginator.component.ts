@@ -92,6 +92,12 @@ export abstract class BasePaginatorComponent {
     private detector: ChangeDetectorRef,
   ) { }
 
+  getPagination(): { pageIndex: number, pageSize: number } {
+    return {
+      pageIndex: this.pageIndex, pageSize: this.pageSize
+    };
+  }
+
   protected onPageSizeChange(newPageSize: number): void {
     // Go to first page.
     this.pageIndex = 0;
