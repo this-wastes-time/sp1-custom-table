@@ -98,7 +98,8 @@
               sortActionDescription="Sort by {{column.field}}" [disabled]="!column.sortable">
               {{ column.header }}
             </th>
-            <td mat-cell *matCellDef="let row" [ngClass]="column.cellClass?.(row) ?? ''">
+            <td mat-cell *matCellDef="let row" [ngClass]="column.cellClass?.(row) ?? ''"
+              [style.text-align]="column.align ?? 'left'">
               @switch (column.cellTemplate) {
                 @case ('button') {
                   <ng-container *ngTemplateOutlet="buttonTemplate; context: { $implicit: column.templateInputs?.(row) }"></ng-container>

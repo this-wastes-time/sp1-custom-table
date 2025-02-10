@@ -32,6 +32,7 @@ export class AppComponent implements OnInit {
         {
           field: 'position',
           header: 'Position',
+          align: 'right',
         },
         {
           field: 'name',
@@ -48,6 +49,7 @@ export class AppComponent implements OnInit {
           field: 'weight',
           header: 'Weight',
           sortable: true,
+          align: 'right',
         },
         {
           field: 'symbol',
@@ -100,7 +102,8 @@ export class AppComponent implements OnInit {
               selectValues: () => Array.from(new Set(this.clientData?.map(e => e.online))).sort(),
               multiple: true,
             }),
-          }
+          },
+          align: 'center',
         },
         {
           field: 'dob',
@@ -124,7 +127,8 @@ export class AppComponent implements OnInit {
               selectValues: () => Array.from(new Set(this.clientData?.map(e => e.married))).sort(),
               multiple: true,
             }),
-          }
+          },
+          align: 'center',
         },
         {
           field: 'company',
