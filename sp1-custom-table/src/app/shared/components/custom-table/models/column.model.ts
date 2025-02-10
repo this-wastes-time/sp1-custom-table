@@ -16,4 +16,5 @@ interface Column {
   cellTemplate?: CellTemplate; // Custom template for rendering column content
   templateInputs?: (row: any) => Record<string, unknown>; // Function to determine inputs to pass to the template
   filterOptions?: ColumnFilter; // Configuration for column filter
+  align?: 'left' | 'center' | 'right'; // Determine alignment of column text.
 }
