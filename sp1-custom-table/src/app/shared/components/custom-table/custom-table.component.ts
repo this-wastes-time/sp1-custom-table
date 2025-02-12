@@ -219,7 +219,7 @@ export class CustomTableComponent implements OnChanges {
     }
 
     // Include the multi-row select column.
-    if (this.tableConfig.tableActions) {
+    if (this.tableConfig.multiRowSelection) {
       this.displayColumns.unshift('select');
     }
 
