@@ -1,199 +1,206 @@
-@if (tableConfig) {
-  <div [style.position]="'relative'">
-    <div class="spinner-div" appGeneralSpinner
-      [spinnerBusy]="loading" [spinnerColor]="'accent'"
-      [style.background]="loading ? 'var(--spinner-background)' : 'none'"
-      [style.z-index]="loading ? 110 : -1"></div>
-  
-    <div class="table-filter-container">
-      @if (tableConfig.filterOptions) {
-        <!-- Table filter -->
-        <div class="filter-search-box" [class.table-menu-showing]="(tableConfig.tableActions?.length ?? 0) > 0">
-          <app-search-box #searchBox
-            [subscriptSizing]="'dynamic'"
-            [id]="tableConfig.filterOptions.id ?? ''"
-            [label]="tableConfig.filterOptions.label ?? ''"
-            [placeholder]="tableConfig.filterOptions.placeholder ?? ''"
-            [instantSearch]="tableConfig.filterOptions.instantSearch ?? false"
-            (valueChange)="applyFilter($event)">
-          </app-search-box>
-        </div>
-      }
-      <span style="flex: 1 1 auto;"></span>
-      <!-- Table menu -->
-      @if (tableConfig.autoRefresh) {
-        <div class="auto-refresh-toggle">
-          <mat-slide-toggle
-            [(ngModel)]="tableConfig.autoRefresh.enabled"
-            (toggleChange)="tableConfig.autoRefresh.autoRefreshFunc(tableConfig.autoRefresh.enabled)">
-            Auto refresh
-          </mat-slide-toggle>
-        </div>
-      }
-      @if ((tableConfig.tableActions?.length ?? 0) > 0) {
-        <div class="table-menu">
-          <button mat-icon-button [color]="'accent'" [matMenuTriggerFor]="tableMenu">
-            <mat-icon>more_vert</mat-icon>
-          </button>
-          <mat-menu #tableMenu="matMenu">
-            @for (action of tableConfig.tableActions; track action) {
-              <span [class.disabled-wrapper]="action.disabled?.(selectedRows)">
-                <button mat-menu-item [attr.aria-label]="action.description" [disabled]="action.disabled?.(selectedRows)" (click)="action.action(selectedRows)">
-                  <span> {{ action.label }}</span>
-                </button>
-              </span>
-            }
-          </mat-menu>
-        </div>
-      }
-    </div>
-  
-    <div class="table-container">
-      <table mat-table [dataSource]="dataSource" matSort
-        [matSortActive]="tableConfig.sortOptions?.initialSort?.active ?? ''"
-        [matSortDirection]="tableConfig.sortOptions?.initialSort?.direction ?? ''"
-        (matSortChange)="sortChange($event)">
-  
-        <!--- Note that these columns can be defined in any order.
-              The actual rendered columns are set as a property on the row definition" -->
-  
-        <!-- Column for multiple row checkbox selection. -->
-        @if ((tableConfig.tableActions?.length ?? 0) > 0) {
-          <ng-container matColumnDef="select">
-            <th class="non-filter-header" mat-header-cell *matHeaderCellDef>
-              <mat-checkbox [checked]="allSelected()" [indeterminate]="someSelected()" (change)="toggleAllSelection($event.checked)"></mat-checkbox>
-            </th>
-            <td mat-cell *matCellDef="let row">
-              <mat-checkbox [checked]="row.selected" (change)="selectRow($event.checked, row)"></mat-checkbox>
-            </td>
-          </ng-container>
-  
-          <!-- Filter column for numbered rows. -->
-          @if (displayColumnsFilters.length > 0) {
-            <ng-container matColumnDef="select-filter">
-              <th mat-header-cell *matHeaderCellDef></th>
-            </ng-container>
+<mat-sidenav-container>
+  <mat-sidenav #sidenav mode="over" position="end">
+    <ng-container #sidenavContent></ng-container>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    @if (tableConfig) {
+      <div [style.position]="'relative'">
+        <div class="spinner-div" appGeneralSpinner
+          [spinnerBusy]="loading" [spinnerColor]="'accent'"
+          [style.background]="loading ? 'var(--spinner-background)' : 'none'"
+          [style.z-index]="loading ? 110 : -1"></div>
+      
+        <div class="table-filter-container">
+          @if (tableConfig.filterOptions) {
+            <!-- Table filter -->
+            <div class="filter-search-box" [class.table-menu-showing]="(tableConfig.tableActions?.length ?? 0) > 0">
+              <app-search-box #searchBox
+                [subscriptSizing]="'dynamic'"
+                [id]="tableConfig.filterOptions.id ?? ''"
+                [label]="tableConfig.filterOptions.label ?? ''"
+                [placeholder]="tableConfig.filterOptions.placeholder ?? ''"
+                [instantSearch]="tableConfig.filterOptions.instantSearch ?? false"
+                (valueChange)="applyFilter($event)">
+              </app-search-box>
+            </div>
           }
-        }
-  
-        <!-- Column for numbered rows. -->
-        @if (tableConfig.showRowNumbers) {
-          <ng-container matColumnDef="#">
-            <th class="non-filter-header" mat-header-cell *matHeaderCellDef> # </th>
-            <td mat-cell *matCellDef="let row; let i = index"> {{ getRowNumber(i) }} </td>
-          </ng-container>
-  
-          <!-- Filter column for numbered rows. -->
-          @if (displayColumnsFilters.length > 0) {
-            <ng-container matColumnDef="#-filter">
-              <th mat-header-cell *matHeaderCellDef></th>
-            </ng-container>
+          <span style="flex: 1 1 auto;"></span>
+          <!-- Table menu -->
+          @if (tableConfig.autoRefresh) {
+            <div class="auto-refresh-toggle">
+              <mat-slide-toggle
+                [(ngModel)]="tableConfig.autoRefresh.enabled"
+                (toggleChange)="tableConfig.autoRefresh.autoRefreshFunc(tableConfig.autoRefresh.enabled)">
+                Auto refresh
+              </mat-slide-toggle>
+            </div>
           }
-        }
-  
-        <!-- Columns generated from table configuration. -->
-        @for (column of tableConfig.columnsConfig.columns; track column) {
-          <ng-container matColumnDef="{{ column.field }}">
-            <th class="non-filter-header" mat-header-cell *matHeaderCellDef mat-sort-header
-              sortActionDescription="Sort by {{column.field}}" [disabled]="!column.sortable">
-              {{ column.header }}
-            </th>
-            <td mat-cell *matCellDef="let row" [ngClass]="column.cellClass?.(row) ?? ''"
-              [style.text-align]="column.align ?? 'left'">
-              @switch (column.cellTemplate) {
-                @case ('button') {
-                  <ng-container *ngTemplateOutlet="buttonTemplate; context: { $implicit: column.templateInputs?.(row) }"></ng-container>
-                }
-                @case ('checkbox') {
-                  <ng-container *ngTemplateOutlet="checkboxTemplate; context: { $implicit: column.templateInputs?.(row) }"></ng-container>
-                }
-                @default {
-                  {{ column.valueGetter?.(row) ?? row[column.field] }}
-                }
-              }
-            </td>
-          </ng-container>
-        }
-  
-        @if (displayColumnsFilters.length > 0) {
-          @for (column of tableConfig.columnsConfig.columns; track column; let i = $index) {
-            <ng-container matColumnDef="{{ column.field }}-filter">
-              <th mat-header-cell *matHeaderCellDef>
-                @if (column.filterOptions) {
-                  <div class="column-filter-container">
-                    @switch (column.filterOptions.type) {
-                      @case ('text') {
-                        <ng-container
-                          *ngTemplateOutlet="textFilter;
-                            context: { $implicit: column, filters: columnFilters, inputs: column.filterOptions.templateInputs }">
-                        </ng-container>
-                      }
-                      @case ('select') {
-                        <ng-container
-                          *ngTemplateOutlet="selectFilter;
-                            context: { $implicit: column, filters: columnFilters, inputs: column.filterOptions.templateInputs }">
-                        </ng-container>
-                      }
-                      @case ('singleDate') {
-                        <ng-container
-                          *ngTemplateOutlet="singleDateFilter;
-                            context: { $implicit: column, filters: columnFilters, inputs: column.filterOptions.templateInputs }">
-                        </ng-container>
-                      }
-                      @case ('dateRange') {
-                        <ng-container
-                          *ngTemplateOutlet="dateRangeFilter;
-                            context: { $implicit: column, filters: columnFilters, inputs: column.filterOptions.templateInputs }">
-                        </ng-container>
-                      }
-                    }
-                  </div>
-                }
-              </th>
-            </ng-container>
-          }
-        }
-  
-        <!-- Column for row actions. -->
-        @if (tableConfig.rowActions) {
-          <ng-container matColumnDef="actions" [stickyEnd]="tableConfig.rowActions.stickyActions">
-            <th class="non-filter-header" mat-header-cell *matHeaderCellDef> Actions </th>
-            <td mat-cell *matCellDef="let row">
-              <button mat-icon-button [color]="'accent'" [matMenuTriggerFor]="actionMenu">
+          @if ((tableConfig.tableActions?.length ?? 0) > 0) {
+            <div class="table-menu">
+              <button mat-icon-button [color]="'accent'" [matMenuTriggerFor]="tableMenu">
                 <mat-icon>more_vert</mat-icon>
               </button>
-              <mat-menu #actionMenu="matMenu">
-                @for (action of tableConfig.rowActions.actions; track action) {
-                  <span [class.disabled-wrapper]="action.disabled?.(row)">
-                    <button mat-menu-item [attr.aria-label]="action.description" [disabled]="action.disabled?.(row)" (click)="action.action(row)">
+              <mat-menu #tableMenu="matMenu">
+                @for (action of tableConfig.tableActions; track action) {
+                  <span [class.disabled-wrapper]="action.disabled?.(selectedRows)">
+                    <button mat-menu-item [attr.aria-label]="action.description" [disabled]="action.disabled?.(selectedRows)" (click)="action.action(selectedRows)">
                       <span> {{ action.label }}</span>
                     </button>
                   </span>
                 }
               </mat-menu>
-            </td>
-          </ng-container>
-  
-          <!-- Filter column for row actions. -->
-          @if (displayColumnsFilters.length > 0) {
-            <ng-container matColumnDef="actions-filter" [stickyEnd]="tableConfig.rowActions.stickyActions">
-              <th mat-header-cell *matHeaderCellDef></th>
-            </ng-container>
+            </div>
           }
-        }
-  
-        <tr mat-header-row *matHeaderRowDef="displayColumns; sticky: tableConfig.columnsConfig.stickyHeaders"></tr>
-        @if (displayColumnsFilters.length > 0) {
-          <tr mat-header-row *matHeaderRowDef="displayColumnsFilters; sticky: tableConfig.columnsConfig.stickyHeaders"></tr>
-        }
-        <tr mat-row *matRowDef="let row; columns: displayColumns"
-          [class.showActions]="tableConfig.rowActions"
-          [ngClass]="tableConfig.rowClass?.(row) ?? ''"></tr>
-        <tr *matNoDataRow>No data to display</tr>
-      </table>
-    </div>
-  </div>
-}
+        </div>
+      
+        <div class="table-container">
+          <table mat-table [dataSource]="dataSource" matSort
+            [matSortActive]="tableConfig.sortOptions?.initialSort?.active ?? ''"
+            [matSortDirection]="tableConfig.sortOptions?.initialSort?.direction ?? ''"
+            (matSortChange)="sortChange($event)">
+      
+            <!--- Note that these columns can be defined in any order.
+                  The actual rendered columns are set as a property on the row definition" -->
+      
+            <!-- Column for multiple row checkbox selection. -->
+            @if ((tableConfig.tableActions?.length ?? 0) > 0) {
+              <ng-container matColumnDef="select">
+                <th class="non-filter-header" mat-header-cell *matHeaderCellDef>
+                  <mat-checkbox [checked]="allSelected()" [indeterminate]="someSelected()" (change)="toggleAllSelection($event.checked)"></mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                  <mat-checkbox [checked]="row.selected" (change)="selectRow($event.checked, row)"></mat-checkbox>
+                </td>
+              </ng-container>
+      
+              <!-- Filter column for numbered rows. -->
+              @if (displayColumnsFilters.length > 0) {
+                <ng-container matColumnDef="select-filter">
+                  <th mat-header-cell *matHeaderCellDef></th>
+                </ng-container>
+              }
+            }
+      
+            <!-- Column for numbered rows. -->
+            @if (tableConfig.showRowNumbers) {
+              <ng-container matColumnDef="#">
+                <th class="non-filter-header" mat-header-cell *matHeaderCellDef> # </th>
+                <td mat-cell *matCellDef="let row; let i = index"> {{ getRowNumber(i) }} </td>
+              </ng-container>
+      
+              <!-- Filter column for numbered rows. -->
+              @if (displayColumnsFilters.length > 0) {
+                <ng-container matColumnDef="#-filter">
+                  <th mat-header-cell *matHeaderCellDef></th>
+                </ng-container>
+              }
+            }
+      
+            <!-- Columns generated from table configuration. -->
+            @for (column of tableConfig.columnsConfig.columns; track column) {
+              <ng-container matColumnDef="{{ column.field }}">
+                <th class="non-filter-header" mat-header-cell *matHeaderCellDef mat-sort-header
+                  sortActionDescription="Sort by {{column.field}}" [disabled]="!column.sortable">
+                  {{ column.header }}
+                </th>
+                <td mat-cell *matCellDef="let row" [ngClass]="column.cellClass?.(row) ?? ''"
+              [style.text-align]="column.align ?? 'left'">
+                  @switch (column.cellTemplate) {
+                    @case ('button') {
+                      <ng-container *ngTemplateOutlet="buttonTemplate; context: { $implicit: column.templateInputs?.(row) }"></ng-container>
+                    }
+                    @case ('checkbox') {
+                      <ng-container *ngTemplateOutlet="checkboxTemplate; context: { $implicit: column.templateInputs?.(row) }"></ng-container>
+                    }
+                    @default {
+                      {{ column.valueGetter?.(row) ?? row[column.field] }}
+                    }
+                  }
+                </td>
+              </ng-container>
+            }
+      
+            @if (displayColumnsFilters.length > 0) {
+              @for (column of tableConfig.columnsConfig.columns; track column; let i = $index) {
+                <ng-container matColumnDef="{{ column.field }}-filter">
+                  <th mat-header-cell *matHeaderCellDef>
+                    @if (column.filterOptions) {
+                      <div class="column-filter-container">
+                        @switch (column.filterOptions.type) {
+                          @case ('text') {
+                            <ng-container
+                              *ngTemplateOutlet="textFilter;
+                                context: { $implicit: column, filters: columnFilters, inputs: column.filterOptions.templateInputs }">
+                            </ng-container>
+                          }
+                          @case ('select') {
+                            <ng-container
+                              *ngTemplateOutlet="selectFilter;
+                                context: { $implicit: column, filters: columnFilters, inputs: column.filterOptions.templateInputs }">
+                            </ng-container>
+                          }
+                          @case ('singleDate') {
+                            <ng-container
+                              *ngTemplateOutlet="singleDateFilter;
+                                context: { $implicit: column, filters: columnFilters, inputs: column.filterOptions.templateInputs }">
+                            </ng-container>
+                          }
+                          @case ('dateRange') {
+                            <ng-container
+                              *ngTemplateOutlet="dateRangeFilter;
+                                context: { $implicit: column, filters: columnFilters, inputs: column.filterOptions.templateInputs }">
+                            </ng-container>
+                          }
+                        }
+                      </div>
+                    }
+                  </th>
+                </ng-container>
+              }
+            }
+      
+            <!-- Column for row actions. -->
+            @if (tableConfig.rowActions) {
+              <ng-container matColumnDef="actions" [stickyEnd]="tableConfig.rowActions.stickyActions">
+                <th class="non-filter-header" mat-header-cell *matHeaderCellDef> Actions </th>
+                <td mat-cell *matCellDef="let row">
+                  <button mat-icon-button [color]="'accent'" [matMenuTriggerFor]="actionMenu">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <mat-menu #actionMenu="matMenu">
+                    @for (action of tableConfig.rowActions.actions; track action) {
+                      <span [class.disabled-wrapper]="action.disabled?.(row)">
+                        <button mat-menu-item [attr.aria-label]="action.description" [disabled]="action.disabled?.(row)" (click)="action.action(row)">
+                          <span> {{ action.label }}</span>
+                        </button>
+                      </span>
+                    }
+                  </mat-menu>
+                </td>
+              </ng-container>
+      
+              <!-- Filter column for row actions. -->
+              @if (displayColumnsFilters.length > 0) {
+                <ng-container matColumnDef="actions-filter" [stickyEnd]="tableConfig.rowActions.stickyActions">
+                  <th mat-header-cell *matHeaderCellDef></th>
+                </ng-container>
+              }
+            }
+      
+            <tr mat-header-row *matHeaderRowDef="displayColumns; sticky: tableConfig.columnsConfig.stickyHeaders"></tr>
+            @if (displayColumnsFilters.length > 0) {
+              <tr mat-header-row *matHeaderRowDef="displayColumnsFilters; sticky: tableConfig.columnsConfig.stickyHeaders"></tr>
+            }
+            <tr mat-row *matRowDef="let row; columns: displayColumns"
+              [class.showActions]="tableConfig.rowActions"
+              [ngClass]="tableConfig.rowClass?.(row) ?? ''"></tr>
+            <tr *matNoDataRow>No data to display</tr>
+          </table>
+        </div>
+      </div>
+    }
+  </mat-sidenav-content>
+</mat-sidenav-container>
 
 <!-- Defined Cell Templates -->
 <!-- Button -->

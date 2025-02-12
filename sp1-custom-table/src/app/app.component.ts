@@ -144,10 +144,11 @@ export class AppComponent implements OnInit {
         },
       ],
       stickyHeaders: true,
+      showHideColumns: true,
     },
     showRowNumbers: true,
     autoRefresh: {
-      enabled: true,
+      enabled: false,
       intervalMs: AFREFRESH,
       autoRefreshFunc: (afState) => {
         this.toggleAutoRefresh(afState);

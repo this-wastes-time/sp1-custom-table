@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges, ViewChild, ChangeDetectorRef, EventEmitter, Output } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, ViewChild, ChangeDetectorRef, EventEmitter, Output, ViewContainerRef } from '@angular/core';
 import { CustomTableModule } from './custom-table.module';
 import { TableConfig } from './models/table.model';
 import { MatTableDataSource } from '@angular/material/table';
@@ -6,6 +6,10 @@ import { Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { SearchBoxComponent } from '../search-box/search-box.component';
 import { FormControl, FormGroup } from '@angular/forms';
+import { ModifyColumnsComponent } from './modify-columns/modify-columns.component';
+import { MatSidenav } from '@angular/material/sidenav';
+import { of } from 'rxjs';
+import { Column } from './models/column.model';
 
 interface TableFilters {
   globalFilter: string;
@@ -37,6 +41,8 @@ export class CustomTableComponent implements OnChanges {
   @Output() getData = new EventEmitter();
 
   @ViewChild('searchBox') searchBox!: SearchBoxComponent;
+  @ViewChild('sidenav') sidenav!: MatSidenav;
+  @ViewChild('sidenavContent', { read: ViewContainerRef }) sidenavContent!: ViewContainerRef;
 
   // Table data vars.
   dataSource = new MatTableDataSource<any>(); // MatTableDataSource instance
@@ -76,11 +82,52 @@ export class CustomTableComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     // When a table configuration comes in, set the columns.
     if (changes['tableConfig']?.currentValue) {
-      this._generateDisplayColumns();
+      const tableConfig = changes['tableConfig'].currentValue;
+      // Generate the table display.
+      this._generateDisplayColumns(tableConfig['columnsConfig'].columns);
       // If any column has a filter, generate the filter columns.
       if (this.tableConfig.columnsConfig.columns.some((col) => col.filterOptions)) {
         this._generateDisplayColumnsFilters();
       }
+
+      // If showing and hiding columns is allowed, add action to table.
+      if (this.tableConfig.columnsConfig.showHideColumns) {
+        const showHideCols = {
+          label: 'Modify columns',
+          description: 'Open sidenav menu to modify columns by showing or hiding and reordering',
+          action: () => {
+            // Clear any existing content
+            this.sidenavContent.clear();
+            // Create the component for injection.
+            const modColumns = this.sidenavContent.createComponent(ModifyColumnsComponent);
+            // modColumns.instance.columns$ = of(this.tableConfig.columnsConfig.columns);
+            modColumns.instance.columnConfig$ = of(this.tableConfig.columnsConfig);
+            // Trigger change detection to ensure the columns$ observable is received
+            this.detector.detectChanges();
+            // Toggle sidenav visibility.
+            this.sidenav.toggle();
+            // Subscribe to the emitted event
+            const sub = modColumns.instance.columnMods.subscribe((updatedCols: Column[]) => {
+              // Update table configuration.
+              this.tableConfig.columnsConfig.columns = updatedCols;
+              // Update columns.
+              this._generateDisplayColumns(updatedCols);
+              this._generateDisplayColumnsFilters();
+              // Clean up the subscription and component reference
+              sub.unsubscribe();
+              modColumns.destroy();
+              // Toggle sidenav visibility.
+              this.sidenav.toggle();
+            });
+          }
+        };
+
+        this.tableConfig.tableActions = [
+          showHideCols,
+          ...(this.tableConfig!.tableActions || [])
+        ];
+      }
+
       // If table or column-level filters are present, add action to table.
       if (this.tableConfig?.filterOptions || this.displayColumnsFilters.length > 0) {
         const resetFiltersAction = {
@@ -96,7 +143,7 @@ export class CustomTableComponent implements OnChanges {
           }
         };
 
-        this.tableConfig!.tableActions = [
+        this.tableConfig.tableActions = [
           resetFiltersAction,
           ...(this.tableConfig!.tableActions || [])
         ];
@@ -164,8 +211,8 @@ export class CustomTableComponent implements OnChanges {
       !this.dataSource._pageData(this.dataSource.data).every((row) => row.selected);
   };
 
-  private _generateDisplayColumns(): void {
-    this.displayColumns = this.tableConfig.columnsConfig.columns.map(col => col.field);
+  private _generateDisplayColumns(columns: Column[]): void {
+    this.displayColumns = columns.filter(col => col.visible ?? true).map(col => col.field);
 
     // Include the row number column.
     if (this.tableConfig?.showRowNumbers) {

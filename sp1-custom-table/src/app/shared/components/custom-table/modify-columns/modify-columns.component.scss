@@ -1,0 +1,25 @@
+.column-modifications-container {
+  display: flex;
+  flex-flow: column wrap;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+ul {
+  padding: 0 .625em;
+  margin-bottom: 0;
+
+  li {
+    list-style-type: none;
+    display: flex;
+    align-items: center;
+
+    span {
+      margin: 0 .25rem;
+    }
+  }
+}
+
+.action-button {
+  width: 100%;
+}

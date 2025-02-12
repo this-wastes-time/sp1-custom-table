@@ -5,9 +5,10 @@ export declare type CellTemplate = 'button' | 'checkbox';
 export interface ColumnsConfig {
   columns: Column[]; // Array of column configurations
   stickyHeaders?: boolean; // Whether column headers should be sticky
+  showHideColumns?: boolean; // Whether columns can be modified via hiding.
 }
 
-interface Column {
+export interface Column {
   field: string; // Field name in the data object
   header: string; // Display name of the column
   cellClass?: (row: any) => string | string[]; // Function to determine CSS class for a cell
@@ -17,4 +18,5 @@ interface Column {
   templateInputs?: (row: any) => Record<string, unknown>; // Function to determine inputs to pass to the template
   filterOptions?: ColumnFilter; // Configuration for column filter
   align?: 'left' | 'center' | 'right'; // Determine alignment of column text.
+  visible?: boolean; // Whether column is visible
 }

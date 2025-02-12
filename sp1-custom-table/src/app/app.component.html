@@ -1,7 +1,7 @@
+<!-- Client paging setup -->
 <h2>Client side paged table</h2>
 <div class="outer-table-container">
   <div class="table-paginator-container">
-    <!-- Client paging setup -->
     <app-custom-table #clientTable
       [tableConfig]="tableConfig"
       [tableData]="paginatedData"
@@ -22,12 +22,12 @@
   </div>
 </div>
 
-<mat-divider></mat-divider>
+<!-- <mat-divider></mat-divider> -->
 
-<h2>Server side paged table</h2>
+<!-- Server paging setup -->
+<!-- <h2>Server side paged table</h2>
 <div class="outer-table-container">
   <div class="table-paginator-container">
-    <!-- Server paging setup -->
     <app-custom-table #serverTable
       [loading]="loading"
       [tableConfig]="tableConfig"
@@ -47,4 +47,4 @@
       (fetchData)="updateDataServer()">
     </app-server-paginator>
   </div>
-</div>
+</div> -->

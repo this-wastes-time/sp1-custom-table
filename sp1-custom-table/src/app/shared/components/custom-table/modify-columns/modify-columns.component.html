@@ -1,0 +1,20 @@
+<div class="column-modifications-container">
+  <ul>
+    @for (column of moddedCols; track column) {
+      <li>
+        @if (config.showHideColumns) {
+          <button mat-icon-button (click)="toggleColumn(column)">
+            <mat-icon>{{ column.visible ? 'visibility' : 'visibility_off' }}</mat-icon>
+          </button>
+        }
+        <span>{{ column.header }}</span>
+      </li>
+    }
+  </ul>
+
+  <span style="flex: 1 1 auto;"></span>
+
+  <button class="action-button" mat-flat-button
+    (click)="close()">Apply Changes
+  </button>
+</div>
