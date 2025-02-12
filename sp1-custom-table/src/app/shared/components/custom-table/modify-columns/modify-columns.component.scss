@@ -14,8 +14,12 @@ ul {
     display: flex;
     align-items: center;
 
-    span {
+    button {
       margin: 0 .25rem;
+    }
+
+    span {
+      margin-left: 1rem;
     }
   }
 }

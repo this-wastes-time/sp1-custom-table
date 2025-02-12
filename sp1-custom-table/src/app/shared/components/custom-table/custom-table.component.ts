@@ -91,7 +91,7 @@ export class CustomTableComponent implements OnChanges {
       }
 
       // If showing and hiding columns is allowed, add action to table.
-      if (this.tableConfig.columnsConfig.showHideColumns) {
+      if (this.tableConfig.columnsConfig.showHideColumns || this.tableConfig.columnsConfig.reorderColumns) {
         const showHideCols = {
           label: 'Modify columns',
           description: 'Open sidenav menu to modify columns by showing or hiding and reordering',

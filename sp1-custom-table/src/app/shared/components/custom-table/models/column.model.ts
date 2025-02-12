@@ -6,6 +6,7 @@ export interface ColumnsConfig {
   columns: Column[]; // Array of column configurations
   stickyHeaders?: boolean; // Whether column headers should be sticky
   showHideColumns?: boolean; // Whether columns can be modified via hiding.
+  reorderColumns?: boolean; // Enables/disables column reordering
 }
 
 export interface Column {

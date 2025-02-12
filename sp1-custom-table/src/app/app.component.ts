@@ -145,6 +145,7 @@ export class AppComponent implements OnInit {
       ],
       stickyHeaders: true,
       showHideColumns: true,
+      reorderColumns: true,
     },
     showRowNumbers: true,
     autoRefresh: {

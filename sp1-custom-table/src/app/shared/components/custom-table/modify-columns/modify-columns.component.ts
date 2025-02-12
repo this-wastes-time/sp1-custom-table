@@ -33,6 +33,13 @@ export class ModifyColumnsComponent implements OnInit {
     column.visible = !column.visible;
   }
 
+  protected moveColumn(index: number, direction: number): void {
+    const newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= this.moddedCols.length) return;
+
+    [this.moddedCols[index], this.moddedCols[newIndex]] = [this.moddedCols[newIndex], this.moddedCols[index]];
+  }
+
   protected close(): void {
     this.columnMods.emit(this.moddedCols);
   }
