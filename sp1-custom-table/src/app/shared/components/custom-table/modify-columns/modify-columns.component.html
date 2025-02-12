@@ -1,0 +1,39 @@
+<div class="column-modifications-container">
+  <ul>
+    @for (column of moddedCols; track $index) {
+      <li>
+        @if (config.showHideColumns) {
+          <button mat-icon-button (click)="toggleColumn(column)">
+            <mat-icon>{{ column.visible ? 'visibility' : 'visibility_off' }}</mat-icon>
+          </button>
+        }
+        @if (config.reorderColumns) {
+          <button mat-icon-button
+            [disabled]="$index === 0 || !column.visible"
+            [attr.aria-label]="'Move {{ column.header }} up'"
+            (click)="moveColumn($index, -1)">
+            <mat-icon>arrow_upward</mat-icon>
+          </button>
+          <button mat-icon-button
+            [disabled]="$index === moddedCols.length - 1 || !column.visible"
+            [attr.aria-label]="'Move {{ column.header }} down'"
+            (click)="moveColumn($index, 1)">
+            <mat-icon>arrow_downward</mat-icon>
+          </button>
+        }
+        <span [class.disabled-col]="!column.visible">{{ column.header }}</span>
+      </li>
+    }
+  </ul>
+
+  <span style="flex: 1 1 auto;"></span>
+
+  <div class="action-button">
+    <button mat-flat-button
+      (click)="resetColumns()">Reset to default
+    </button>
+    <button mat-raised-button
+      (click)="close()">Apply Changes
+    </button>
+  </div>
+</div>

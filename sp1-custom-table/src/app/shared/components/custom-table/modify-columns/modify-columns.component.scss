@@ -1,0 +1,38 @@
+.column-modifications-container {
+  display: flex;
+  flex-flow: column wrap;
+  height: 99.5%;
+  box-sizing: border-box;
+}
+
+ul {
+  padding: 0 .625em;
+  margin-bottom: 0;
+
+  li {
+    list-style-type: none;
+    display: flex;
+    align-items: center;
+
+    button {
+      margin: 0 .25rem;
+    }
+
+    span {
+      margin-left: 1rem;
+    }
+  }
+}
+
+.action-button {
+  display: flex;
+
+  button {
+    margin: 0 .25rem;
+    width: 100%;
+  }
+}
+
+.disabled-col {
+  opacity: 0.4;
+}
