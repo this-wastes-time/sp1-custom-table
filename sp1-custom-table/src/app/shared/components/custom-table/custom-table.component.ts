@@ -86,12 +86,12 @@ export class CustomTableComponent implements OnChanges {
       // Generate the table display.
       this._generateDisplayColumns(tableConfig['columnsConfig'].columns);
       // If any column has a filter, generate the filter columns.
-      if (this.tableConfig.columnsConfig.columns.some((col) => col.filterOptions)) {
+      if (tableConfig.columnsConfig.columns.some((col: Column) => col.filterOptions)) {
         this._generateDisplayColumnsFilters();
       }
 
       // If showing and hiding columns is allowed, add action to table.
-      if (this.tableConfig.columnsConfig.showHideColumns || this.tableConfig.columnsConfig.reorderColumns) {
+      if (tableConfig.columnsConfig.showHideColumns || tableConfig.columnsConfig.reorderColumns) {
         const showHideCols = {
           label: 'Modify columns',
           description: 'Open sidenav menu to modify columns by showing or hiding and reordering',
@@ -100,7 +100,6 @@ export class CustomTableComponent implements OnChanges {
             this.sidenavContent.clear();
             // Create the component for injection.
             const modColumns = this.sidenavContent.createComponent(ModifyColumnsComponent);
-            // modColumns.instance.columns$ = of(this.tableConfig.columnsConfig.columns);
             modColumns.instance.columnConfig$ = of(this.tableConfig.columnsConfig);
             // Trigger change detection to ensure the columns$ observable is received
             this.detector.detectChanges();
@@ -122,14 +121,14 @@ export class CustomTableComponent implements OnChanges {
           }
         };
 
-        this.tableConfig.tableActions = [
+        tableConfig.tableActions = [
           showHideCols,
-          ...(this.tableConfig!.tableActions || [])
+          ...(tableConfig.tableActions || [])
         ];
       }
 
       // If table or column-level filters are present, add action to table.
-      if (this.tableConfig?.filterOptions || this.displayColumnsFilters.length > 0) {
+      if (tableConfig.filterOptions || this.displayColumnsFilters.length > 0) {
         const resetFiltersAction = {
           label: 'Reset filters',
           description: 'Clear all filters and search terms',
@@ -143,15 +142,15 @@ export class CustomTableComponent implements OnChanges {
           }
         };
 
-        this.tableConfig.tableActions = [
+        tableConfig.tableActions = [
           resetFiltersAction,
-          ...(this.tableConfig!.tableActions || [])
+          ...(tableConfig.tableActions || [])
         ];
       }
       // Set sort properties if available.
       this.currentSort = {
-        active: this.tableConfig?.sortOptions?.initialSort?.active ?? '',
-        direction: this.tableConfig?.sortOptions?.initialSort?.direction ?? '',
+        active: tableConfig.sortOptions?.initialSort?.active ?? '',
+        direction: tableConfig.sortOptions?.initialSort?.direction ?? '',
       };
       this.detector.detectChanges();
     }
@@ -215,17 +214,17 @@ export class CustomTableComponent implements OnChanges {
     this.displayColumns = columns.filter(col => col.visible ?? true).map(col => col.field);
 
     // Include the row number column.
-    if (this.tableConfig?.showRowNumbers) {
+    if (this.tableConfig.showRowNumbers) {
       this.displayColumns.unshift('#');
     }
 
     // Include the multi-row select column.
-    if (this.tableConfig?.tableActions) {
+    if (this.tableConfig.tableActions) {
       this.displayColumns.unshift('select');
     }
 
     // Include the action column.
-    if (this.tableConfig?.rowActions) {
+    if (this.tableConfig.rowActions) {
       this.displayColumns.push('actions');
     }
   }
