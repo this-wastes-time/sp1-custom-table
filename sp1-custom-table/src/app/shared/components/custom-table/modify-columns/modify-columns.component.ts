@@ -40,6 +40,10 @@ export class ModifyColumnsComponent implements OnInit {
     [this.moddedCols[index], this.moddedCols[newIndex]] = [this.moddedCols[newIndex], this.moddedCols[index]];
   }
 
+  protected resetColumns(): void {
+    this.moddedCols = [...this.config.columns].map(col => ({ ...col, visible: true }));
+  }
+
   protected close(): void {
     this.columnMods.emit(this.moddedCols);
   }
