@@ -63,7 +63,7 @@
                   The actual rendered columns are set as a property on the row definition" -->
       
             <!-- Column for multiple row checkbox selection. -->
-            @if ((tableConfig.tableActions?.length ?? 0) > 0) {
+            @if (tableConfig.multiRowSelection) {
               <ng-container matColumnDef="select">
                 <th class="non-filter-header" mat-header-cell *matHeaderCellDef>
                   <mat-checkbox [checked]="allSelected()" [indeterminate]="someSelected()" (change)="toggleAllSelection($event.checked)"></mat-checkbox>
@@ -73,7 +73,7 @@
                 </td>
               </ng-container>
       
-              <!-- Filter column for numbered rows. -->
+              <!-- Filter column for multiple row selection. -->
               @if (displayColumnsFilters.length > 0) {
                 <ng-container matColumnDef="select-filter">
                   <th mat-header-cell *matHeaderCellDef></th>

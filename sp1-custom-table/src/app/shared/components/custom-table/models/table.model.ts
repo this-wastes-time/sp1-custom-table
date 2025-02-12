@@ -14,6 +14,7 @@ export interface TableConfig {
   caption: string; // Accessibility caption for the table
   columnsConfig: ColumnsConfig; // Configuration for columns
   showRowNumbers?: boolean; // Whether to display a numbered row
+  multiRowSelection?: boolean; // Whether table is setup for multiple selection of rows
   autoRefresh?: AutoRefreshConfig; // Configuration for auto refreshing the table
   rowClass?: (row: any) => string | string[]; // Function to determine CSS class for a row
   sortOptions?: SortConfig; // Configuration for sorting
