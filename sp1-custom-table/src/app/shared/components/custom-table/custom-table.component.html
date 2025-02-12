@@ -97,7 +97,7 @@
             }
       
             <!-- Columns generated from table configuration. -->
-            @for (column of tableConfig.columnsConfig.columns; track column) {
+            @for (column of tableConfig.columnsConfig.columns; track column.field) {
               <ng-container matColumnDef="{{ column.field }}">
                 <th class="non-filter-header" mat-header-cell *matHeaderCellDef mat-sort-header
                   sortActionDescription="Sort by {{column.field}}" [disabled]="!column.sortable">
@@ -121,7 +121,7 @@
             }
       
             @if (displayColumnsFilters.length > 0) {
-              @for (column of tableConfig.columnsConfig.columns; track column; let i = $index) {
+              @for (column of tableConfig.columnsConfig.columns; track column.field; let i = $index) {
                 <ng-container matColumnDef="{{ column.field }}-filter">
                   <th mat-header-cell *matHeaderCellDef>
                     @if (column.filterOptions) {
