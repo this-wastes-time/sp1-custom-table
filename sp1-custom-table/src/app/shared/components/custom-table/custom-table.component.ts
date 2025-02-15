@@ -6,7 +6,7 @@ import { Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { SearchBoxComponent } from '../search-box/search-box.component';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ModifyColumnsComponent } from './modify-columns/modify-columns.component';
+import { ModifyColumnsComponent } from './child-components/modify-columns/modify-columns.component';
 import { MatSidenav } from '@angular/material/sidenav';
 import { of } from 'rxjs';
 import { Column } from './models/column.model';
