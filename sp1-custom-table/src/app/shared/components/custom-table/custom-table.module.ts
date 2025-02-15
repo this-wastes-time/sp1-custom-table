@@ -16,6 +16,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { GeneralSpinnerDirective } from '../../directives/general-spinner.directive';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { ReorderAnimationDirective } from '../../directives/reorder-animation.directive';
 
 @NgModule({
   declarations: [],
@@ -38,6 +39,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     ReactiveFormsModule,
     MatSlideToggleModule,
     MatSidenavModule,
+    ReorderAnimationDirective,
   ],
   exports: [
     CommonModule,
@@ -58,6 +60,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     ReactiveFormsModule,
     MatSlideToggleModule,
     MatSidenavModule,
+    ReorderAnimationDirective,
   ],
   providers: [
     provideNativeDateAdapter(),
