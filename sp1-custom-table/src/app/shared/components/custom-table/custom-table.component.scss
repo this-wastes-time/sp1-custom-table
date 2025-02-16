@@ -1,14 +1,10 @@
 .table-filter-container {
-  border-bottom: 1px solid #ccc;
+  margin: .625rem 0;
   display: flex;
   align-items: center;
 
-  .filter-search-box {
-    width: 100%;
-
-    &.table-menu-showing {
-      border-right: 1px solid #ccc;
-    }
+  .search-box {
+    min-width: 300px;
   }
 
   .auto-refresh-toggle {
@@ -49,10 +45,6 @@ table {
     margin-top: .625rem;
     min-width: 250px;
 
-    mat-form-field {
-      width: 100%;
-    }
-
     &.date-column-filter {
       min-width: 280px;
     }
@@ -80,4 +72,9 @@ table {
 .mat-column-actions,
 .mat-column-actions-filter {
   border-left: 1px solid #ccc;
+}
+
+.mat-mdc-form-field {
+  font-size: 14px;
+  width: 100%;
 }

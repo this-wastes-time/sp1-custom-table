@@ -5,6 +5,7 @@ const DEFAULT_TIMING = '150ms ease-in-out';
 
 /**
  * Directive to handle reorder animations for elements.
+ * Reverse engineered from: https://stackblitz.com/edit/angular-xv78gq?file=src%2Fapp%2Fapp.component.css
  */
 @Directive({
   selector: '[appReorderAnimation]',

@@ -17,6 +17,7 @@ import { GeneralSpinnerDirective } from '../../directives/general-spinner.direct
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { ReorderAnimationDirective } from '../../directives/reorder-animation.directive';
+import { SpanFillerComponent } from '../span-filler/span-filler.component';
 
 @NgModule({
   declarations: [],
@@ -40,6 +41,7 @@ import { ReorderAnimationDirective } from '../../directives/reorder-animation.di
     MatSlideToggleModule,
     MatSidenavModule,
     ReorderAnimationDirective,
+    SpanFillerComponent,
   ],
   exports: [
     CommonModule,
@@ -61,6 +63,7 @@ import { ReorderAnimationDirective } from '../../directives/reorder-animation.di
     MatSlideToggleModule,
     MatSidenavModule,
     ReorderAnimationDirective,
+    SpanFillerComponent,
   ],
   providers: [
     provideNativeDateAdapter(),
