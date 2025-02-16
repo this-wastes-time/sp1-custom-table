@@ -25,12 +25,20 @@ ul {
   }
 }
 
-.action-button {
+.action-buttons {
   display: flex;
   flex-flow: column wrap;
 
+  .two-buttons {
+    display: flex;
+
+    button {
+      width: 100%;
+    }
+  }
+
   button {
-    margin: .25rem;
+    margin: .125rem;
   }
 }
 
