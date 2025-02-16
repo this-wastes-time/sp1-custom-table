@@ -11,12 +11,15 @@
           [style.z-index]="loading ? 110 : -1"></div>
       
         <div class="table-filter-container">
+          <span style="flex: 1 1 auto;"></span>
+
           @if (tableConfig.filterOptions) {
             <!-- Table filter -->
-            <div class="filter-search-box" [class.table-menu-showing]="(tableConfig.tableActions?.length ?? 0) > 0">
+            <div class="search-box">
               <app-search-box #searchBox
                 [subscriptSizing]="'dynamic'"
                 [id]="tableConfig.filterOptions.id ?? ''"
+                appearance="outline"
                 [label]="tableConfig.filterOptions.label ?? ''"
                 [placeholder]="tableConfig.filterOptions.placeholder ?? ''"
                 [instantSearch]="tableConfig.filterOptions.instantSearch ?? false"
@@ -24,7 +27,7 @@
               </app-search-box>
             </div>
           }
-          <span style="flex: 1 1 auto;"></span>
+
           <!-- Table menu -->
           @if (tableConfig.autoRefresh) {
             <div class="auto-refresh-toggle">
@@ -38,7 +41,7 @@
           @if ((tableConfig.tableActions?.length ?? 0) > 0) {
             <div class="table-menu">
               <button mat-icon-button [color]="'accent'" [matMenuTriggerFor]="tableMenu">
-                <mat-icon>more_vert</mat-icon>
+                <mat-icon>settings</mat-icon>
               </button>
               <mat-menu #tableMenu="matMenu">
                 @for (action of tableConfig.tableActions; track action) {
@@ -187,10 +190,13 @@
               }
             }
       
+            <!-- Headers -->
             <tr mat-header-row *matHeaderRowDef="displayColumns; sticky: tableConfig.columnsConfig.stickyHeaders"></tr>
             @if (displayColumnsFilters.length > 0) {
               <tr mat-header-row *matHeaderRowDef="displayColumnsFilters; sticky: tableConfig.columnsConfig.stickyHeaders"></tr>
             }
+
+            <!-- Data rows -->
             <tr mat-row *matRowDef="let row; columns: displayColumns"
               [class.showActions]="tableConfig.rowActions"
               [ngClass]="tableConfig.rowClass?.(row) ?? ''"></tr>
