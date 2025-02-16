@@ -1,6 +1,6 @@
 import { TableFilter } from './filter.model';
 import { ColumnsConfig } from './column.model';
-import { RowActionsConfig, TableAction } from './actions.model';
+import { RowActionsConfig, TableAction, SelectedRowAction } from './actions.model';
 import { SortConfig } from './sort.model';
 
 interface AutoRefreshConfig {
@@ -18,7 +18,8 @@ export interface TableConfig {
   autoRefresh?: AutoRefreshConfig; // Configuration for auto refreshing the table
   rowClass?: (row: any) => string | string[]; // Function to determine CSS class for a row
   sortOptions?: SortConfig; // Configuration for sorting
-  tableActions?: TableAction[]; // Array of table actions. Some batch row action or clearing all filters.
+  tableActions?: TableAction[]; // Array of table actions.
+  selectedRowActions?: SelectedRowAction[]; // Array of actions that can be done in batches.
   rowActions?: RowActionsConfig; // Configuration for row actions
   filterOptions?: TableFilter; // Configuration for table filter
 }

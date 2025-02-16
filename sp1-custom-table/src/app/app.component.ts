@@ -168,12 +168,14 @@ export class AppComponent implements OnInit {
     tableActions: [
       {
         label: 'Refresh table',
-        description: 'Update tabe with latest data',
+        description: 'Update table with latest data',
         action: () => {
           this.loadData();
           this.tableDataRequestClient();
         }
       },
+    ],
+    selectedRowActions: [
       {
         label: 'Delete rows',
         description: 'Delete selected rows',

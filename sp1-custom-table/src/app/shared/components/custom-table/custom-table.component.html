@@ -15,23 +15,29 @@
             @if (tableConfig.filterOptions || this.displayColumnsFilters.length > 0) {
               <button class="smaller-padding"
                 mat-flat-button
-                color="primary"
+                color="accent"
                 [matTooltip]="resetFiltersTooltip"
                 [attr.aria-label]="resetFiltersTooltip"
                 (click)="resetFilters()">
                 Reset Filters
               </button>
             }
-            <button class="smaller-padding" mat-flat-button>Show Filters</button>
+
+            <button class="smaller-padding"
+              color="accent"
+              mat-flat-button>
+              Show Filters
+            </button>
+
             @if (selectedRows.length > 0) {
               <button mat-icon-button
-                color="primary"
+                color="accent"
                 [matTooltip]="multiRowActionMenuTooltip"
                 [matMenuTriggerFor]="selectedRowMenu">
                 <mat-icon>more_vert</mat-icon>
               </button>
               <mat-menu #selectedRowMenu="matMenu">
-                @for (action of tableConfig.tableActions; track action) {
+                @for (action of tableConfig.selectedRowActions; track action) {
                   <span [class.disabled-wrapper]="action.disabled?.(selectedRows)">
                     <button mat-menu-item
                       [attr.aria-label]="action.description"
