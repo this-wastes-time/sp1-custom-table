@@ -9,6 +9,8 @@
       [pageSize]="cPageSize"
       (getData)="tableDataRequestClient()">
     </app-custom-table>
+
+    <mat-divider></mat-divider>
     
     <app-client-paginator
       [accessibleLabel]="accessibleLabel"
@@ -36,6 +38,8 @@
       [pageSize]="sPageSize"
       (getData)="tableDataRequestServer()">
     </app-custom-table>
+
+    <mat-divider></mat-divider>
 
     <app-server-paginator
       [accessibleLabel]="accessibleLabel"
