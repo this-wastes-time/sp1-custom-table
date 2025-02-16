@@ -3,6 +3,15 @@
   display: flex;
   align-items: center;
 
+  .table-buttons {
+    display: flex;
+    gap: 2px;
+
+    button.smaller-padding {
+      padding: .625em;
+    }
+  }
+
   .search-box {
     min-width: 300px;
   }

@@ -18,6 +18,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { ReorderAnimationDirective } from '../../directives/reorder-animation.directive';
 import { SpanFillerComponent } from '../span-filler/span-filler.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [],
@@ -42,6 +43,7 @@ import { SpanFillerComponent } from '../span-filler/span-filler.component';
     MatSidenavModule,
     ReorderAnimationDirective,
     SpanFillerComponent,
+    MatTooltipModule,
   ],
   exports: [
     CommonModule,
@@ -64,6 +66,7 @@ import { SpanFillerComponent } from '../span-filler/span-filler.component';
     MatSidenavModule,
     ReorderAnimationDirective,
     SpanFillerComponent,
+    MatTooltipModule,
   ],
   providers: [
     provideNativeDateAdapter(),

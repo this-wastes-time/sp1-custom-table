@@ -11,6 +11,39 @@
           [style.z-index]="loading ? 110 : -1"></div>
       
         <div class="table-filter-container">
+          <div class="table-buttons">
+            @if (tableConfig.filterOptions || this.displayColumnsFilters.length > 0) {
+              <button class="smaller-padding"
+                mat-flat-button
+                color="primary"
+                [matTooltip]="resetFiltersTooltip"
+                [attr.aria-label]="resetFiltersTooltip"
+                (click)="resetFilters()">
+                Reset Filters
+              </button>
+            }
+            <button class="smaller-padding" mat-flat-button>Show Filters</button>
+            @if (selectedRows.length > 0) {
+              <button mat-icon-button
+                color="primary"
+                [matTooltip]="multiRowActionMenuTooltip"
+                [matMenuTriggerFor]="selectedRowMenu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #selectedRowMenu="matMenu">
+                @for (action of tableConfig.tableActions; track action) {
+                  <span [class.disabled-wrapper]="action.disabled?.(selectedRows)">
+                    <button mat-menu-item
+                      [attr.aria-label]="action.description"
+                      [disabled]="action.disabled?.(selectedRows)"
+                      (click)="action.action(selectedRows)">
+                      {{ action.label }}
+                    </button>
+                  </span>
+                }
+              </mat-menu>
+            }
+          </div>
           <app-span-filler></app-span-filler>
 
           @if (tableConfig.filterOptions) {

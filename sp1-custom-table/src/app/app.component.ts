@@ -148,6 +148,7 @@ export class AppComponent implements OnInit {
       reorderColumns: true,
     },
     showRowNumbers: true,
+    multiRowSelection: true,
     autoRefresh: {
       enabled: false,
       intervalMs: AFREFRESH,

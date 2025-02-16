@@ -72,7 +72,11 @@ export class CustomTableComponent implements OnChanges {
   private _filterState!: TableFilters | null;
 
   // Selected rows vars.
-  selectedRows!: any[]; // Store selected rows of table.
+  selectedRows: any[] = []; // Store selected rows of table.
+
+  // Tooltip vars.
+  resetFiltersTooltip = 'Clear all filters and search terms';
+  multiRowActionMenuTooltip = 'Show more';
 
   constructor(
     private announcer: LiveAnnouncer,
@@ -127,31 +131,12 @@ export class CustomTableComponent implements OnChanges {
         ];
       }
 
-      // If table or column-level filters are present, add action to table.
-      if (tableConfig.filterOptions || this.displayColumnsFilters.length > 0) {
-        const resetFiltersAction = {
-          label: 'Reset filters',
-          description: 'Clear all filters and search terms',
-          action: () => {
-            this.globalFilter = '';
-            this.searchBox.clear();
-            this.columnFilters = {};
-            this.single.reset();
-            this.range.reset();
-            this.applyFilters();
-          }
-        };
-
-        tableConfig.tableActions = [
-          resetFiltersAction,
-          ...(tableConfig.tableActions || [])
-        ];
-      }
       // Set sort properties if available.
       this.currentSort = {
         active: tableConfig.sortOptions?.initialSort?.active ?? '',
         direction: tableConfig.sortOptions?.initialSort?.direction ?? '',
       };
+
       this.detector.detectChanges();
     }
 
@@ -209,6 +194,15 @@ export class CustomTableComponent implements OnChanges {
     return this.dataSource._pageData(this.dataSource.data).some((row) => row.selected) &&
       !this.dataSource._pageData(this.dataSource.data).every((row) => row.selected);
   };
+
+  protected resetFilters(): void {
+    this.globalFilter = '';
+    this.searchBox.clear();
+    this.columnFilters = {};
+    this.single.reset();
+    this.range.reset();
+    this.applyFilters();
+  }
 
   private _generateDisplayColumns(columns: Column[]): void {
     this.displayColumns = columns.filter(col => col.visible ?? true).map(col => col.field);
