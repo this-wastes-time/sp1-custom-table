@@ -68,7 +68,7 @@
             <!-- Column for multiple row checkbox selection. -->
             @if (tableConfig.multiRowSelection) {
               <ng-container matColumnDef="select">
-                <th class="non-filter-header" mat-header-cell *matHeaderCellDef>
+                <th mat-header-cell *matHeaderCellDef>
                   <mat-checkbox [checked]="allSelected()" [indeterminate]="someSelected()" (change)="toggleAllSelection($event.checked)"></mat-checkbox>
                 </th>
                 <td mat-cell *matCellDef="let row">
@@ -87,7 +87,7 @@
             <!-- Column for numbered rows. -->
             @if (tableConfig.showRowNumbers) {
               <ng-container matColumnDef="#">
-                <th class="non-filter-header" mat-header-cell *matHeaderCellDef> # </th>
+                <th mat-header-cell *matHeaderCellDef> # </th>
                 <td mat-cell *matCellDef="let row; let i = index"> {{ getRowNumber(i) }} </td>
               </ng-container>
       
@@ -102,7 +102,7 @@
             <!-- Columns generated from table configuration. -->
             @for (column of tableConfig.columnsConfig.columns; track column.field) {
               <ng-container matColumnDef="{{ column.field }}">
-                <th class="non-filter-header" mat-header-cell *matHeaderCellDef mat-sort-header
+                <th mat-header-cell *matHeaderCellDef mat-sort-header
                   sortActionDescription="Sort by {{column.field}}" [disabled]="!column.sortable">
                   {{ column.header }}
                 </th>
@@ -165,7 +165,7 @@
             <!-- Column for row actions. -->
             @if (tableConfig.rowActions) {
               <ng-container matColumnDef="actions" [stickyEnd]="tableConfig.rowActions.stickyActions">
-                <th class="non-filter-header" mat-header-cell *matHeaderCellDef> Actions </th>
+                <th mat-header-cell *matHeaderCellDef> Actions </th>
                 <td mat-cell *matCellDef="let row">
                   <button mat-icon-button [color]="'accent'" [matMenuTriggerFor]="actionMenu">
                     <mat-icon>more_vert</mat-icon>
@@ -191,7 +191,7 @@
             }
       
             <!-- Headers -->
-            <tr mat-header-row *matHeaderRowDef="displayColumns; sticky: tableConfig.columnsConfig.stickyHeaders"></tr>
+            <tr class="non-filter-header" mat-header-row *matHeaderRowDef="displayColumns; sticky: tableConfig.columnsConfig.stickyHeaders"></tr>
             @if (displayColumnsFilters.length > 0) {
               <tr mat-header-row *matHeaderRowDef="displayColumnsFilters; sticky: tableConfig.columnsConfig.stickyHeaders"></tr>
             }
