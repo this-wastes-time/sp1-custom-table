@@ -50,9 +50,9 @@ export class CustomTableComponent implements OnChanges {
 
   // Table column vars.
   displayColumns: string[] = [];
-  displayColumnsFilters: string[] = [];
+  columnFiltersPresent!: boolean;
+  displayedFilters!: Column[];
   columnFilters: Record<string, string> = {}; // Store filters for each column
-  columnSelectFilterOptions: Record<string, any[]> = {}; // Store select dropdown filter options for each column //TODO delete..
   readonly single = new FormGroup({
     date: new FormControl<Date | null>(null),
   });
@@ -72,7 +72,11 @@ export class CustomTableComponent implements OnChanges {
   private _filterState!: TableFilters | null;
 
   // Selected rows vars.
-  selectedRows!: any[]; // Store selected rows of table.
+  selectedRows: any[] = []; // Store selected rows of table.
+
+  // Tooltip vars.
+  resetFiltersTooltip = 'Clear all filters and search terms';
+  multiRowActionMenuTooltip = 'Show more';
 
   constructor(
     private announcer: LiveAnnouncer,
@@ -84,10 +88,12 @@ export class CustomTableComponent implements OnChanges {
     if (changes['tableConfig']?.currentValue) {
       const tableConfig = changes['tableConfig'].currentValue;
       // Generate the table display.
-      this._generateDisplayColumns(tableConfig['columnsConfig'].columns);
+      this._generateDisplayColumns(tableConfig.columnsConfig.columns);
+      // Set filters to display.
+      this.displayedFilters = tableConfig.columnsConfig.columns;
       // If any column has a filter, generate the filter columns.
       if (tableConfig.columnsConfig.columns.some((col: Column) => col.filterOptions)) {
-        this._generateDisplayColumnsFilters();
+        this.columnFiltersPresent = true;
       }
 
       // If showing and hiding columns is allowed, add action to table.
@@ -111,7 +117,8 @@ export class CustomTableComponent implements OnChanges {
               this.tableConfig.columnsConfig.columns = updatedCols;
               // Update columns.
               this._generateDisplayColumns(updatedCols);
-              this._generateDisplayColumnsFilters();
+              console.log(updatedCols);
+              this.displayedFilters = updatedCols;
               // Clean up the subscription and component reference
               sub.unsubscribe();
               modColumns.destroy();
@@ -127,31 +134,12 @@ export class CustomTableComponent implements OnChanges {
         ];
       }
 
-      // If table or column-level filters are present, add action to table.
-      if (tableConfig.filterOptions || this.displayColumnsFilters.length > 0) {
-        const resetFiltersAction = {
-          label: 'Reset filters',
-          description: 'Clear all filters and search terms',
-          action: () => {
-            this.globalFilter = '';
-            this.searchBox.clear();
-            this.columnFilters = {};
-            this.single.reset();
-            this.range.reset();
-            this.applyFilters();
-          }
-        };
-
-        tableConfig.tableActions = [
-          resetFiltersAction,
-          ...(tableConfig.tableActions || [])
-        ];
-      }
       // Set sort properties if available.
       this.currentSort = {
         active: tableConfig.sortOptions?.initialSort?.active ?? '',
         direction: tableConfig.sortOptions?.initialSort?.direction ?? '',
       };
+
       this.detector.detectChanges();
     }
 
@@ -210,6 +198,15 @@ export class CustomTableComponent implements OnChanges {
       !this.dataSource._pageData(this.dataSource.data).every((row) => row.selected);
   };
 
+  protected resetFilters(): void {
+    this.globalFilter = '';
+    this.searchBox.clear();
+    this.columnFilters = {};
+    this.single.reset();
+    this.range.reset();
+    this.applyFilters();
+  }
+
   private _generateDisplayColumns(columns: Column[]): void {
     this.displayColumns = columns.filter(col => col.visible ?? true).map(col => col.field);
 
@@ -227,10 +224,6 @@ export class CustomTableComponent implements OnChanges {
     if (this.tableConfig.rowActions) {
       this.displayColumns.push('actions');
     }
-  }
-
-  private _generateDisplayColumnsFilters(): void {
-    this.displayColumnsFilters = this.displayColumns.map(col => `${col}-filter`);
   }
 
   private _isEmpty(value: any): boolean {

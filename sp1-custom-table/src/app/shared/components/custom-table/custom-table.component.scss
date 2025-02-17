@@ -1,7 +1,16 @@
 .table-filter-container {
-  margin: .625rem 0;
+  padding: .625em 0;
   display: flex;
   align-items: center;
+
+  .table-buttons {
+    display: flex;
+    gap: .25em;
+
+    button.smaller-padding {
+      padding: .625em;
+    }
+  }
 
   .search-box {
     min-width: 300px;
@@ -22,6 +31,16 @@
   }
 }
 
+.column-filters-container {
+  display: flex;
+  flex-flow: row wrap;
+  column-gap: .5em;
+
+  .column-filter-container {
+    min-width: 300px;
+  }
+}
+
 .table-container {
   margin: 0 auto;
   overflow: auto;
@@ -38,19 +57,6 @@ table {
   tr {
     &.mat-mdc-no-data-row {
       white-space: nowrap;
-    }
-  }
-
-  .column-filter-container {
-    margin-top: .625rem;
-    min-width: 250px;
-
-    &.date-column-filter {
-      min-width: 280px;
-    }
-
-    &.mat-mdc-form-field-type-mat-date-range-input {
-      min-width: 300px;
     }
   }
 }

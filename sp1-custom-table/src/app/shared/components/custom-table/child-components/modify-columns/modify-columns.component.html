@@ -30,15 +30,17 @@
 
   <app-span-filler></app-span-filler>
 
-  <div class="action-button">
+  <div class="action-buttons">
     <button mat-flat-button
       (click)="resetColumns()">Reset to default
     </button>
-    <button mat-stroked-button
-      (click)="cancel()">Cancel
-    </button>
-    <button mat-raised-button
-      (click)="close()">Apply Changes
-    </button>
+    <div class="two-buttons">
+      <button mat-stroked-button
+        (click)="cancel()">Cancel
+      </button>
+      <button mat-raised-button
+        (click)="close()">Apply Changes
+      </button>
+    </div>
   </div>
 </div>

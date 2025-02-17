@@ -1,5 +1,5 @@
 <!-- Client paging setup -->
-<h2>Client side paged table</h2>
+<!-- <h2>Client side paged table</h2>
 <div class="outer-table-container">
   <div class="table-paginator-container">
     <app-custom-table #clientTable
@@ -9,6 +9,8 @@
       [pageSize]="cPageSize"
       (getData)="tableDataRequestClient()">
     </app-custom-table>
+
+    <mat-divider></mat-divider>
     
     <app-client-paginator
       [accessibleLabel]="accessibleLabel"
@@ -20,12 +22,10 @@
       (paginatedData)="updateDataClient($event)">
     </app-client-paginator>
   </div>
-</div>
-
-<!-- <mat-divider></mat-divider> -->
+</div> -->
 
 <!-- Server paging setup -->
-<!-- <h2>Server side paged table</h2>
+<h2>Server side paged table</h2>
 <div class="outer-table-container">
   <div class="table-paginator-container">
     <app-custom-table #serverTable
@@ -37,6 +37,8 @@
       (getData)="tableDataRequestServer()">
     </app-custom-table>
 
+    <mat-divider></mat-divider>
+
     <app-server-paginator
       [accessibleLabel]="accessibleLabel"
       [pageIndex]="sPageIndex"
@@ -47,4 +49,4 @@
       (fetchData)="updateDataServer()">
     </app-server-paginator>
   </div>
-</div> -->
+</div>
