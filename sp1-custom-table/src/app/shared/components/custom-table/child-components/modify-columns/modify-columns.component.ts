@@ -127,6 +127,8 @@ export class ModifyColumnsComponent implements OnInit, AfterViewInit {
     const indexMap = new Map<string, number>();
     this.config.columns.forEach((column, i) => indexMap.set(column.field, i));
     this.moddedCols.forEach((col, i) => {
+      // Reset column visibility.
+      col.visible = true;
       let origIndex = indexMap.get(col.field)!;
       while (origIndex !== i) {
         [this.moddedCols[i], this.moddedCols[origIndex]] = [this.moddedCols[origIndex], this.moddedCols[i]];
