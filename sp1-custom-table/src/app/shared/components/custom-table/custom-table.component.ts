@@ -50,9 +50,8 @@ export class CustomTableComponent implements OnChanges {
 
   // Table column vars.
   displayColumns: string[] = [];
-  displayColumnsFilters: string[] = [];
+  columnFiltersPresent!: boolean;
   columnFilters: Record<string, string> = {}; // Store filters for each column
-  columnSelectFilterOptions: Record<string, any[]> = {}; // Store select dropdown filter options for each column //TODO delete..
   readonly single = new FormGroup({
     date: new FormControl<Date | null>(null),
   });
@@ -91,7 +90,7 @@ export class CustomTableComponent implements OnChanges {
       this._generateDisplayColumns(tableConfig['columnsConfig'].columns);
       // If any column has a filter, generate the filter columns.
       if (tableConfig.columnsConfig.columns.some((col: Column) => col.filterOptions)) {
-        this._generateDisplayColumnsFilters();
+        this.columnFiltersPresent = true;
       }
 
       // If showing and hiding columns is allowed, add action to table.
@@ -115,7 +114,6 @@ export class CustomTableComponent implements OnChanges {
               this.tableConfig.columnsConfig.columns = updatedCols;
               // Update columns.
               this._generateDisplayColumns(updatedCols);
-              this._generateDisplayColumnsFilters();
               // Clean up the subscription and component reference
               sub.unsubscribe();
               modColumns.destroy();
@@ -221,10 +219,6 @@ export class CustomTableComponent implements OnChanges {
     if (this.tableConfig.rowActions) {
       this.displayColumns.push('actions');
     }
-  }
-
-  private _generateDisplayColumnsFilters(): void {
-    this.displayColumnsFilters = this.displayColumns.map(col => `${col}-filter`);
   }
 
   private _isEmpty(value: any): boolean {
