@@ -51,6 +51,7 @@ export class CustomTableComponent implements OnChanges {
   // Table column vars.
   displayColumns: string[] = [];
   columnFiltersPresent!: boolean;
+  displayedFilters!: Column[];
   columnFilters: Record<string, string> = {}; // Store filters for each column
   readonly single = new FormGroup({
     date: new FormControl<Date | null>(null),
@@ -87,7 +88,9 @@ export class CustomTableComponent implements OnChanges {
     if (changes['tableConfig']?.currentValue) {
       const tableConfig = changes['tableConfig'].currentValue;
       // Generate the table display.
-      this._generateDisplayColumns(tableConfig['columnsConfig'].columns);
+      this._generateDisplayColumns(tableConfig.columnsConfig.columns);
+      // Set filters to display.
+      this.displayedFilters = tableConfig.columnsConfig.columns;
       // If any column has a filter, generate the filter columns.
       if (tableConfig.columnsConfig.columns.some((col: Column) => col.filterOptions)) {
         this.columnFiltersPresent = true;
@@ -114,6 +117,8 @@ export class CustomTableComponent implements OnChanges {
               this.tableConfig.columnsConfig.columns = updatedCols;
               // Update columns.
               this._generateDisplayColumns(updatedCols);
+              console.log(updatedCols);
+              this.displayedFilters = updatedCols;
               // Clean up the subscription and component reference
               sub.unsubscribe();
               modColumns.destroy();
