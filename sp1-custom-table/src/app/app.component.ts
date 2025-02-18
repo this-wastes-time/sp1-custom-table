@@ -69,6 +69,7 @@ export class AppComponent implements OnInit {
           sortable: true,
           filterOptions: {
             type: 'text',
+            placeholder: 'Example: Davy or Breiner',
           }
         },
         {

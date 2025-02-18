@@ -17,6 +17,9 @@ const DEBOUNCE_WAIT = 500;
   templateUrl: './search-bar.component.html',
   styleUrl: './search-bar.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '[class.has-focus]': 'expand && animateWidth',
+  }
 })
 export class SearchBarComponent implements OnInit {
   /**
@@ -54,6 +57,12 @@ export class SearchBarComponent implements OnInit {
    * @type {boolean}
    */
   @Input() instantSearch!: boolean;
+
+  /**
+   * Whether to animate the width of the search bar.
+   * @type {boolean}
+   */
+  @Input() animateWidth!: boolean;
 
   /**
    * Placeholder text for the input field.
@@ -136,6 +145,12 @@ export class SearchBarComponent implements OnInit {
    */
   protected readonly clearAriaLabel = `Clear ${this.id}`;
 
+  /**
+   * Whether the search bar is focused.
+   * @type {boolean}
+   */
+  protected focused!: boolean;
+
   ngOnInit(): void {
     if (this.value === undefined) {
       this.value = '';
@@ -145,7 +160,10 @@ export class SearchBarComponent implements OnInit {
       debounceTime(this.instantSearch ? 0 : DEBOUNCE_WAIT),
       takeUntil(this._destroy$),
       map((value: string | null) => value = value || '')
-    ).subscribe(value => this.valueChange.emit(value));
+    ).subscribe(value => {
+      // TODO: Don't update if previous value is the same as the new value.
+      this.valueChange.emit(value);
+    });
   }
 
   /**
@@ -154,6 +172,36 @@ export class SearchBarComponent implements OnInit {
    */
   protected empty(): boolean {
     return !this.searchControl.value;
+  }
+
+  /**
+   * Determines whether to show the clear button.
+   * @returns {boolean} True if the clear button should be shown, false otherwise.
+   */
+  showClearButton(): boolean {
+    return this.animateWidth ? this.focused : true;
+  }
+
+  /**
+   * Handles the focus in event.
+   */
+  onFocusIn(): void {
+    this.focused = true;
+  }
+
+  /**
+   * Handles the blur event.
+   */
+  onBlur(): void {
+    this.focused = false;
+  }
+
+  /**
+   * Gets whether the search bar should expand.
+   * @returns {boolean} True if the search bar should expand, false otherwise.
+   */
+  get expand(): boolean {
+    return this.focused;
   }
 
   /**

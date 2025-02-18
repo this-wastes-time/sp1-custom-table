@@ -1,27 +1,35 @@
 <span [class.disabled-wrapper]="disabled">
-  <mat-form-field
+  <mat-form-field class="search-form-field"
+    [class.animate-width]="animateWidth"
     [appearance]="appearance"
     [subscriptSizing]="subscriptSizing"
     [color]="color">
 
-    <mat-label>{{ label }}</mat-label>
+    <mat-label [class.animate-width]="animateWidth">
+      {{ label }}
+    </mat-label>
 
-    <input type="text"
+    <input class="search-input"
+      type="text"
       matInput
       [formControl]="searchControl"
       [placeholder]="placeholder"
-      [required]="required"/>
+      [required]="required"
+      (focus)="onFocusIn()"
+      (blur)="onBlur()"/>
 
     @if (showSearchIcon) {
       <mat-icon matPrefix>search</mat-icon>
     }
 
-    <button mat-icon-button
-      matSuffix
-      [attr.aria-label]="clearAriaLabel"
-      [disabled]="empty()"
-      (click)="clear()">
-      <mat-icon>close</mat-icon>
-    </button>
+    @if (showClearButton()) {
+      <button mat-icon-button
+        matSuffix
+        [attr.aria-label]="clearAriaLabel"
+        [disabled]="empty()"
+        (click)="clear()">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
   </mat-form-field>
 </span>

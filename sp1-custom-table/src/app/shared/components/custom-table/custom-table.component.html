@@ -17,6 +17,7 @@
               <app-search-bar #searchBar
                 [label]="tableConfig.filterOptions.label ?? ''"
                 [placeholder]="tableConfig.filterOptions.placeholder ?? ''"
+                [animateWidth]="true"
                 (valueChange)="applyFilter($event)">
               </app-search-bar>
             </div>

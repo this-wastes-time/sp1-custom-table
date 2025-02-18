@@ -1,7 +1,36 @@
-::placeholder {
-  font-style: italic;
-}
-
 mat-form-field {
   width: 100%;
+}
+
+.search-form-field {
+  &.animate-width {
+    width: 45px;
+  }
+
+  transition: width 400ms;
+}
+
+::placeholder {
+  font-style: italic;
+
+  &.animate-width {
+    opacity: 0;
+    transition: opacity 400ms;
+  }
+}
+
+mat-label {
+  &.animate-width {
+    opacity: 0;
+    transition: opacity 400ms;
+  }
+}
+
+:host.has-focus .search-form-field {
+  width: 100%;
+}
+
+:host.has-focus mat-label,
+:host.has-focus ::placeholder {
+  opacity: 1;
 }
