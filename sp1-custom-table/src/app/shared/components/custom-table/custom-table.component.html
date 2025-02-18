@@ -227,15 +227,14 @@
 <!-- Defined Column Filter Templates -->
 <!-- Text -->
 <ng-template #textFilter let-column let-filters="filters">
-  <app-search-box
-    [appearance]="'outline'"
-    [id]="'search-' + column"
+  <app-search-bar
     [label]="column.filterOptions.label ?? 'Filter by ' + column.header"
     [placeholder]="column.filterOptions.placeholder ?? ''"
     [instantSearch]="column.filterOptions.instantSearch ?? false"
+    [showSearchIcon]="false"
     [(value)]="filters[column.field]"
     (valueChange)="applyFilters()">
-  </app-search-box>
+  </app-search-bar>
 </ng-template>
 <!-- Select -->
 <ng-template #selectFilter let-column let-filters="filters" let-inputs="inputs">
