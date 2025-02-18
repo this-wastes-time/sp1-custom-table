@@ -161,8 +161,10 @@ export class SearchBarComponent implements OnInit {
       takeUntil(this._destroy$),
       map((value: string | null) => value = value || '')
     ).subscribe(value => {
-      // TODO: Don't update if previous value is the same as the new value.
-      this.valueChange.emit(value);
+      // Don't emit if previous value is the same as the new value.
+      if (this.value !== value) {
+        this.valueChange.emit(value);
+      }
     });
   }
 
