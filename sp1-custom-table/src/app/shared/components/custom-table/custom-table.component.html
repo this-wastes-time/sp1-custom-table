@@ -11,6 +11,17 @@
           [style.z-index]="loading ? 110 : -1"></div>
       
         <div class="table-filter-container">
+          <!-- Table search bar -->
+          @if (tableConfig.filterOptions) {
+            <div class="table-search-bar">
+              <app-search-bar
+                [label]="tableConfig.filterOptions.label ?? ''"
+                [placeholder]="tableConfig.filterOptions.placeholder ?? ''"
+                (valueChange)="applyFilter($event)">
+              </app-search-bar>
+            </div>
+          }
+          
           <div class="table-buttons">
             @if (tableConfig.filterOptions || columnFiltersPresent) {
               <button class="smaller-padding"
@@ -45,21 +56,6 @@
             }
           </div>
           <app-span-filler></app-span-filler>
-
-          @if (tableConfig.filterOptions) {
-            <!-- Table filter -->
-            <div class="search-box">
-              <app-search-box #searchBox
-                [subscriptSizing]="'dynamic'"
-                [id]="tableConfig.filterOptions.id ?? ''"
-                appearance="outline"
-                [label]="tableConfig.filterOptions.label ?? ''"
-                [placeholder]="tableConfig.filterOptions.placeholder ?? ''"
-                [instantSearch]="tableConfig.filterOptions.instantSearch ?? false"
-                (valueChange)="applyFilter($event)">
-              </app-search-box>
-            </div>
-          }
 
           <!-- Table menu -->
           @if (tableConfig.autoRefresh) {

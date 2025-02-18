@@ -4,12 +4,12 @@ import { TableConfig } from './models/table.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { SearchBoxComponent } from '../search-box/search-box.component';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ModifyColumnsComponent } from './child-components/modify-columns/modify-columns.component';
 import { MatSidenav } from '@angular/material/sidenav';
 import { of } from 'rxjs';
 import { Column } from './models/column.model';
+import { SearchBarComponent } from '../search-bar/search-bar.component';
 
 interface TableFilters {
   globalFilter: string;
@@ -19,7 +19,7 @@ interface TableFilters {
 @Component({
   selector: 'app-custom-table',
   standalone: true,
-  imports: [CustomTableModule,],
+  imports: [CustomTableModule, SearchBarComponent],
   templateUrl: './custom-table.component.html',
   styleUrl: './custom-table.component.scss'
 })
@@ -40,7 +40,7 @@ export class CustomTableComponent implements OnChanges {
 
   @Output() getData = new EventEmitter();
 
-  @ViewChild('searchBox') searchBox!: SearchBoxComponent;
+  @ViewChild('searchBar') searchBar!: SearchBarComponent;
   @ViewChild('sidenav') sidenav!: MatSidenav;
   @ViewChild('sidenavContent', { read: ViewContainerRef }) sidenavContent!: ViewContainerRef;
 
@@ -200,7 +200,7 @@ export class CustomTableComponent implements OnChanges {
 
   protected resetFilters(): void {
     this.globalFilter = '';
-    this.searchBox.clear();
+    this.searchBar.clear();
     this.columnFilters = {};
     this.single.reset();
     this.range.reset();
