@@ -14,7 +14,7 @@
           <!-- Table search bar -->
           @if (tableConfig.filterOptions) {
             <div class="table-search-bar">
-              <app-search-bar
+              <app-search-bar #searchBar
                 [label]="tableConfig.filterOptions.label ?? ''"
                 [placeholder]="tableConfig.filterOptions.placeholder ?? ''"
                 (valueChange)="applyFilter($event)">
