@@ -11,18 +11,6 @@
           [style.z-index]="loading ? 110 : -1"></div>
       
         <div class="table-filter-container">
-          <!-- Table search bar -->
-          @if (tableConfig.filterOptions) {
-            <div class="table-search-bar">
-              <app-search-bar #searchBar
-                [label]="tableConfig.filterOptions.label ?? ''"
-                [placeholder]="tableConfig.filterOptions.placeholder ?? ''"
-                [animateWidth]="true"
-                (valueChange)="applyFilter($event)">
-              </app-search-bar>
-            </div>
-          }
-          
           <div class="table-buttons">
             @if (tableConfig.filterOptions || columnFiltersPresent) {
               <button class="smaller-padding"
@@ -56,8 +44,21 @@
               </mat-menu>
             }
           </div>
+
           <app-span-filler></app-span-filler>
 
+          <!-- Table search bar -->
+          @if (tableConfig.filterOptions) {
+            <div class="table-search-bar">
+              <app-search-bar #searchBar
+                [label]="tableConfig.filterOptions.label ?? ''"
+                [placeholder]="tableConfig.filterOptions.placeholder ?? ''"
+                [animateWidth]="true"
+                (valueChange)="applyFilter($event)">
+              </app-search-bar>
+            </div>
+          }
+          
           <!-- Table menu -->
           @if (tableConfig.autoRefresh) {
             <div class="auto-refresh-toggle">

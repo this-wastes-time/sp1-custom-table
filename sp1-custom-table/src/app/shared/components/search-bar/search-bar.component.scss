@@ -1,3 +1,9 @@
+.search-bar-container {
+  &.animate-width {
+    text-align: right;
+  }
+}
+
 mat-form-field {
   width: 100%;
 }
@@ -5,9 +11,8 @@ mat-form-field {
 .search-form-field {
   &.animate-width {
     width: 45px;
+    transition: width 400ms;
   }
-
-  transition: width 400ms;
 }
 
 ::placeholder {
@@ -26,11 +31,22 @@ mat-label {
   }
 }
 
-:host.has-focus .search-form-field {
-  width: 100%;
+.clear-button {
+  &.animate-width {
+    opacity: 0;
+    transition: opacity 400ms;
+  }
 }
 
-:host.has-focus mat-label,
-:host.has-focus ::placeholder {
-  opacity: 1;
+:host.has-focus {
+
+  .search-form-field {
+    width: 100%;
+  }
+
+  mat-label,
+  ::placeholder,
+  .clear-button {
+    opacity: 1;
+  }
 }

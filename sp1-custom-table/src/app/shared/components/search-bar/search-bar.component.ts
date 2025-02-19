@@ -18,7 +18,7 @@ const DEBOUNCE_WAIT = 500;
   styleUrl: './search-bar.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    '[class.has-focus]': 'expand && animateWidth',
+    '[class.has-focus]': '_expand && animateWidth',
   }
 })
 export class SearchBarComponent implements OnInit {
@@ -181,7 +181,7 @@ export class SearchBarComponent implements OnInit {
    * @returns {boolean} True if the clear button should be shown, false otherwise.
    */
   showClearButton(): boolean {
-    return this.animateWidth ? this.focused : true;
+    return this._expand;
   }
 
   /**
@@ -202,8 +202,8 @@ export class SearchBarComponent implements OnInit {
    * Gets whether the search bar should expand.
    * @returns {boolean} True if the search bar should expand, false otherwise.
    */
-  get expand(): boolean {
-    return this.focused;
+  private get _expand(): boolean {
+    return this.focused || !this.empty();
   }
 
   /**
