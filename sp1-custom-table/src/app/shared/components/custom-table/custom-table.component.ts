@@ -36,7 +36,21 @@ export class CustomTableComponent implements OnChanges {
   @Input() tableData: any[] = [];
   @Input() pageIndex!: number;
   @Input() pageSize!: number;
-  @Input() loading!: boolean;
+  @Input()
+  get loading(): boolean {
+    return this._loading;
+  }
+  set loading(value: boolean) {
+    this._loading = value;
+    if (value) {
+      this.loadingTail = true;
+    } else {
+      setTimeout(() => {
+        this.loadingTail = false;
+      }, 500);
+    }
+  }
+  private _loading!: boolean;
 
   @Output() getData = new EventEmitter();
 
@@ -45,22 +59,22 @@ export class CustomTableComponent implements OnChanges {
   @ViewChild('sidenavContent', { read: ViewContainerRef }) sidenavContent!: ViewContainerRef;
 
   // Table data vars.
-  dataSource = new MatTableDataSource<any>(); // MatTableDataSource instance
-  globalFilter!: string; // Filter string from main search box
+  protected dataSource = new MatTableDataSource<any>(); // MatTableDataSource instance
+  protected globalFilter!: string; // Filter string from main search box
 
   // Table column vars.
-  displayColumns: string[] = [];
-  columnFiltersPresent!: boolean;
-  displayedFilters!: Column[];
-  columnFilters: Record<string, string> = {}; // Store filters for each column
-  readonly single = new FormGroup({
+  protected displayColumns: string[] = [];
+  protected columnFiltersPresent!: boolean;
+  protected displayedFilters!: Column[];
+  protected columnFilters: Record<string, string> = {}; // Store filters for each column
+  protected readonly single = new FormGroup({
     date: new FormControl<Date | null>(null),
   });
-  readonly range = new FormGroup({
+  protected readonly range = new FormGroup({
     start: new FormControl<Date | null>(null),
     end: new FormControl<Date | null>(null),
   });
-  currentSort!: Sort;
+  protected currentSort!: Sort;
 
   // Current table filters: global and columns.
   get filters(): TableFilters | null {
@@ -72,11 +86,14 @@ export class CustomTableComponent implements OnChanges {
   private _filterState!: TableFilters | null;
 
   // Selected rows vars.
-  selectedRows: any[] = []; // Store selected rows of table.
+  protected selectedRows: any[] = []; // Store selected rows of table.
 
   // Tooltip vars.
-  resetFiltersTooltip = 'Clear all filters and search terms';
-  multiRowActionMenuTooltip = 'Show more';
+  protected resetFiltersTooltip = 'Clear all filters and search terms';
+  protected multiRowActionMenuTooltip = 'Show more';
+
+  // Magic var.
+  protected loadingTail!: boolean;
 
   constructor(
     private announcer: LiveAnnouncer,

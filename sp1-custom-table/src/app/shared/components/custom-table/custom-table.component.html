@@ -8,7 +8,7 @@
         <div class="spinner-div" appGeneralSpinner
           [spinnerBusy]="loading" [spinnerColor]="'accent'"
           [style.background]="loading ? 'var(--spinner-background)' : 'none'"
-          [style.z-index]="loading ? 110 : -1"></div>
+          [style.z-index]="loadingTail ? 110 : -1"></div>
       
         <div class="table-filter-container">
           <div class="table-buttons">
