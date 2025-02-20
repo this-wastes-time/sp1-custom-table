@@ -217,8 +217,11 @@
 <!-- Defined Cell Templates -->
 <!-- Button -->
 <ng-template #buttonTemplate let-inputs>
-  <button mat-stroked-button [color]="'accent'" (click)="inputs.clickFunc()">
-    <span> {{ inputs.label }} </span>
+  <button class="template-cell-button"
+    mat-stroked-button
+    color="accent"
+    (click)="inputs.clickFunc()">
+    {{ inputs.label }}
   </button>
 </ng-template>
 <!-- Checkbox -->
