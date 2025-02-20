@@ -33,6 +33,11 @@ export class AppComponent implements OnInit {
           field: 'position',
           header: 'Position',
           align: 'right',
+          cellTemplate: 'button',
+          templateInputs: (row) => ({
+            label: row.position,
+            clickFunc: () => console.log('Position:', row.position),
+          })
         },
         {
           field: 'name',
@@ -69,6 +74,7 @@ export class AppComponent implements OnInit {
           sortable: true,
           filterOptions: {
             type: 'text',
+            placeholder: 'Example: Davy or Breiner',
           }
         },
         {

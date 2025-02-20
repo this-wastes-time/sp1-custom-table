@@ -4,12 +4,12 @@ import { TableConfig } from './models/table.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { SearchBoxComponent } from '../search-box/search-box.component';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ModifyColumnsComponent } from './child-components/modify-columns/modify-columns.component';
 import { MatSidenav } from '@angular/material/sidenav';
 import { of } from 'rxjs';
 import { Column } from './models/column.model';
+import { SearchBarComponent } from '../search-bar/search-bar.component';
 
 interface TableFilters {
   globalFilter: string;
@@ -19,7 +19,7 @@ interface TableFilters {
 @Component({
   selector: 'app-custom-table',
   standalone: true,
-  imports: [CustomTableModule,],
+  imports: [CustomTableModule, SearchBarComponent],
   templateUrl: './custom-table.component.html',
   styleUrl: './custom-table.component.scss'
 })
@@ -36,31 +36,45 @@ export class CustomTableComponent implements OnChanges {
   @Input() tableData: any[] = [];
   @Input() pageIndex!: number;
   @Input() pageSize!: number;
-  @Input() loading!: boolean;
+  @Input()
+  get loading(): boolean {
+    return this._loading;
+  }
+  set loading(value: boolean) {
+    this._loading = value;
+    if (value) {
+      this.loadingTail = true;
+    } else {
+      setTimeout(() => {
+        this.loadingTail = false;
+      }, 500);
+    }
+  }
+  private _loading!: boolean;
 
   @Output() getData = new EventEmitter();
 
-  @ViewChild('searchBox') searchBox!: SearchBoxComponent;
+  @ViewChild('searchBar') searchBar!: SearchBarComponent;
   @ViewChild('sidenav') sidenav!: MatSidenav;
   @ViewChild('sidenavContent', { read: ViewContainerRef }) sidenavContent!: ViewContainerRef;
 
   // Table data vars.
-  dataSource = new MatTableDataSource<any>(); // MatTableDataSource instance
-  globalFilter!: string; // Filter string from main search box
+  protected dataSource = new MatTableDataSource<any>(); // MatTableDataSource instance
+  protected globalFilter!: string; // Filter string from main search box
 
   // Table column vars.
-  displayColumns: string[] = [];
-  columnFiltersPresent!: boolean;
-  displayedFilters!: Column[];
-  columnFilters: Record<string, string> = {}; // Store filters for each column
-  readonly single = new FormGroup({
+  protected displayColumns: string[] = [];
+  protected columnFiltersPresent!: boolean;
+  protected displayedFilters!: Column[];
+  protected columnFilters: Record<string, string> = {}; // Store filters for each column
+  protected readonly single = new FormGroup({
     date: new FormControl<Date | null>(null),
   });
-  readonly range = new FormGroup({
+  protected readonly range = new FormGroup({
     start: new FormControl<Date | null>(null),
     end: new FormControl<Date | null>(null),
   });
-  currentSort!: Sort;
+  protected currentSort!: Sort;
 
   // Current table filters: global and columns.
   get filters(): TableFilters | null {
@@ -72,11 +86,14 @@ export class CustomTableComponent implements OnChanges {
   private _filterState!: TableFilters | null;
 
   // Selected rows vars.
-  selectedRows: any[] = []; // Store selected rows of table.
+  protected selectedRows: any[] = []; // Store selected rows of table.
 
   // Tooltip vars.
-  resetFiltersTooltip = 'Clear all filters and search terms';
-  multiRowActionMenuTooltip = 'Show more';
+  protected resetFiltersTooltip = 'Clear all filters and search terms';
+  protected multiRowActionMenuTooltip = 'Show more';
+
+  // Magic var.
+  protected loadingTail!: boolean;
 
   constructor(
     private announcer: LiveAnnouncer,
@@ -200,7 +217,7 @@ export class CustomTableComponent implements OnChanges {
 
   protected resetFilters(): void {
     this.globalFilter = '';
-    this.searchBox.clear();
+    this.searchBar.clear();
     this.columnFilters = {};
     this.single.reset();
     this.range.reset();

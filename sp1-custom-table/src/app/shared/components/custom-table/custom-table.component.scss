@@ -6,13 +6,9 @@
   .table-buttons {
     display: flex;
     gap: .25em;
-
-    button.smaller-padding {
-      padding: .625em;
-    }
   }
 
-  .search-box {
+  .table-search-bar {
     min-width: 300px;
   }
 
@@ -83,4 +79,14 @@ table {
 .mat-mdc-form-field {
   font-size: 14px;
   width: 100%;
+}
+
+.mdc-button {
+  &.smaller-padding {
+    padding: 0 16px;
+  }
+
+  &.template-cell-button {
+    border-radius: 6px !important;
+  }
 }

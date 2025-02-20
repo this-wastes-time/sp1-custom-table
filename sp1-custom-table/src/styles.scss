@@ -1,7 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 
-// @import '@angular/material/prebuilt-themes/cyan-orange.css';
-@import '@angular/material/prebuilt-themes/azure-blue.css';
+@import '@angular/material/prebuilt-themes/cyan-orange.css';
+// @import '@angular/material/prebuilt-themes/azure-blue.css';
 
 :root {
   --spinner-background: rgba(255, 255, 255, 0.6);
@@ -43,10 +43,6 @@ body {
 }
 
 /* Angular overrides */
-.mdc-button {
-  border-radius: 8px !important;
-}
-
 mat-form-field.small {
   --mat-form-field-container-height: 41px;
   --mat-form-field-container-vertical-padding: 8px;

@@ -6,7 +6,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSortModule } from '@angular/material/sort';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { SearchBoxComponent } from '../search-box/search-box.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -19,6 +18,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { ReorderAnimationDirective } from '../../directives/reorder-animation.directive';
 import { SpanFillerComponent } from '../span-filler/span-filler.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { SearchBarComponent } from '../search-bar/search-bar.component';
 
 @NgModule({
   declarations: [],
@@ -30,7 +30,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatIconModule,
     MatSortModule,
     MatCheckboxModule,
-    SearchBoxComponent,
     MatFormFieldModule,
     MatInputModule,
     FormsModule,
@@ -44,6 +43,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     ReorderAnimationDirective,
     SpanFillerComponent,
     MatTooltipModule,
+    SearchBarComponent,
   ],
   exports: [
     CommonModule,
@@ -53,7 +53,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatIconModule,
     MatSortModule,
     MatCheckboxModule,
-    SearchBoxComponent,
     MatFormFieldModule,
     MatInputModule,
     FormsModule,
@@ -67,6 +66,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     ReorderAnimationDirective,
     SpanFillerComponent,
     MatTooltipModule,
+    SearchBarComponent,
   ],
   providers: [
     provideNativeDateAdapter(),
