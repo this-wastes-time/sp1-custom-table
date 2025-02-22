@@ -35,6 +35,7 @@ export class AppComponent implements OnInit {
           align: 'right',
           cellTemplate: 'button',
           templateInputs: (row) => ({
+            type: 'button',
             label: row.position,
             clickFunc: () => console.log('Position:', row.position),
           })
@@ -100,6 +101,7 @@ export class AppComponent implements OnInit {
           header: 'Online Graduate',
           cellTemplate: 'checkbox',
           templateInputs: (row) => ({
+            type: 'checkbox',
             checked: row.online,
           }),
           filterOptions: {
@@ -124,9 +126,10 @@ export class AppComponent implements OnInit {
           header: 'Married',
           sortable: true,
           cellTemplate: 'checkbox',
-          templateInputs(row): Record<string, unknown> {
-            return { checked: row.married };
-          },
+          templateInputs: (row) => ({
+            type: 'checkbox',
+            checked: row.married,
+          }),
           filterOptions: {
             type: 'select',
             templateInputs: () => ({
