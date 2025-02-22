@@ -35,6 +35,7 @@ export class AppComponent implements OnInit {
           align: 'right',
           cellTemplate: 'button',
           templateInputs: (row) => ({
+            type: 'button',
             label: row.position,
             clickFunc: () => console.log('Position:', row.position),
           })
@@ -46,7 +47,7 @@ export class AppComponent implements OnInit {
           filterOptions: {
             type: 'select',
             templateInputs: () => ({
-              selectValues: () => Array.from(new Set(this.clientData?.map(e => e.name))).sort(),
+              selectValues: () => Array.from(new Set<string>(this.clientData?.map(e => e.name))).sort(),
             }),
           }
         },
@@ -63,7 +64,7 @@ export class AppComponent implements OnInit {
           filterOptions: {
             type: 'select',
             templateInputs: () => ({
-              selectValues: () => Array.from(new Set(this.clientData?.map(e => e.symbol))).sort(),
+              selectValues: () => Array.from(new Set<string>(this.clientData?.map(e => e.symbol))).sort(),
               multiple: true,
             })
           }
@@ -90,7 +91,7 @@ export class AppComponent implements OnInit {
           filterOptions: {
             type: 'select',
             templateInputs: () => ({
-              selectValues: () => Array.from(new Set(this.clientData?.map(e => e.career))).sort(),
+              selectValues: () => Array.from(new Set<string>(this.clientData?.map(e => e.career))).sort(),
               multiple: true,
             }),
           }
@@ -100,12 +101,13 @@ export class AppComponent implements OnInit {
           header: 'Online Graduate',
           cellTemplate: 'checkbox',
           templateInputs: (row) => ({
+            type: 'checkbox',
             checked: row.online,
           }),
           filterOptions: {
             type: 'select',
             templateInputs: () => ({
-              selectValues: () => Array.from(new Set(this.clientData?.map(e => e.online))).sort(),
+              selectValues: () => Array.from(new Set<boolean>(this.clientData?.map(e => e.online))).sort(),
               multiple: true,
             }),
           },
@@ -124,13 +126,14 @@ export class AppComponent implements OnInit {
           header: 'Married',
           sortable: true,
           cellTemplate: 'checkbox',
-          templateInputs(row): Record<string, unknown> {
-            return { checked: row.married };
-          },
+          templateInputs: (row) => ({
+            type: 'checkbox',
+            checked: row.married,
+          }),
           filterOptions: {
             type: 'select',
             templateInputs: () => ({
-              selectValues: () => Array.from(new Set(this.clientData?.map(e => e.married))).sort(),
+              selectValues: () => Array.from(new Set<boolean>(this.clientData?.map(e => e.married))).sort(),
               multiple: true,
             }),
           },
@@ -143,7 +146,7 @@ export class AppComponent implements OnInit {
           filterOptions: {
             type: 'select',
             templateInputs: () => ({
-              selectValues: () => Array.from(new Set(this.clientData?.map(e => e.company))).sort(),
+              selectValues: () => Array.from(new Set<string>(this.clientData?.map(e => e.company))).sort(),
               multiple: true,
             }),
           }

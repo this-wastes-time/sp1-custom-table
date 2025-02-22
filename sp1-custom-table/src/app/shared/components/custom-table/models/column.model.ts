@@ -1,6 +1,6 @@
+import { CellTemplate, CellTemplateConfig } from './cell-template.model';
 import { ColumnFilter } from './filter.model';
 
-export declare type CellTemplate = 'button' | 'checkbox';
 
 export interface ColumnsConfig {
   columns: Column[]; // Array of column configurations
@@ -16,7 +16,7 @@ export interface Column {
   valueGetter?: (row: any) => any; // Function to determine the displayed value in the cell
   sortable?: boolean; // Whether the column is sortable
   cellTemplate?: CellTemplate; // Custom template for rendering column content
-  templateInputs?: (row: any) => Record<string, unknown>; // Function to determine inputs to pass to the template
+  templateInputs?: (row: any) => CellTemplateConfig; // Function to determine input configuration to pass to the template
   filterOptions?: ColumnFilter; // Configuration for column filter
   align?: 'left' | 'center' | 'right'; // Determine alignment of column text.
   visible?: boolean; // Whether column is visible
