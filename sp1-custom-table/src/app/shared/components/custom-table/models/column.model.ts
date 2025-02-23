@@ -9,7 +9,7 @@ export interface ColumnsConfig {
   reorderColumns?: boolean; // Enables/disables column reordering
 }
 
-export interface BaseColumn<T> {
+interface BaseColumn<T> {
   type: string; // Type to distinguish this as a column
   field: string; // Field name in the data object
   header: string; // Display name of the column

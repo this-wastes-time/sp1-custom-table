@@ -45,9 +45,7 @@ export class AppComponent implements OnInit {
           sortable: true,
           filterOptions: {
             type: 'select',
-            templateInputs: () => ({
-              selectValues: () => Array.from(new Set<string>(this.clientData?.map(e => e.name))).sort(),
-            }),
+            options: () => Array.from(new Set<string>(this.clientData?.map(e => e.name))).sort(),
           }
         },
         {
@@ -64,10 +62,8 @@ export class AppComponent implements OnInit {
           sortable: true,
           filterOptions: {
             type: 'select',
-            templateInputs: () => ({
-              selectValues: () => Array.from(new Set<string>(this.clientData?.map(e => e.symbol))).sort(),
-              multiple: true,
-            })
+            options: () => Array.from(new Set<string>(this.clientData?.map(e => e.symbol))).sort(),
+            multiple: true,
           }
         },
         {
@@ -94,10 +90,8 @@ export class AppComponent implements OnInit {
           sortable: true,
           filterOptions: {
             type: 'select',
-            templateInputs: () => ({
-              selectValues: () => Array.from(new Set<string>(this.clientData?.map(e => e.career))).sort(),
-              multiple: true,
-            }),
+            options: () => Array.from(new Set<string>(this.clientData?.map(e => e.career))).sort(),
+            multiple: true,
           }
         },
         {
@@ -109,10 +103,8 @@ export class AppComponent implements OnInit {
           },
           filterOptions: {
             type: 'select',
-            templateInputs: () => ({
-              selectValues: () => Array.from(new Set<boolean>(this.clientData?.map(e => e.online))).sort(),
-              multiple: true,
-            }),
+            options: () => Array.from(new Set<boolean>(this.clientData?.map(e => e.online))).sort(),
+            multiple: true,
           },
           align: 'center',
         },
@@ -134,10 +126,8 @@ export class AppComponent implements OnInit {
           },
           filterOptions: {
             type: 'select',
-            templateInputs: () => ({
-              selectValues: () => Array.from(new Set<boolean>(this.clientData?.map(e => e.married))).sort(),
-              multiple: true,
-            }),
+            options: () => Array.from(new Set<boolean>(this.clientData?.map(e => e.married))).sort(),
+            multiple: true,
           },
           align: 'center',
         },
@@ -148,10 +138,8 @@ export class AppComponent implements OnInit {
           sortable: true,
           filterOptions: {
             type: 'select',
-            templateInputs: () => ({
-              selectValues: () => Array.from(new Set<string>(this.clientData?.map(e => e.company))).sort(),
-              multiple: true,
-            }),
+            options: () => Array.from(new Set<string>(this.clientData?.map(e => e.company))).sort(),
+            multiple: true,
           }
         },
       ],

@@ -96,25 +96,25 @@
                     @case ('text') {
                       <ng-container
                         *ngTemplateOutlet="textFilter;
-                          context: { $implicit: column, filters: columnFilters, inputs: column.filterOptions.templateInputs }">
+                          context: { $implicit: column, filters: columnFilters }">
                       </ng-container>
                     }
                     @case ('select') {
                       <ng-container
                         *ngTemplateOutlet="selectFilter;
-                          context: { $implicit: column, filters: columnFilters, inputs: column.filterOptions.templateInputs }">
+                          context: { $implicit: column, filters: columnFilters }">
                       </ng-container>
                     }
                     @case ('singleDate') {
                       <ng-container
                         *ngTemplateOutlet="singleDateFilter;
-                          context: { $implicit: column, filters: columnFilters, inputs: column.filterOptions.templateInputs }">
+                          context: { $implicit: column, filters: columnFilters }">
                       </ng-container>
                     }
                     @case ('dateRange') {
                       <ng-container
                         *ngTemplateOutlet="dateRangeFilter;
-                          context: { $implicit: column, filters: columnFilters, inputs: column.filterOptions.templateInputs }">
+                          context: { $implicit: column, filters: columnFilters }">
                       </ng-container>
                     }
                   }
@@ -242,23 +242,23 @@
   </app-search-bar>
 </ng-template>
 <!-- Select -->
-<ng-template #selectFilter let-column let-filters="filters" let-inputs="inputs">
+<ng-template #selectFilter let-column let-filters="filters">
   <mat-form-field appearance="outline">
     <mat-label> {{ column.filterOptions.label ?? 'Filter by ' + column.header }} </mat-label>
     <mat-select
       [(ngModel)]="filters[column.field]"
       (selectionChange)="applyFilters()"
-      [multiple]="inputs?.().multiple">
-      @if (!inputs?.().multiple) {
+      [multiple]="column.filterOptions.multiple">
+      @if (!column.filterOptions.multiple) {
         <mat-option [value]=""> -- </mat-option>
       }
-      @for (option of inputs?.().selectValues?.(); track option) {
+      @for (option of column.filterOptions.options(); track option) {
         <mat-option [value]="option"> {{ option }} </mat-option>
       }
     </mat-select>
   </mat-form-field>
 </ng-template>
-<!-- Date -->
+<!-- Single Date -->
 <ng-template #singleDateFilter let-column let-filters="filters">
   <form [formGroup]="single">
     <mat-form-field class="date-column-filter" appearance="outline">
