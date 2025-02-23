@@ -18,8 +18,8 @@ export interface TableConfig<T> {
   autoRefresh?: AutoRefreshConfig; // Configuration for auto refreshing the table
   rowClass?: (row: T) => string | string[]; // Function to determine CSS class for a row
   sortOptions?: SortConfig; // Configuration for sorting
-  tableActions?: TableAction[]; // Array of table actions.
-  selectedRowActions?: SelectedRowAction[]; // Array of actions that can be done in batches.
+  tableActions?: TableAction<T>[]; // Array of table actions.
+  selectedRowActions?: SelectedRowAction<T>[]; // Array of actions that can be done in batches.
   rowActions?: RowActionsConfig; // Configuration for row actions
   filterOptions?: TableFilter; // Configuration for table filter
 }
