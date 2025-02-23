@@ -30,17 +30,16 @@ export class AppComponent implements OnInit {
     columnsConfig: {
       columns: [
         {
+          type: 'button',
           field: 'position',
           header: 'Position',
-          align: 'right',
-          cellTemplate: 'button',
-          templateInputs: (row) => ({
-            type: 'button',
-            label: row.position,
-            clickFunc: () => console.log('Position:', row.position),
-          })
+          align: 'center',
+          label: (row: MockModel) => { console.log(row); return JSON.stringify(row.position); },
+          onClick: (row: MockModel) => console.log('Position:', row.position),
+          visible: false,
         },
         {
+          type: 'text',
           field: 'name',
           header: 'Name',
           sortable: true,
@@ -52,12 +51,14 @@ export class AppComponent implements OnInit {
           }
         },
         {
+          type: 'text',
           field: 'weight',
           header: 'Weight',
           sortable: true,
           align: 'right',
         },
         {
+          type: 'text',
           field: 'symbol',
           header: 'Symbol',
           sortable: true,
@@ -70,6 +71,7 @@ export class AppComponent implements OnInit {
           }
         },
         {
+          type: 'text',
           field: 'discoveredBy',
           header: 'Discovered By',
           sortable: true,
@@ -79,12 +81,14 @@ export class AppComponent implements OnInit {
           }
         },
         {
+          type: 'text',
           field: 'discoveryLocation',
           header: 'Discovery Location',
           valueGetter: (row) => `${row.university} (${row.country})`,
           sortable: true,
         },
         {
+          type: 'text',
           field: 'career',
           header: 'Career',
           sortable: true,
@@ -97,13 +101,12 @@ export class AppComponent implements OnInit {
           }
         },
         {
+          type: 'checkbox',
           field: 'online',
           header: 'Online Graduate',
-          cellTemplate: 'checkbox',
-          templateInputs: (row) => ({
-            type: 'checkbox',
-            checked: row.online,
-          }),
+          checked(row) {
+            return row.online;
+          },
           filterOptions: {
             type: 'select',
             templateInputs: () => ({
@@ -114,6 +117,7 @@ export class AppComponent implements OnInit {
           align: 'center',
         },
         {
+          type: 'text',
           field: 'dob',
           header: 'Date of Birth',
           sortable: true,
@@ -122,14 +126,12 @@ export class AppComponent implements OnInit {
           }
         },
         {
+          type: 'checkbox',
           field: 'married',
           header: 'Married',
-          sortable: true,
-          cellTemplate: 'checkbox',
-          templateInputs: (row) => ({
-            type: 'checkbox',
-            checked: row.married,
-          }),
+          checked(row) {
+            return row.married;
+          },
           filterOptions: {
             type: 'select',
             templateInputs: () => ({
@@ -140,6 +142,7 @@ export class AppComponent implements OnInit {
           align: 'center',
         },
         {
+          type: 'text',
           field: 'company',
           header: 'Company',
           sortable: true,

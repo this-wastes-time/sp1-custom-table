@@ -65,7 +65,7 @@ export class CustomTableComponent implements OnChanges {
   // Table column vars.
   protected displayColumns: string[] = [];
   protected columnFiltersPresent!: boolean;
-  protected displayedFilters!: Column[];
+  protected displayedFilters!: Column<any>[];
   protected columnFilters: Record<string, string> = {}; // Store filters for each column
   protected readonly single = new FormGroup({
     date: new FormControl<Date | null>(null),
@@ -109,7 +109,7 @@ export class CustomTableComponent implements OnChanges {
       // Set filters to display.
       this.displayedFilters = tableConfig.columnsConfig.columns;
       // If any column has a filter, generate the filter columns.
-      if (tableConfig.columnsConfig.columns.some((col: Column) => col.filterOptions)) {
+      if (tableConfig.columnsConfig.columns.some((col: Column<any>) => col.filterOptions)) {
         this.columnFiltersPresent = true;
       }
 
@@ -129,7 +129,7 @@ export class CustomTableComponent implements OnChanges {
             // Toggle sidenav visibility.
             this.sidenav.toggle();
             // Subscribe to the emitted event
-            const sub = modColumns.instance.columnMods.subscribe((updatedCols: Column[]) => {
+            const sub = modColumns.instance.columnMods.subscribe((updatedCols: Column<any>[]) => {
               // Update table configuration.
               this.tableConfig.columnsConfig.columns = updatedCols;
               // Update columns.
@@ -224,7 +224,7 @@ export class CustomTableComponent implements OnChanges {
     this.applyFilters();
   }
 
-  private _generateDisplayColumns(columns: Column[]): void {
+  private _generateDisplayColumns(columns: Column<any>[]): void {
     this.displayColumns = columns.filter(col => col.visible ?? true).map(col => col.field);
 
     // Include the row number column.
