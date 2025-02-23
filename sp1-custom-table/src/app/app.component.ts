@@ -24,52 +24,50 @@ export class AppComponent implements OnInit {
   @ViewChild(ServerPaginatorComponent) serverPaginator!: ServerPaginatorComponent;
 
   // Table component configuation.
-  tableConfig: TableConfig = {
+  tableConfig: TableConfig<MockModel> = {
     id: 'test-table',
     caption: 'User data table with actions.',
     columnsConfig: {
       columns: [
         {
+          type: 'button',
           field: 'position',
           header: 'Position',
-          align: 'right',
-          cellTemplate: 'button',
-          templateInputs: (row) => ({
-            type: 'button',
-            label: row.position,
-            clickFunc: () => console.log('Position:', row.position),
-          })
+          align: 'center',
+          label: (row: MockModel) => { console.log(row); return JSON.stringify(row.position); },
+          onClick: (row: MockModel) => console.log('Position:', row.position),
+          visible: false,
         },
         {
+          type: 'text',
           field: 'name',
           header: 'Name',
           sortable: true,
           filterOptions: {
             type: 'select',
-            templateInputs: () => ({
-              selectValues: () => Array.from(new Set<string>(this.clientData?.map(e => e.name))).sort(),
-            }),
+            options: () => Array.from(new Set<string>(this.clientData?.map(e => e.name))).sort(),
           }
         },
         {
+          type: 'text',
           field: 'weight',
           header: 'Weight',
           sortable: true,
           align: 'right',
         },
         {
+          type: 'text',
           field: 'symbol',
           header: 'Symbol',
           sortable: true,
           filterOptions: {
             type: 'select',
-            templateInputs: () => ({
-              selectValues: () => Array.from(new Set<string>(this.clientData?.map(e => e.symbol))).sort(),
-              multiple: true,
-            })
+            options: () => Array.from(new Set<string>(this.clientData?.map(e => e.symbol))).sort(),
+            multiple: true,
           }
         },
         {
+          type: 'text',
           field: 'discoveredBy',
           header: 'Discovered By',
           sortable: true,
@@ -79,41 +77,39 @@ export class AppComponent implements OnInit {
           }
         },
         {
+          type: 'text',
           field: 'discoveryLocation',
           header: 'Discovery Location',
           valueGetter: (row) => `${row.university} (${row.country})`,
           sortable: true,
         },
         {
+          type: 'text',
           field: 'career',
           header: 'Career',
           sortable: true,
           filterOptions: {
             type: 'select',
-            templateInputs: () => ({
-              selectValues: () => Array.from(new Set<string>(this.clientData?.map(e => e.career))).sort(),
-              multiple: true,
-            }),
+            options: () => Array.from(new Set<string>(this.clientData?.map(e => e.career))).sort(),
+            multiple: true,
           }
         },
         {
+          type: 'checkbox',
           field: 'online',
           header: 'Online Graduate',
-          cellTemplate: 'checkbox',
-          templateInputs: (row) => ({
-            type: 'checkbox',
-            checked: row.online,
-          }),
+          checked(row) {
+            return row.online;
+          },
           filterOptions: {
             type: 'select',
-            templateInputs: () => ({
-              selectValues: () => Array.from(new Set<boolean>(this.clientData?.map(e => e.online))).sort(),
-              multiple: true,
-            }),
+            options: () => Array.from(new Set<boolean>(this.clientData?.map(e => e.online))).sort(),
+            multiple: true,
           },
           align: 'center',
         },
         {
+          type: 'text',
           field: 'dob',
           header: 'Date of Birth',
           sortable: true,
@@ -122,33 +118,28 @@ export class AppComponent implements OnInit {
           }
         },
         {
+          type: 'checkbox',
           field: 'married',
           header: 'Married',
-          sortable: true,
-          cellTemplate: 'checkbox',
-          templateInputs: (row) => ({
-            type: 'checkbox',
-            checked: row.married,
-          }),
+          checked(row) {
+            return row.married;
+          },
           filterOptions: {
             type: 'select',
-            templateInputs: () => ({
-              selectValues: () => Array.from(new Set<boolean>(this.clientData?.map(e => e.married))).sort(),
-              multiple: true,
-            }),
+            options: () => Array.from(new Set<boolean>(this.clientData?.map(e => e.married))).sort(),
+            multiple: true,
           },
           align: 'center',
         },
         {
+          type: 'text',
           field: 'company',
           header: 'Company',
           sortable: true,
           filterOptions: {
             type: 'select',
-            templateInputs: () => ({
-              selectValues: () => Array.from(new Set<string>(this.clientData?.map(e => e.company))).sort(),
-              multiple: true,
-            }),
+            options: () => Array.from(new Set<string>(this.clientData?.map(e => e.company))).sort(),
+            multiple: true,
           }
         },
       ],
@@ -165,7 +156,7 @@ export class AppComponent implements OnInit {
         this.toggleAutoRefresh(afState);
       },
     },
-    rowClass: (row) => (row.name === 'Calcium' ? ['gold', 'bold'] : ''),
+    rowClass: (row: MockModel) => (row.name === 'Calcium' ? ['gold', 'bold'] : ''),
     sortOptions: {
       sortFunc(item, property) {
         if (property === 'discoveryLocation') {
@@ -188,14 +179,14 @@ export class AppComponent implements OnInit {
       {
         label: 'Delete rows',
         description: 'Delete selected rows',
-        action: (rows?: any[]) => rows?.map((row) => console.log('Deleting:', row)),
-        disabled: (rows?: any[]) => !rows || rows.length === 0,
+        action: (rows?: MockModel[]) => rows?.map((row) => console.log('Deleting:', row)),
+        disabled: (rows?: MockModel[]) => !rows || rows.length === 0,
       },
       {
         label: 'Export rows',
         description: 'Export selected rows',
         action: () => console.log('Exporting selected rows'),
-        disabled: (rows?: any[]) => !rows || rows.length === 0,
+        disabled: (rows?: MockModel[]) => !rows || rows.length === 0,
       },
     ],
     rowActions: {

@@ -22,7 +22,7 @@ export class ModifyColumnsComponent implements OnInit, AfterViewInit {
    * Event emitter for column modifications.
    * @type {EventEmitter<Column[]>}
    */
-  @Output() columnMods = new EventEmitter<Column[]>();
+  @Output() columnMods = new EventEmitter<Column<any>[]>();
 
   /**
    * Query list of ReorderAnimationDirective instances.
@@ -46,7 +46,7 @@ export class ModifyColumnsComponent implements OnInit, AfterViewInit {
    * Modified columns.
    * @type {Column[]}
    */
-  protected moddedCols: Column[] = [];
+  protected moddedCols: Column<any>[] = [];
 
   /**
    * Initial top position for the element.
@@ -99,7 +99,7 @@ export class ModifyColumnsComponent implements OnInit, AfterViewInit {
    * Toggles the visibility of a column.
    * @param {Column} column - The column to toggle.
    */
-  protected toggleColumn(column: Column): void {
+  protected toggleColumn(column: Column<any>): void {
     column.visible = !column.visible;
   }
 
