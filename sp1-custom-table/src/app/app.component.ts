@@ -158,11 +158,12 @@ export class AppComponent implements OnInit {
     },
     rowClass: (row: MockModel) => (row.name === 'Calcium' ? ['gold', 'bold'] : ''),
     sortOptions: {
-      sortFunc(item, property) {
+      sortFunc(item, property): string | number {
         if (property === 'discoveryLocation') {
           return `${item.university} ${item.country}`;
         }
-        return item[property];
+        const value = item[property as keyof MockModel];
+        return typeof value === 'boolean' ? Number(value) : value;
       },
     },
     tableActions: [

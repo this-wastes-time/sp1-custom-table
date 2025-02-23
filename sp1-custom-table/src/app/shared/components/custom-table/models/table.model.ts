@@ -3,23 +3,126 @@ import { ColumnsConfig } from './column.model';
 import { RowActionsConfig, TableAction, SelectedRowAction } from './actions.model';
 import { SortConfig } from './sort.model';
 
+/**
+ * Example usage of AutoRefreshConfig
+ * @example
+ * const autoRefreshConfig: AutoRefreshConfig = {
+ *   enabled: true,
+ *   intervalMs: 60000,
+ *   autoRefreshFunc: (enabled) => { if (enabled) { refreshTableData(); } }
+ * };
+ */
 interface AutoRefreshConfig {
-  enabled: boolean; // Whether the auto-refresh is currently on
-  intervalMs: number; // Interval time in millis
-  autoRefreshFunc: (enabled: boolean) => void; // Function to call to refresh table data automatically. 
+  /**
+   * Whether the auto-refresh is currently on
+   * @type {boolean}
+   */
+  enabled: boolean;
+  /**
+   * Interval time in milliseconds
+   * @type {number}
+   */
+  intervalMs: number;
+  /**
+   * Function to call to refresh table data automatically.
+   * @param {boolean} enabled - Indicates if auto-refresh is enabled
+   * @type {function}
+   */
+  autoRefreshFunc: (enabled: boolean) => void;
 }
 
+/**
+ * Example usage of TableConfig
+ * @example
+ * const tableConfig: TableConfig<MyRowType> = {
+ *   id: 'myTable',
+ *   caption: 'My Table',
+ *   columnsConfig: myColumnsConfig,
+ *   showRowNumbers: true,
+ *   multiRowSelection: false,
+ *   autoRefresh: {
+ *     enabled: true,
+ *     intervalMs: 60000,
+ *     autoRefreshFunc: (enabled) => { if (enabled) { refreshTableData(); } }
+ *   },
+ *   rowClass: (row) => row.isActive ? 'active-row' : 'inactive-row',
+ *   sortOptions: mySortConfig,
+ *   tableActions: myTableActions,
+ *   selectedRowActions: mySelectedRowActions,
+ *   rowActions: myRowActionsConfig,
+ *   filterOptions: myTableFilter
+ * };
+ */
 export interface TableConfig<T> {
-  id: string; // ID for table element
-  caption: string; // Accessibility caption for the table
-  columnsConfig: ColumnsConfig; // Configuration for columns
-  showRowNumbers?: boolean; // Whether to display a numbered row
-  multiRowSelection?: boolean; // Whether table is setup for multiple selection of rows
-  autoRefresh?: AutoRefreshConfig; // Configuration for auto refreshing the table
-  rowClass?: (row: T) => string | string[]; // Function to determine CSS class for a row
-  sortOptions?: SortConfig; // Configuration for sorting
-  tableActions?: TableAction<T>[]; // Array of table actions.
-  selectedRowActions?: SelectedRowAction<T>[]; // Array of actions that can be done in batches.
-  rowActions?: RowActionsConfig; // Configuration for row actions
-  filterOptions?: TableFilter; // Configuration for table filter
+  /**
+   * ID for table element
+   * @type {string}
+   */
+  id: string;
+  /**
+   * Accessibility caption for the table
+   * @type {string}
+   */
+  caption: string;
+  /**
+   * Configuration for columns
+   * @type {ColumnsConfig}
+   */
+  columnsConfig: ColumnsConfig;
+  /**
+   * Whether to display a numbered row
+   * @type {boolean}
+   * @optional
+   */
+  showRowNumbers?: boolean;
+  /**
+   * Whether table is setup for multiple selection of rows
+   * @type {boolean}
+   * @optional
+   */
+  multiRowSelection?: boolean;
+  /**
+   * Configuration for auto refreshing the table
+   * @type {AutoRefreshConfig}
+   * @optional
+   */
+  autoRefresh?: AutoRefreshConfig;
+  /**
+   * Function to determine CSS class for a row
+   * @param {T} row - The row data
+   * @returns {string | string[]} - CSS class or classes for the row
+   * @type {function}
+   * @optional
+   */
+  rowClass?: (row: T) => string | string[];
+  /**
+   * Configuration for sorting
+   * @type {SortConfig<T>}
+   * @optional
+   */
+  sortOptions?: SortConfig<T>;
+  /**
+   * Array of table actions
+   * @type {TableAction<T>[]}
+   * @optional
+   */
+  tableActions?: TableAction<T>[];
+  /**
+   * Array of actions that can be done in batches
+   * @type {SelectedRowAction<T>[]}
+   * @optional
+   */
+  selectedRowActions?: SelectedRowAction<T>[];
+  /**
+   * Configuration for row actions
+   * @type {RowActionsConfig}
+   * @optional
+   */
+  rowActions?: RowActionsConfig;
+  /**
+   * Configuration for table filter
+   * @type {TableFilter}
+   * @optional
+   */
+  filterOptions?: TableFilter;
 }
