@@ -24,7 +24,7 @@ export class AppComponent implements OnInit {
   @ViewChild(ServerPaginatorComponent) serverPaginator!: ServerPaginatorComponent;
 
   // Table component configuation.
-  tableConfig: TableConfig = {
+  tableConfig: TableConfig<MockModel> = {
     id: 'test-table',
     caption: 'User data table with actions.',
     columnsConfig: {
@@ -156,7 +156,7 @@ export class AppComponent implements OnInit {
         this.toggleAutoRefresh(afState);
       },
     },
-    rowClass: (row) => (row.name === 'Calcium' ? ['gold', 'bold'] : ''),
+    rowClass: (row: MockModel) => (row.name === 'Calcium' ? ['gold', 'bold'] : ''),
     sortOptions: {
       sortFunc(item, property) {
         if (property === 'discoveryLocation') {

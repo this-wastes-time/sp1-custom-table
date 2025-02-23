@@ -9,14 +9,14 @@ interface AutoRefreshConfig {
   autoRefreshFunc: (enabled: boolean) => void; // Function to call to refresh table data automatically. 
 }
 
-export interface TableConfig {
+export interface TableConfig<T> {
   id: string; // ID for table element
   caption: string; // Accessibility caption for the table
   columnsConfig: ColumnsConfig; // Configuration for columns
   showRowNumbers?: boolean; // Whether to display a numbered row
   multiRowSelection?: boolean; // Whether table is setup for multiple selection of rows
   autoRefresh?: AutoRefreshConfig; // Configuration for auto refreshing the table
-  rowClass?: (row: any) => string | string[]; // Function to determine CSS class for a row
+  rowClass?: (row: T) => string | string[]; // Function to determine CSS class for a row
   sortOptions?: SortConfig; // Configuration for sorting
   tableActions?: TableAction[]; // Array of table actions.
   selectedRowActions?: SelectedRowAction[]; // Array of actions that can be done in batches.

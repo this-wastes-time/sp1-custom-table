@@ -25,13 +25,13 @@ interface TableFilters {
 })
 export class CustomTableComponent implements OnChanges {
   @Input()
-  get tableConfig(): TableConfig {
+  get tableConfig(): TableConfig<any> {
     return this._tableConfig;
   }
-  set tableConfig(value: TableConfig) {
+  set tableConfig(value: TableConfig<any>) {
     this._tableConfig = value;
   }
-  private _tableConfig!: TableConfig;
+  private _tableConfig!: TableConfig<any>;
 
   @Input() tableData: any[] = [];
   @Input() pageIndex!: number;
