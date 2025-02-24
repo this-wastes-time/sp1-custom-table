@@ -67,6 +67,15 @@ export class ModifyColumnsComponent implements OnInit, AfterViewInit {
   private readonly _left = 10;
 
   /**
+   * Indicates whether animations are enabled.
+   * @type {boolean}
+   */
+  private _useAnimations = true;
+  get useAnimations(): boolean {
+    return this._useAnimations;
+  }
+
+  /**
    * Constructor to inject dependencies.
    * @param {ChangeDetectorRef} cdr - Change detector reference.
    */
@@ -112,31 +121,41 @@ export class ModifyColumnsComponent implements OnInit, AfterViewInit {
     const newIndex = index + direction;
     if (newIndex < 0 || newIndex >= this.moddedCols.length) return;
     [this.moddedCols[index], this.moddedCols[newIndex]] = [this.moddedCols[newIndex], this.moddedCols[index]];
-    this._animateColumn(index, newIndex);
+    if (this.useAnimations) {
+      this._animateColumn(index, newIndex);
+    } else {
+      this.cdr.detectChanges();
+    }
   }
 
   /**
    * Resets the columns to their original order.
    */
   protected resetColumns(): void {
-    // With no animations..
-    // this.moddedCols = [...this.config.columns].map(col => ({ ...col, visible: true }));
-
-    // With animations..
-    // Create map for access to indices
-    const indexMap = new Map<string, number>();
-    this.config.columns.forEach((column, i) => indexMap.set(column.field, i));
-    this.moddedCols.forEach((col, i) => {
-      // Reset column visibility.
-      col.visible = true;
-      let origIndex = indexMap.get(col.field)!;
-      while (origIndex !== i) {
-        [this.moddedCols[i], this.moddedCols[origIndex]] = [this.moddedCols[origIndex], this.moddedCols[i]];
-        this._animateColumn(i, origIndex);
-        this.cdr.detectChanges();
-        origIndex = indexMap.get(this.moddedCols[i].field)!;
-      }
-    });
+    if (!this.useAnimations) {
+      // With no animations..
+      this.moddedCols = [...this.config.columns].map(col => ({
+        ...col,
+        visible: col.visible ?? true,
+      }));
+      this.cdr.detectChanges();
+    } else {
+      // With animations..
+      // Create map for access to indices
+      const indexMap = new Map<string, number>();
+      this.config.columns.forEach((column, i) => indexMap.set(column.field, i));
+      this.moddedCols.forEach((col, i) => {
+        // Reset column visibility.
+        col.visible = true;
+        let origIndex = indexMap.get(col.field)!;
+        while (origIndex !== i) {
+          [this.moddedCols[i], this.moddedCols[origIndex]] = [this.moddedCols[origIndex], this.moddedCols[i]];
+          this._animateColumn(i, origIndex);
+          this.cdr.detectChanges();
+          origIndex = indexMap.get(this.moddedCols[i].field)!;
+        }
+      });
+    }
   }
 
   /**
@@ -151,6 +170,20 @@ export class ModifyColumnsComponent implements OnInit, AfterViewInit {
    */
   protected close(): void {
     this.columnMods.emit(this.moddedCols);
+  }
+
+  /**
+   * Enables animations.
+   */
+  enableAnimations(): void {
+    this._useAnimations = true;
+  }
+
+  /**
+   * Disables animations.
+   */
+  disableAnimations(): void {
+    this._useAnimations = false;
   }
 
   /**
