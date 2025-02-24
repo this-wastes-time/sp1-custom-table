@@ -121,41 +121,27 @@ export class ModifyColumnsComponent implements OnInit, AfterViewInit {
     const newIndex = index + direction;
     if (newIndex < 0 || newIndex >= this.moddedCols.length) return;
     [this.moddedCols[index], this.moddedCols[newIndex]] = [this.moddedCols[newIndex], this.moddedCols[index]];
-    if (this.useAnimations) {
-      this._animateColumn(index, newIndex);
-    } else {
-      this.cdr.detectChanges();
-    }
+    this._animateColumn(index, newIndex);
   }
 
   /**
    * Resets the columns to their original order.
    */
   protected resetColumns(): void {
-    if (!this.useAnimations) {
-      // With no animations..
-      this.moddedCols = [...this.config.columns].map(col => ({
-        ...col,
-        visible: col.visible ?? true,
-      }));
-      this.cdr.detectChanges();
-    } else {
-      // With animations..
-      // Create map for access to indices
-      const indexMap = new Map<string, number>();
-      this.config.columns.forEach((column, i) => indexMap.set(column.field, i));
-      this.moddedCols.forEach((col, i) => {
-        // Reset column visibility.
-        col.visible = true;
-        let origIndex = indexMap.get(col.field)!;
-        while (origIndex !== i) {
-          [this.moddedCols[i], this.moddedCols[origIndex]] = [this.moddedCols[origIndex], this.moddedCols[i]];
-          this._animateColumn(i, origIndex);
-          this.cdr.detectChanges();
-          origIndex = indexMap.get(this.moddedCols[i].field)!;
-        }
-      });
-    }
+    // Create map for access to indices
+    const indexMap = new Map<string, number>();
+    this.config.columns.forEach((column, i) => indexMap.set(column.field, i));
+    this.moddedCols.forEach((col, i) => {
+      // Reset column visibility.
+      col.visible = this.config.columns[i].visible;
+      let origIndex = indexMap.get(col.field)!;
+      while (origIndex !== i) {
+        [this.moddedCols[i], this.moddedCols[origIndex]] = [this.moddedCols[origIndex], this.moddedCols[i]];
+        this._animateColumn(i, origIndex);
+        this.cdr.detectChanges();
+        origIndex = indexMap.get(this.moddedCols[i].field)!;
+      }
+    });
   }
 
   /**
