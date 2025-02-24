@@ -19,6 +19,7 @@ import { ReorderAnimationDirective } from '../../directives/reorder-animation.di
 import { SpanFillerComponent } from '../span-filler/span-filler.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
+import { PathValuePipe } from '../../pipes/path-value.pipe';
 
 @NgModule({
   declarations: [],
@@ -44,6 +45,7 @@ import { SearchBarComponent } from '../search-bar/search-bar.component';
     SpanFillerComponent,
     MatTooltipModule,
     SearchBarComponent,
+    PathValuePipe,
   ],
   exports: [
     CommonModule,
@@ -67,6 +69,7 @@ import { SearchBarComponent } from '../search-bar/search-bar.component';
     SpanFillerComponent,
     MatTooltipModule,
     SearchBarComponent,
+    PathValuePipe,
   ],
   providers: [
     provideNativeDateAdapter(),
