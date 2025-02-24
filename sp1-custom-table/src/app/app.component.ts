@@ -34,7 +34,7 @@ export class AppComponent implements OnInit {
           field: 'position',
           header: 'Position',
           align: 'center',
-          label: (row: MockModel) => { console.log(row); return JSON.stringify(row.position); },
+          label: (row: MockModel) => String(row.position),
           onClick: (row: MockModel) => console.log('Position:', row.position),
           visible: false,
         },
