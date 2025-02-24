@@ -3,11 +3,26 @@ import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable, of } from 'rxjs';
 
+/**
+ * Configuration for a compound field.
+ */
 interface CompoundFieldConfig {
-  properties: (keyof MockModel)[]; // The properties that make up the compound field
-  combiner: (...args: any[]) => string | number; // How to combine them
-};
+  /**
+   * The properties that make up the compound field.
+   */
+  properties: (keyof MockModel)[];
 
+  /**
+   * Function to combine the properties.
+   * @param args The values of the properties.
+   * @returns The combined value.
+   */
+  combiner: (...args: any[]) => string | number;
+}
+
+/**
+ * Record of compound fields and their configurations.
+ */
 export const COMPOUND_FIELDS: Record<string, CompoundFieldConfig> = {
   discoveryLocation: {
     properties: ['university', 'country'],
@@ -169,12 +184,12 @@ export class MockDataService {
 
   /**
    * Mimicks a backend request for data.
-   * @param page 
-   * @param pageSize 
-   * @param sortBy 
-   * @param sortDirection 
-   * @param globalFilter 
-   * @param filters 
+   * @param page The page number to fetch.
+   * @param pageSize The number of items per page.
+   * @param sortBy The field to sort by.
+   * @param sortDirection The direction to sort (asc or desc).
+   * @param globalFilter A global filter string to apply to all fields.
+   * @param filters Specific filters to apply to individual fields.
    * @returns An Observable of MockResponse.
    */
   fetchData(
@@ -285,7 +300,7 @@ export class MockDataService {
 
   /**
    * Returns all the data the "server" has.
-   * @returns 
+   * @returns An array of MockModel.
    */
   fetchAll(): MockModel[] {
     // Add data to client data array
@@ -295,6 +310,11 @@ export class MockDataService {
     return this.clientData;
   }
 
+  /**
+   * Generates a single MockModel data entry.
+   * @param index The index to use for generating the data.
+   * @returns A MockModel object.
+   */
   private genData(index: number): MockModel {
     const name = NAMES[Math.round(Math.random() * (NAMES.length - 1))];
 
@@ -314,6 +334,12 @@ export class MockDataService {
     };
   }
 
+  /**
+   * Generates a random date between two given dates.
+   * @param startDate The start date.
+   * @param endDate The end date.
+   * @returns A random Date object.
+   */
   private getRandomDate(startDate: Date, endDate: Date): Date {
     const startTime = startDate.getTime();
     const endTime = endDate.getTime();
@@ -321,17 +347,32 @@ export class MockDataService {
     return new Date(randomTime);
   }
 
+  /**
+   * Generates a random date string between 1940 and today.
+   * @returns A formatted date string.
+   */
   private generateRandomDateBetween1940AndToday(): string {
     const startDate = new Date('2025-01-02');
     const endDate = new Date(); // Today's date
     return formatDate(this.getRandomDate(startDate, endDate), 'MM/dd/yyyy', 'en-US');
   }
 
+  /**
+   * Extends the dataset with new data entries.
+   * @param dataset The dataset to extend.
+   * @param newLength The number of new entries to add.
+   */
   private _extendDataset(dataset: MockModel[], newLength: number): void {
     const newData = Array.from({ length: newLength }, (_, k) => this.genData(k + 1));
     dataset.push(...newData);
   }
 
+  /**
+   * Generates a random number between a given range.
+   * @param min The minimum value.
+   * @param max The maximum value.
+   * @returns A random number between min and max.
+   */
   private _getRandomNumber(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
