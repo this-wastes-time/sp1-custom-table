@@ -341,9 +341,9 @@ export class MockDataService {
       married: name.charAt(0) === 'P',
       company: COMPANIES[Math.round(Math.random() * (COMPANIES.length - 1))],
       address: {
-        street: '123 Main St',
-        city: 'Anytown',
-        zip: '12345',
+        street: index % 4 ? '123 Main St' : '456 Elm Streat',
+        city: index % 4 ? 'Anytown' : 'Hereville',
+        zip: index % 4 ? '12345' : '78910',
       },
       preferences: {
         newsletter: true,

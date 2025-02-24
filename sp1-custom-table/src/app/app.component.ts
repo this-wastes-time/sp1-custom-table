@@ -293,7 +293,7 @@ export class AppComponent implements OnInit {
         type: 'text',
         field: path,
         header: path,
-        sortable: false,
+        sortable: true,
         visible: true,
       };
     };
