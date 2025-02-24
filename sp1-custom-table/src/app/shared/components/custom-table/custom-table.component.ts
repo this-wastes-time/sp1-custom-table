@@ -24,18 +24,34 @@ interface TableFilters {
   styleUrl: './custom-table.component.scss'
 })
 export class CustomTableComponent implements OnChanges {
-  @Input()
-  get tableConfig(): TableConfig<any> {
-    return this._tableConfig;
-  }
-  set tableConfig(value: TableConfig<any>) {
-    this._tableConfig = value;
-  }
-  private _tableConfig!: TableConfig<any>;
+  /**
+   * Table configuration.
+   * @type {TableConfig<any>}
+   */
+  @Input() tableConfig!: TableConfig<any>;
 
+  /**
+   * Data to be displayed in the table.
+   * @type {any[]}
+   */
   @Input() tableData: any[] = [];
+
+  /**
+   * Current page index.
+   * @type {number}
+   */
   @Input() pageIndex!: number;
+
+  /**
+   * Number of items per page.
+   * @type {number}
+   */
   @Input() pageSize!: number;
+
+  /**
+   * Loading state of the table.
+   * @type {boolean}
+   */
   @Input()
   get loading(): boolean {
     return this._loading;
@@ -52,7 +68,11 @@ export class CustomTableComponent implements OnChanges {
   }
   private _loading!: boolean;
 
-  @Output() getData = new EventEmitter();
+  /**
+   * Event emitted to request new data.
+   * @type {EventEmitter<void>}
+   */
+  @Output() getData = new EventEmitter<void>();
 
   @ViewChild('searchBar') searchBar!: SearchBarComponent;
   @ViewChild('sidenav') sidenav!: MatSidenav;
@@ -100,6 +120,10 @@ export class CustomTableComponent implements OnChanges {
     private detector: ChangeDetectorRef,
   ) { }
 
+  /**
+   * Lifecycle hook that is called when any data-bound property of a directive changes.
+   * @param {SimpleChanges} changes - The changed properties.
+   */
   ngOnChanges(changes: SimpleChanges): void {
     // When a table configuration comes in, set the columns.
     if (changes['tableConfig']?.currentValue) {
@@ -167,18 +191,35 @@ export class CustomTableComponent implements OnChanges {
     }
   }
 
+  /**
+   * Gets the current table filters.
+   * @returns {TableFilters | null} - The current table filters.
+   */
   getFilters(): TableFilters | null {
     return this.filters;
   }
 
+  /**
+   * Gets the current sort state.
+   * @returns {Sort} - The current sort state.
+   */
   getSort(): Sort {
     return this.currentSort;
   }
 
+  /**
+   * Gets the row number based on the index.
+   * @param {number} index - The index of the row.
+   * @returns {number} - The row number.
+   */
   protected getRowNumber(index: number): number {
     return this.pageIndex * this.pageSize + index + 1;
   }
 
+  /**
+   * Handles sort change event.
+   * @param {Sort} event - The sort event.
+   */
   protected sortChange(event: Sort): void {
     const sortDirection = event.direction ? `${event.direction}ending` : 'cleared';
     this.announcer.announce(`Sorting by ${event.active} ${sortDirection}`);
@@ -186,35 +227,61 @@ export class CustomTableComponent implements OnChanges {
     this._requestNewData();
   }
 
+  /**
+   * Applies the global filter.
+   * @param {string} filterString - The filter string.
+   */
   protected applyFilter(filterString: string): void {
     this.globalFilter = filterString;
     this.applyFilters();
   }
 
-  protected applyFilters() {
+  /**
+   * Applies the filters.
+   */
+  protected applyFilters(): void {
     this._sanitizeFilters();
   }
 
+  /**
+   * Selects or deselects a row.
+   * @param {boolean} checked - Whether the row is selected.
+   * @param {any} row - The row data.
+   */
   protected selectRow(checked: boolean, row: any): void {
     row.selected = checked;
     this.selectedRows = this.dataSource.data.filter(row => row.selected);
   }
 
+  /**
+   * Toggles the selection of all rows.
+   * @param {boolean} checked - Whether all rows are selected.
+   */
   protected toggleAllSelection(checked: boolean): void {
     this.dataSource._pageData(this.dataSource.data).map((row) => row.selected = checked);
     this.selectedRows = this.dataSource.data.filter(row => row.selected);
   }
 
-  // Just playing around with different function signatures..
-  protected readonly allSelected = () => {
+  /**
+   * Checks if all rows are selected.
+   * @returns {boolean} - True if all rows are selected, false otherwise.
+   */
+  protected readonly allSelected = (): boolean => {
     return this.dataSource._pageData(this.dataSource.data).every((row) => row.selected);
   };
 
-  protected readonly someSelected = () => {
+  /**
+   * Checks if some rows are selected.
+   * @returns {boolean} - True if some rows are selected, false otherwise.
+   */
+  protected readonly someSelected = (): boolean => {
     return this.dataSource._pageData(this.dataSource.data).some((row) => row.selected) &&
       !this.dataSource._pageData(this.dataSource.data).every((row) => row.selected);
   };
 
+  /**
+   * Resets all filters.
+   */
   protected resetFilters(): void {
     this.globalFilter = '';
     this.searchBar.clear();
@@ -224,6 +291,10 @@ export class CustomTableComponent implements OnChanges {
     this.applyFilters();
   }
 
+  /**
+   * Generates the display columns based on the column configuration.
+   * @param {Column<any>[]} columns - The column configuration.
+   */
   private _generateDisplayColumns(columns: Column<any>[]): void {
     this.displayColumns = columns.filter(col => col.visible ?? true).map(col => col.field);
 
@@ -243,6 +314,11 @@ export class CustomTableComponent implements OnChanges {
     }
   }
 
+  /**
+   * Checks if a value is empty.
+   * @param {any} value - The value to check.
+   * @returns {boolean} - True if the value is empty, false otherwise.
+   */
   private _isEmpty(value: any): boolean {
     if (value === null || value === undefined) {
       return true;
@@ -259,6 +335,9 @@ export class CustomTableComponent implements OnChanges {
     return !value;
   }
 
+  /**
+   * Sanitizes the filters.
+   */
   private _sanitizeFilters(): void {
     // Sanitize table state before emitting.
     Object.keys(this.columnFilters).map((key) => {
@@ -276,6 +355,9 @@ export class CustomTableComponent implements OnChanges {
     this._requestNewData();
   }
 
+  /**
+   * Requests new data.
+   */
   private _requestNewData(): void {
     this.getData.emit();
   }

@@ -12,6 +12,10 @@ const DEFAULT_PAGE_SIZE = 10;
 })
 export abstract class BasePaginatorComponent {
 
+  /**
+   * The current page index.
+   * @type {number}
+   */
   @Input({ transform: numberAttribute })
   get pageIndex(): number {
     return this._pageIndex;
@@ -22,7 +26,10 @@ export abstract class BasePaginatorComponent {
   }
   private _pageIndex = 0;
 
-  /** The length of the total number of items that are being paginated. Defaulted to 0. */
+  /**
+   * The length of the total number of items that are being paginated. Defaulted to 0.
+   * @type {number}
+   */
   @Input({ transform: numberAttribute })
   get length(): number {
     return this._length;
@@ -33,7 +40,10 @@ export abstract class BasePaginatorComponent {
   }
   private _length = 0;
 
-  /** Number of items to display on a page. By default set to 10. */
+  /**
+   * Number of items to display on a page. By default set to 10.
+   * @type {number}
+   */
   @Input({ transform: numberAttribute })
   get pageSize(): number {
     return this._pageSize;
@@ -44,7 +54,10 @@ export abstract class BasePaginatorComponent {
   }
   private _pageSize!: number;
 
-  /** The set of provided page size options to display to the user. */
+  /**
+   * The set of provided page size options to display to the user.
+   * @type {number[]}
+   */
   @Input()
   get pageSizeOptions(): number[] {
     return this._pageSizeOptions;
@@ -55,6 +68,10 @@ export abstract class BasePaginatorComponent {
   }
   private _pageSizeOptions: number[] = [];
 
+  /**
+   * Accessible label for the paginator.
+   * @type {string}
+   */
   @Input({ required: true })
   get accessibleLabel(): string {
     return this._accessibleLabel;
@@ -64,19 +81,31 @@ export abstract class BasePaginatorComponent {
   }
   private _accessibleLabel!: string;
 
-  /** Whether to hide the page size selection UI from the user. */
+  /**
+   * Whether to hide the page size selection UI from the user.
+   * @type {boolean}
+   */
   @Input({ transform: booleanAttribute })
   hidePageSize = false;
 
-  /** Whether to show the first/last buttons UI to the user. */
+  /**
+   * Whether to show the first/last buttons UI to the user.
+   * @type {boolean}
+   */
   @Input({ transform: booleanAttribute })
   showFirstLastButtons = false;
 
-  /** Whether the paginator is disabled. */
+  /**
+   * Whether the paginator is disabled.
+   * @type {boolean}
+   */
   @Input({ transform: booleanAttribute })
   disabled = false;
 
-  /** Event emitted when the paginator changes the page size or page index. */
+  /**
+   * Event emitted when the paginator changes the page size or page index.
+   * @type {EventEmitter<number>}
+   */
   @Output() readonly page: EventEmitter<number> = new EventEmitter<number>();
 
   readonly paginatorIntl = inject(MatPaginatorIntl);
@@ -92,39 +121,69 @@ export abstract class BasePaginatorComponent {
     private detector: ChangeDetectorRef,
   ) { }
 
+  /**
+   * Gets the current pagination state.
+   * @returns {{ pageIndex: number, pageSize: number }} - The current page index and page size.
+   */
   getPagination(): { pageIndex: number, pageSize: number } {
     return {
       pageIndex: this.pageIndex, pageSize: this.pageSize
     };
   }
 
+  /**
+   * Handles the change in page size.
+   * @param {number} newPageSize - The new page size.
+   */
   protected onPageSizeChange(newPageSize: number): void {
     // Go to first page.
     this.pageIndex = 0;
     this.pageSize = newPageSize;
   }
 
+  /**
+   * Gets the total number of pages.
+   * @returns {number} - The total number of pages.
+   */
   protected get totalPages(): number {
     return Math.ceil(this.length / this.pageSize) || 0;
   }
 
+  /**
+   * Paginates to the target page.
+   * @param {number} targetPage - The target page index.
+   */
   protected paginate(targetPage: number): void {
     this.pageIndex = targetPage;
     this.page.emit(this.pageIndex);
   }
 
+  /**
+   * Checks if there is a previous page.
+   * @returns {boolean} - True if there is a previous page, false otherwise.
+   */
   protected hasPrev(): boolean {
     return this.pageIndex <= 0;
   }
 
+  /**
+   * Checks if there is a next page.
+   * @returns {boolean} - True if there is a next page, false otherwise.
+   */
   protected hasNext(): boolean {
     return this.pageIndex >= (this.totalPages - 1);
   }
 
+  /**
+   * Abstract method to emit paginated data.
+   */
   protected abstract emitPaginatedData(): void;
 
+  /**
+   * Updates the page size options.
+   * If no page size is provided, use the first page size option or the default page size.
+   */
   private _updatePageSizeOptions() {
-    // If no page size is provided, use the first page size option or the default page size.
     if (!this.pageSize) {
       this._pageSize =
         this.pageSizeOptions.length != 0 ? this.pageSizeOptions[0] : DEFAULT_PAGE_SIZE;

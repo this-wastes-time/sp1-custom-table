@@ -1,25 +1,111 @@
+/**
+ * Represents an action that can be performed on the table.
+ * @template T - The type of the rows in the table.
+ */
 export interface TableAction<T> {
-  label: string; // The text label displayed for the action
-  description: string; // Optional description of the action
-  action: (rows?: T[]) => void; // A function executed when the action is triggered
-  disabled?: (rows?: T[]) => boolean; // A function to determine if the action should be disabled
+  /**
+   * The text label displayed for the action.
+   * @type {string}
+   */
+  label: string;
+  /**
+   * Optional description of the action.
+   * @type {string}
+   * @optional
+   */
+  description?: string;
+  /**
+   * A function executed when the action is triggered.
+   * @param {T[]} [rows] - The rows on which the action is performed.
+   * @type {function}
+   */
+  action: (rows?: T[]) => void;
+  /**
+   * A function to determine if the action should be disabled.
+   * @param {T[]} [rows] - The rows on which the action is performed.
+   * @returns {boolean} - Whether the action is disabled.
+   * @type {function}
+   * @optional
+   */
+  disabled?: (rows?: T[]) => boolean;
 }
 
+/**
+ * Configuration for row actions.
+ */
 export interface RowActionsConfig {
-  stickyActions: boolean; // Whether the actions column should be sticky
-  actions: RowAction<any>[]; // Array of actions avzailable for each row
+  /**
+   * Whether the actions column should be sticky.
+   * @type {boolean}
+   */
+  stickyActions: boolean;
+  /**
+   * Array of actions available for each row.
+   * @type {RowAction<any>[]}
+   */
+  actions: RowAction<any>[];
 }
 
+/**
+ * Represents an action that can be performed on a row.
+ * @template T - The type of the row.
+ */
 interface RowAction<T> {
-  label: string; // The text label displayed for the action
-  description: string; // Optional description of the action
-  action: (row: T) => void; // A function executed when the action is triggered
-  disabled?: (row: T) => boolean; // A function to determine if the action should be disabled
+  /**
+   * The text label displayed for the action.
+   * @type {string}
+   */
+  label: string;
+  /**
+   * Optional description of the action.
+   * @type {string}
+   * @optional
+   */
+  description?: string;
+  /**
+   * A function executed when the action is triggered.
+   * @param {T} row - The row on which the action is performed.
+   * @type {function}
+   */
+  action: (row: T) => void;
+  /**
+   * A function to determine if the action should be disabled.
+   * @param {T} row - The row on which the action is performed.
+   * @returns {boolean} - Whether the action is disabled.
+   * @type {function}
+   * @optional
+   */
+  disabled?: (row: T) => boolean;
 }
 
+/**
+ * Represents an action that can be performed on selected rows.
+ * @template T - The type of the rows in the table.
+ */
 export interface SelectedRowAction<T> {
-  label: string; // The text label displayed for the action
-  description: string; // Optional description of the action
-  action: (rows?: T[]) => void; // A function executed when the action is triggered
-  disabled?: (rows?: T[]) => boolean; // A function to determine if the action should be disabled
+  /**
+   * The text label displayed for the action.
+   * @type {string}
+   */
+  label: string;
+  /**
+   * Optional description of the action.
+   * @type {string}
+   * @optional
+   */
+  description?: string;
+  /**
+   * A function executed when the action is triggered.
+   * @param {T[]} [rows] - The rows on which the action is performed.
+   * @type {function}
+   */
+  action: (rows?: T[]) => void;
+  /**
+   * A function to determine if the action should be disabled.
+   * @param {T[]} [rows] - The rows on which the action is performed.
+   * @returns {boolean} - Whether the action is disabled.
+   * @type {function}
+   * @optional
+   */
+  disabled?: (rows?: T[]) => boolean;
 }
