@@ -180,7 +180,7 @@ export class AppComponent implements OnInit {
       {
         label: 'Delete rows',
         description: 'Delete selected rows',
-        action: (rows?: MockModel[]) => rows?.map((row) => console.log('Deleting:', row)),
+        action: (rows?: MockModel[]) => rows?.forEach((row) => console.log('Deleting:', row)),
         disabled: (rows?: MockModel[]) => !rows || rows.length === 0,
       },
       {

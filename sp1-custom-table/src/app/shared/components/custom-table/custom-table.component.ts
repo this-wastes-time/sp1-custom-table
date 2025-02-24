@@ -133,7 +133,7 @@ export class CustomTableComponent implements OnChanges {
       this._generateDisplayColumns(tableConfig.columnsConfig.columns);
       // Store the default column configuration.
       this.defaultColumnConfig = tableConfig.columnsConfig.columns;
-      this.defaultColumnConfig.map(col => col.visible = col.visible ?? true);
+      this.defaultColumnConfig.forEach(col => col.visible = col.visible ?? true);
       // Set filters to display.
       this.displayedFilters = tableConfig.columnsConfig.columns;
       // If any column has a filter, generate the filter columns.
@@ -262,7 +262,7 @@ export class CustomTableComponent implements OnChanges {
    * @param {boolean} checked - Whether all rows are selected.
    */
   protected toggleAllSelection(checked: boolean): void {
-    this.dataSource._pageData(this.dataSource.data).map((row) => row.selected = checked);
+    this.dataSource._pageData(this.dataSource.data).forEach((row) => row.selected = checked);
     this.selectedRows = this.dataSource.data.filter(row => row.selected);
   }
 
@@ -344,7 +344,7 @@ export class CustomTableComponent implements OnChanges {
    */
   private _sanitizeFilters(): void {
     // Sanitize table state before emitting.
-    Object.keys(this.columnFilters).map((key) => {
+    Object.keys(this.columnFilters).forEach((key) => {
       if (this._isEmpty(this.columnFilters[key])) {
         delete this.columnFilters[key];
       }
