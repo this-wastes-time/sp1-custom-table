@@ -95,6 +95,7 @@ export class CustomTableComponent implements OnChanges {
     end: new FormControl<Date | null>(null),
   });
   protected currentSort!: Sort;
+  protected defaultColumnConfig!: Column<any>[];
 
   // Current table filters: global and columns.
   get filters(): TableFilters | null {
@@ -130,6 +131,9 @@ export class CustomTableComponent implements OnChanges {
       const tableConfig = changes['tableConfig'].currentValue;
       // Generate the table display.
       this._generateDisplayColumns(tableConfig.columnsConfig.columns);
+      // Store the default column configuration.
+      this.defaultColumnConfig = tableConfig.columnsConfig.columns;
+      this.defaultColumnConfig.map(col => col.visible = col.visible ?? true);
       // Set filters to display.
       this.displayedFilters = tableConfig.columnsConfig.columns;
       // If any column has a filter, generate the filter columns.
@@ -148,6 +152,7 @@ export class CustomTableComponent implements OnChanges {
             // Create the component for injection.
             const modColumns = this.sidenavContent.createComponent(ModifyColumnsComponent);
             modColumns.instance.columnConfig$ = of(this.tableConfig.columnsConfig);
+            modColumns.instance.defaultCols = this.defaultColumnConfig;
             // Trigger change detection to ensure the columns$ observable is received
             this.detector.detectChanges();
             // Toggle sidenav visibility.

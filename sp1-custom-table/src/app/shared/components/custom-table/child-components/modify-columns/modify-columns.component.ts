@@ -49,6 +49,12 @@ export class ModifyColumnsComponent implements OnInit, AfterViewInit {
   protected moddedCols: Column<any>[] = [];
 
   /**
+   * Default state columns.
+   * @type {Column[]}
+   */
+  defaultCols: Column<any>[] = [];
+
+  /**
    * Initial top position for the element.
    * @type {number}
    */
@@ -130,10 +136,8 @@ export class ModifyColumnsComponent implements OnInit, AfterViewInit {
   protected resetColumns(): void {
     // Create map for access to indices
     const indexMap = new Map<string, number>();
-    this.config.columns.forEach((column, i) => indexMap.set(column.field, i));
+    this.defaultCols.forEach((col, i) => indexMap.set(col.field, i));
     this.moddedCols.forEach((col, i) => {
-      // Reset column visibility.
-      col.visible = this.config.columns[i].visible;
       let origIndex = indexMap.get(col.field)!;
       while (origIndex !== i) {
         [this.moddedCols[i], this.moddedCols[origIndex]] = [this.moddedCols[origIndex], this.moddedCols[i]];
@@ -141,6 +145,9 @@ export class ModifyColumnsComponent implements OnInit, AfterViewInit {
         this.cdr.detectChanges();
         origIndex = indexMap.get(this.moddedCols[i].field)!;
       }
+    });
+    this.moddedCols.forEach((col, i) => {
+      col.visible = this.defaultCols[i].visible;
     });
   }
 
