@@ -9,6 +9,7 @@ import { AsyncPipe } from '@angular/common';
 import { MatDividerModule } from '@angular/material/divider';
 import { FlattenToColumnService } from './shared/components/custom-table/services/flatten-to-column.service';
 import { Column } from './shared/components/custom-table/models/column.model';
+import { PathValuePipe } from './shared/pipes/path-value.pipe';
 
 const AFREFRESH = 2000;
 
@@ -17,7 +18,8 @@ const AFREFRESH = 2000;
   standalone: true,
   imports: [CustomTableComponent, ClientPaginatorComponent, ServerPaginatorComponent, AsyncPipe, MatDividerModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
+  providers: [PathValuePipe],
 })
 export class AppComponent implements OnInit {
   @ViewChild('clientTable') clientTable!: CustomTableComponent;
@@ -244,6 +246,7 @@ export class AppComponent implements OnInit {
     private mockService: MockDataService,
     private detector: ChangeDetectorRef,
     private flattenService: FlattenToColumnService,
+    private pvp: PathValuePipe,
   ) {
     this.loading = true;
     // Mock server data retrieval wait.
@@ -283,7 +286,7 @@ export class AppComponent implements OnInit {
           sortable: false,
           align: 'center',
           visible: true,
-          checked: (row: any) => row[path],
+          checked: (row: any) => this.pvp.transform<typeof row, boolean>(row, path) ?? false,
         };
       }
       return {
