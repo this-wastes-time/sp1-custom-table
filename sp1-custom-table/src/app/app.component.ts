@@ -7,6 +7,8 @@ import { ServerPaginatorComponent } from './shared/components/custom-paginator/s
 import { catchError, finalize, map, Observable, of } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { MatDividerModule } from '@angular/material/divider';
+import { FlattenToColumnService } from './shared/components/custom-table/services/flatten-to-column.service';
+import { Column } from './shared/components/custom-table/models/column.model';
 
 const AFREFRESH = 2000;
 
@@ -163,7 +165,12 @@ export class AppComponent implements OnInit {
           return `${item.university} ${item.country}`;
         }
         const value = item[property as keyof MockModel];
-        return typeof value === 'boolean' ? Number(value) : value;
+        if (typeof value === 'boolean') {
+          return Number(value);
+        } else if (typeof value === 'object') {
+          return JSON.stringify(value);
+        }
+        return value;
       },
     },
     tableActions: [
@@ -236,6 +243,7 @@ export class AppComponent implements OnInit {
   constructor(
     private mockService: MockDataService,
     private detector: ChangeDetectorRef,
+    private flattenService: FlattenToColumnService,
   ) {
     this.loading = true;
     // Mock server data retrieval wait.
@@ -265,6 +273,40 @@ export class AppComponent implements OnInit {
   loadData(): void {
     // Client side pagination test.
     this.clientData = this.mockService.fetchAll();
+
+    const determineColumnType = (_key: string, value: any, path: string): Column<any> => {
+      if (typeof value === 'boolean') {
+        return {
+          type: 'checkbox',
+          field: path,
+          header: path,
+          sortable: false,
+          align: 'center',
+          visible: true,
+          checked: (row: any) => row[path],
+        };
+      }
+      return {
+        type: 'text',
+        field: path,
+        header: path,
+        sortable: false,
+        visible: true,
+      };
+    };
+    // Flatten certain objects in the data to get column properties and merge with existing columns.
+    this.tableConfig.columnsConfig.columns = this.flattenService.flattenAndMergeColumns(
+      this.clientData[0].preferences,
+      determineColumnType,
+      this.flattenService.flattenAndMergeColumns(
+        this.clientData[0].address,
+        determineColumnType,
+        this.tableConfig.columnsConfig.columns,
+        'address'
+      ),
+      'preferences'
+    );
+
     this.filteredData = [...this.clientData];
     this.detector.detectChanges();
   }

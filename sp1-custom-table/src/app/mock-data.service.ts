@@ -44,6 +44,15 @@ export interface MockModel {
   dob: string;
   married: boolean;
   company: string;
+  address: {
+    street: string;
+    city: string;
+    zip: string;
+  };
+  preferences: {
+    newsletter: boolean;
+    notifications: boolean;
+  };
 }
 
 export interface MockResponse {
@@ -331,6 +340,15 @@ export class MockDataService {
       dob: this.generateRandomDateBetween1940AndToday(),
       married: name.charAt(0) === 'P',
       company: COMPANIES[Math.round(Math.random() * (COMPANIES.length - 1))],
+      address: {
+        street: '123 Main St',
+        city: 'Anytown',
+        zip: '12345',
+      },
+      preferences: {
+        newsletter: true,
+        notifications: false,
+      },
     };
   }
 
