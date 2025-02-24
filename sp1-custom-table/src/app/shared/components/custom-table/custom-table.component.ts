@@ -95,6 +95,7 @@ export class CustomTableComponent implements OnChanges {
     end: new FormControl<Date | null>(null),
   });
   protected currentSort!: Sort;
+  protected defaultColumnConfig!: Column<any>[];
 
   // Current table filters: global and columns.
   get filters(): TableFilters | null {
@@ -130,6 +131,9 @@ export class CustomTableComponent implements OnChanges {
       const tableConfig = changes['tableConfig'].currentValue;
       // Generate the table display.
       this._generateDisplayColumns(tableConfig.columnsConfig.columns);
+      // Store the default column configuration.
+      this.defaultColumnConfig = tableConfig.columnsConfig.columns;
+      this.defaultColumnConfig.forEach(col => col.visible = col.visible ?? true);
       // Set filters to display.
       this.displayedFilters = tableConfig.columnsConfig.columns;
       // If any column has a filter, generate the filter columns.
@@ -148,6 +152,7 @@ export class CustomTableComponent implements OnChanges {
             // Create the component for injection.
             const modColumns = this.sidenavContent.createComponent(ModifyColumnsComponent);
             modColumns.instance.columnConfig$ = of(this.tableConfig.columnsConfig);
+            modColumns.instance.defaultCols = this.defaultColumnConfig;
             // Trigger change detection to ensure the columns$ observable is received
             this.detector.detectChanges();
             // Toggle sidenav visibility.
@@ -257,7 +262,7 @@ export class CustomTableComponent implements OnChanges {
    * @param {boolean} checked - Whether all rows are selected.
    */
   protected toggleAllSelection(checked: boolean): void {
-    this.dataSource._pageData(this.dataSource.data).map((row) => row.selected = checked);
+    this.dataSource._pageData(this.dataSource.data).forEach((row) => row.selected = checked);
     this.selectedRows = this.dataSource.data.filter(row => row.selected);
   }
 
@@ -339,7 +344,7 @@ export class CustomTableComponent implements OnChanges {
    */
   private _sanitizeFilters(): void {
     // Sanitize table state before emitting.
-    Object.keys(this.columnFilters).map((key) => {
+    Object.keys(this.columnFilters).forEach((key) => {
       if (this._isEmpty(this.columnFilters[key])) {
         delete this.columnFilters[key];
       }
