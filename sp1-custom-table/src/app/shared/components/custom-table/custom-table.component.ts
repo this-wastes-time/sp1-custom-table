@@ -158,7 +158,6 @@ export class CustomTableComponent implements OnChanges {
               this.tableConfig.columnsConfig.columns = updatedCols;
               // Update columns.
               this._generateDisplayColumns(updatedCols);
-              console.log(updatedCols);
               this.displayedFilters = updatedCols;
               // Clean up the subscription and component reference
               sub.unsubscribe();
