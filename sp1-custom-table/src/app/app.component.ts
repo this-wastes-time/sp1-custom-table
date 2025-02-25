@@ -508,7 +508,8 @@ export class AppComponent implements OnInit {
       return parts[0];
     }
 
-    parts[0] = `[${parts[0]}]`;
-    return parts.join(' ');
+    const prefix = parts.slice(0, parts.length - 1).join(' ');
+    const field = parts[parts.length - 1];
+    return `[${prefix}] ${field}`;
   }
 }
