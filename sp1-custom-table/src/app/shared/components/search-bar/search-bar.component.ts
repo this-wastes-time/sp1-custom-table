@@ -161,10 +161,7 @@ export class SearchBarComponent implements OnInit {
       takeUntil(this._destroy$),
       map((value: string | null) => value = value || '')
     ).subscribe(value => {
-      // Don't emit if previous value is the same as the new value.
-      if (this.value !== value) {
-        this.valueChange.emit(value);
-      }
+      this.valueChange.emit(value);
     });
   }
 
@@ -210,7 +207,6 @@ export class SearchBarComponent implements OnInit {
    * Clears the search input.
    */
   clear(): void {
-    this.searchControl.reset();
-    this.valueChange.emit(this.searchControl.value || '');
+    this.searchControl.setValue('');;
   }
 }

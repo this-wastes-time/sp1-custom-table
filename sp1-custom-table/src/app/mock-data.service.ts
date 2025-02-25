@@ -51,7 +51,10 @@ export interface MockModel {
   };
   preferences: {
     newsletter: boolean;
-    notifications: boolean;
+    notifications: {
+      email: boolean;
+      pager: boolean;
+    };
   };
 }
 
@@ -347,7 +350,10 @@ export class MockDataService {
       },
       preferences: {
         newsletter: true,
-        notifications: false,
+        notifications: {
+          email: index % 3 === 0,
+          pager: index % 2 === 0,
+        },
       },
     };
   }
