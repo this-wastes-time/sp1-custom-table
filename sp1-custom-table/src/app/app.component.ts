@@ -282,8 +282,12 @@ export class AppComponent implements OnInit {
         return {
           type: 'checkbox',
           field: path,
-          header: path,
+          header: this._getFlattenedHeader(path),
           sortable: false,
+          filterOptions: {
+            type: 'select',
+            options: () => Array.from(new Set<boolean>(this.clientData?.map(e => this.pvp.transform(e, path)).filter((val): val is boolean => val !== undefined))).sort(),
+          },
           align: 'center',
           visible: true,
           checked: (row: any) => this.pvp.transform<typeof row, boolean>(row, path) ?? false,
@@ -292,8 +296,11 @@ export class AppComponent implements OnInit {
       return {
         type: 'text',
         field: path,
-        header: path,
+        header: this._getFlattenedHeader(path),
         sortable: true,
+        filterOptions: {
+          type: 'text',
+        },
         visible: true,
       };
     };
@@ -375,7 +382,8 @@ export class AppComponent implements OnInit {
       Object.keys(columnFilters).forEach((key) => {
         const filterValue = columnFilters[key];
         filteredData = filteredData.filter((item) => {
-          const itemValue = item[key as keyof MockModel];
+          // Get nested value
+          const itemValue = this.pvp.transform(item, key);
 
           // Handle range filter (e.g., "dob")
           if (filterValue?.start || filterValue?.end) {
@@ -421,8 +429,8 @@ export class AppComponent implements OnInit {
           bValue = combiner(...properties.map(prop => b[prop]));
         } else {
           // Handle single property sorting
-          aValue = a[sortBy as keyof MockModel];
-          bValue = b[sortBy as keyof MockModel];
+          aValue = this.pvp.transform(a, sortBy);
+          bValue = this.pvp.transform(b, sortBy);
         }
 
         if (typeof aValue === 'number' && typeof bValue === 'number') {
@@ -492,5 +500,15 @@ export class AppComponent implements OnInit {
 
   private _getRandomNumber(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  private _getFlattenedHeader(path: string): string {
+    const parts = path.split('.').map<string>(str => str.charAt(0).toUpperCase() + str.slice(1));
+    if (parts.length === 1) {
+      return parts[0];
+    }
+
+    parts[0] = `[${parts[0]}]`;
+    return parts.join(' ');
   }
 }
