@@ -96,6 +96,7 @@ export class CustomTableComponent implements OnChanges {
   });
   protected currentSort!: Sort;
   protected defaultColumnConfig!: Column<any>[];
+  protected showColumnFilters = true;
 
   // Current table filters: global and columns.
   get filters(): TableFilters | null {
@@ -111,7 +112,8 @@ export class CustomTableComponent implements OnChanges {
 
   // Tooltip vars.
   protected resetFiltersTooltip = 'Clear all filters and search terms';
-  protected multiRowActionMenuTooltip = 'Show more';
+  protected toggleFiltersTooltip = 'Toggle column filters';
+  protected multiRowActionMenuTooltip = 'Show more actions';
 
   // Magic var.
   protected loadingTail!: boolean;
@@ -139,6 +141,7 @@ export class CustomTableComponent implements OnChanges {
       // If any column has a filter, generate the filter columns.
       if (tableConfig.columnsConfig.columns.some((col: Column<any>) => col.filterOptions)) {
         this.columnFiltersPresent = true;
+        this.showColumnFilters = true;
       }
 
       // If showing and hiding columns is allowed, add action to table.
@@ -357,6 +360,13 @@ export class CustomTableComponent implements OnChanges {
     };
 
     this._requestNewData();
+  }
+
+  /**
+   * Toggles the visibility of the column filters.
+   */
+  protected toggleColumnFilters(): void {
+    this.showColumnFilters = !this.showColumnFilters;
   }
 
   /**

@@ -31,7 +31,17 @@
 .column-filters-container {
   display: flex;
   flex-flow: row wrap;
-  column-gap: .5em;
+  padding-top: .25em;
+  column-gap: 0.5em;
+  max-height: 500px;
+  opacity: 1;
+  transition: max-height 0.5s ease, opacity 650ms ease;
+  overflow: hidden;
+
+  &.hide-columns {
+    max-height: 0;
+    opacity: 0;
+  }
 
   .column-filter-container {
     min-width: 300px;

@@ -23,6 +23,17 @@
               </button>
             }
 
+            @if (columnFilters) {
+              <button class="smaller-padding"
+                mat-flat-button
+                color="accent"
+                [matTooltip]="toggleFiltersTooltip"
+                [attr.aria-label]="toggleFiltersTooltip"
+                (click)="toggleColumnFilters()">
+                {{ showColumnFilters ? 'Hide' : 'Show' }} Filters
+              </button>
+            }
+
             @if (selectedRows.length > 0) {
               <button mat-icon-button
                 color="accent"
@@ -88,7 +99,8 @@
         </div>
 
         @if (columnFiltersPresent) {
-          <div class="column-filters-container">
+          <div class="column-filters-container"
+            [class.hide-columns]="!showColumnFilters">
             @for (column of displayedFilters; track column.field; let i = $index) {
               @if (column.filterOptions && (column.visible ?? true)) {
                 <div class="column-filter-container">
