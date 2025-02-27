@@ -195,6 +195,10 @@ export class AppComponent implements OnInit {
   cPageSize = 10;
   cPageSizeOptions = [10, 20, 40, 80, 100];
 
+  // Client filter var.
+  clientFilter = '';
+  // Client sort var.
+
   // Server paging vars.
   sPageIndex = 0;
   sPageSize = 10;
@@ -204,7 +208,7 @@ export class AppComponent implements OnInit {
   loading!: boolean;
 
   // Auto-refresh vars.
-  private _refreshIntervalId!: ReturnType<typeof setTimeout>;;
+  _refreshIntervalId!: ReturnType<typeof setTimeout>;;
 
   constructor(
     private mockService: MockDataService,
@@ -278,7 +282,7 @@ export class AppComponent implements OnInit {
     this.detector.detectChanges();
   }
 
-  protected updateDataClient(newData: MockModel[]): void {
+  updateDataClient(newData: MockModel[]): void {
     this.paginatedData = [...newData];
     if (this.clientPaginator) {
       // Interesting reassignment with destructuring ..
@@ -287,7 +291,7 @@ export class AppComponent implements OnInit {
     this.detector.detectChanges();
   }
 
-  protected updateDataServer(): void {
+  updateDataServer(): void {
     this.loading = true;
     ({ pageIndex: this.sPageIndex, pageSize: this.sPageSize } = this.serverPaginator.getPagination());
 
@@ -311,17 +315,17 @@ export class AppComponent implements OnInit {
     }, this._getRandomNumber(275, 1000));
   }
 
-  protected tableDataRequestClient(): void {
-    const filteredData = [...this.clientData];
+  tableDataRequestClient(): void {
+    let filteredData = [...this.clientData];
     const sort = this.clientTable.getSort();
 
     // Store filtering and sorting options.
-    // const globalFilter = '';
+    const globalFilter = this.clientFilter;
     const sortBy = sort?.active;
     const sortDirection = sort?.direction;
 
     // Apply global filter, if provided
-    /* if (globalFilter) {
+    if (globalFilter) {
       const searchTerm = globalFilter.toLowerCase();
       filteredData = filteredData.filter((item) =>
         Object.values(item).some((value) =>
@@ -330,7 +334,7 @@ export class AppComponent implements OnInit {
           value.toString().toLowerCase().includes(searchTerm)
         )
       );
-    } */
+    }
 
     // Sort if sortBy is provided
     if (sortBy) {
@@ -370,7 +374,7 @@ export class AppComponent implements OnInit {
     this.clientPaginator.pageIndex = validatedPage;
   }
 
-  protected tableDataRequestServer(): void {
+  tableDataRequestServer(): void {
 
     this.loading = true;
     // Reset if paginator knows the data limit.
@@ -396,7 +400,7 @@ export class AppComponent implements OnInit {
     }, this._getRandomNumber(275, 1000));
   }
 
-  protected toggleAutoRefresh(enabled: boolean): void {
+  toggleAutoRefresh(enabled: boolean): void {
     if (enabled) {
       this.stopAF();
     } else {
@@ -404,22 +408,27 @@ export class AppComponent implements OnInit {
     }
   }
 
-  protected startAF(): void {
+  startAF(): void {
     this._refreshIntervalId = setInterval(() => {
       this.loadData();
       this.tableDataRequestClient();
     }, this.tableConfig.autoRefresh?.intervalMs);
   }
 
-  protected stopAF(): void {
+  stopAF(): void {
     clearInterval(this._refreshIntervalId);
   }
 
-  private _getRandomNumber(min: number, max: number): number {
+  clientFilterChanged(filterStr: string): void {
+    this.clientFilter = filterStr;
+    this.tableDataRequestClient();
+  }
+
+  _getRandomNumber(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  private _getFlattenedHeader(path: string): string {
+  _getFlattenedHeader(path: string): string {
     const parts = path.split('.').map<string>(str => str.charAt(0).toUpperCase() + str.slice(1));
     if (parts.length === 1) {
       return parts[0];

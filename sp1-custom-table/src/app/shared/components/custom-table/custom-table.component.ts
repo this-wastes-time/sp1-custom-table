@@ -68,13 +68,18 @@ export class CustomTableComponent implements OnChanges {
    */
   @Output() getData = new EventEmitter<void>();
 
+  /**
+   * Event emitted when search bar value changes.
+   * @type {EventEmitter<string>}
+   */
+  @Output() filterChange = new EventEmitter<string>();
+
   @ViewChild('searchBar') searchBar!: SearchBarComponent;
   @ViewChild('sidenav') sidenav!: MatSidenav;
   @ViewChild('sidenavContent', { read: ViewContainerRef }) sidenavContent!: ViewContainerRef;
 
   // Table data vars.
   protected dataSource = new MatTableDataSource<any>(); // MatTableDataSource instance
-  protected globalFilter!: string; // Filter string from main search box
 
   // Table column vars.
   protected displayColumns: string[] = [];
@@ -195,8 +200,8 @@ export class CustomTableComponent implements OnChanges {
    * Applies the global filter.
    * @param {string} filterString - The filter string.
    */
-  protected applyFilter(filterString: string): void {
-    this.globalFilter = filterString;
+  protected onFilterChange(filterString: string): void {
+    this.filterChange.emit(filterString);
   }
 
   /**
@@ -239,7 +244,6 @@ export class CustomTableComponent implements OnChanges {
    * Resets all filters.
    */
   protected resetFilters(): void {
-    this.globalFilter = '';
     this.searchBar.clear();
   }
 

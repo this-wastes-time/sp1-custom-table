@@ -54,7 +54,7 @@
                 [label]="tableConfig.filterOptions.label ?? ''"
                 [placeholder]="tableConfig.filterOptions.placeholder ?? ''"
                 [animateWidth]="true"
-                (valueChange)="applyFilter($event)">
+                (valueChange)="onFilterChange($event)">
               </app-search-bar>
             </div>
           }
