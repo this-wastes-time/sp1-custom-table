@@ -197,7 +197,9 @@ export class AppComponent implements OnInit {
 
   // Client filter var.
   clientFilter = '';
+
   // Client sort var.
+  clientSort = { active: '', direction: '' };
 
   // Server paging vars.
   sPageIndex = 0;
@@ -317,12 +319,11 @@ export class AppComponent implements OnInit {
 
   tableDataRequestClient(): void {
     let filteredData = [...this.clientData];
-    const sort = this.clientTable.getSort();
 
     // Store filtering and sorting options.
     const globalFilter = this.clientFilter;
-    const sortBy = sort?.active;
-    const sortDirection = sort?.direction;
+    const sortBy = this.clientSort.active;
+    const sortDirection = this.clientSort.direction;
 
     // Apply global filter, if provided
     if (globalFilter) {
@@ -380,7 +381,7 @@ export class AppComponent implements OnInit {
     // Reset if paginator knows the data limit.
     this.serverPaginator.totalItemsKnown = false;
     // const filters = this.serverTable.getFilters();
-    const sort = this.serverTable.getSort();
+    const sort = this.serverTable as any; // LOL Please don't do this in production code.
 
     // Store filtering and sorting options.
     const globalFilter = '';
@@ -419,8 +420,13 @@ export class AppComponent implements OnInit {
     clearInterval(this._refreshIntervalId);
   }
 
-  clientFilterChanged(filterStr: string): void {
-    this.clientFilter = filterStr;
+  clientFilterChanged(updatedFilter: string): void {
+    this.clientFilter = updatedFilter;
+    this.tableDataRequestClient();
+  }
+
+  clientSortChanged(updatedSort: { active: string; direction: string }): void {
+    this.clientSort = updatedSort;
     this.tableDataRequestClient();
   }
 

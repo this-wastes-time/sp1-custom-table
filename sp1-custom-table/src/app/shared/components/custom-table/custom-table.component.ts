@@ -74,6 +74,12 @@ export class CustomTableComponent implements OnChanges {
    */
   @Output() filterChange = new EventEmitter<string>();
 
+  /**
+   * Event emitted when sort changes.
+   * @type {EventEmitter<Sort>}
+   */
+  @Output() sortChange = new EventEmitter<Sort>();
+
   @ViewChild('searchBar') searchBar!: SearchBarComponent;
   @ViewChild('sidenav') sidenav!: MatSidenav;
   @ViewChild('sidenavContent', { read: ViewContainerRef }) sidenavContent!: ViewContainerRef;
@@ -83,7 +89,6 @@ export class CustomTableComponent implements OnChanges {
 
   // Table column vars.
   protected displayColumns: string[] = [];
-  protected currentSort!: Sort;
   protected defaultColumnConfig!: Column<any>[];
 
   // Selected rows vars.
@@ -152,12 +157,6 @@ export class CustomTableComponent implements OnChanges {
         ];
       }
 
-      // Set sort properties if available.
-      this.currentSort = {
-        active: tableConfig.sortOptions?.initialSort?.active ?? '',
-        direction: tableConfig.sortOptions?.initialSort?.direction ?? '',
-      };
-
       this.detector.detectChanges();
     }
 
@@ -166,14 +165,6 @@ export class CustomTableComponent implements OnChanges {
       this.dataSource = new MatTableDataSource(changes['tableData']?.currentValue);
       this.detector.detectChanges();
     }
-  }
-
-  /**
-   * Gets the current sort state.
-   * @returns {Sort} - The current sort state.
-   */
-  getSort(): Sort {
-    return this.currentSort;
   }
 
   /**
@@ -186,22 +177,21 @@ export class CustomTableComponent implements OnChanges {
   }
 
   /**
-   * Handles sort change event.
-   * @param {Sort} event - The sort event.
-   */
-  protected sortChange(event: Sort): void {
-    const sortDirection = event.direction ? `${event.direction}ending` : 'cleared';
-    this.announcer.announce(`Sorting by ${event.active} ${sortDirection}`);
-    this.currentSort = event;
-    this._requestNewData();
-  }
-
-  /**
-   * Applies the global filter.
+   * Emits the filter change event.
    * @param {string} filterString - The filter string.
    */
   protected onFilterChange(filterString: string): void {
     this.filterChange.emit(filterString);
+  }
+
+  /**
+   * Handles sort change event and emits teh sort change event.
+   * @param {Sort} event - The sort event.
+   */
+  protected onSortChange(event: Sort): void {
+    const sortDirection = event.direction ? `${event.direction}ending` : 'cleared';
+    this.announcer.announce(`Sorting by ${event.active} ${sortDirection}`);
+    this.sortChange.emit(event);
   }
 
   /**
