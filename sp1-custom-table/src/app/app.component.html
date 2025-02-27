@@ -7,7 +7,6 @@
       [tableData]="paginatedData"
       [pageIndex]="cPageIndex"
       [pageSize]="cPageSize"
-      (getData)="tableDataRequestClient()"
       (filterChange)="clientFilterChanged($event)"
       (sortChange)="clientSortChanged($event)">
     </app-custom-table>

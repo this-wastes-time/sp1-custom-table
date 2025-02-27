@@ -63,12 +63,6 @@ export class CustomTableComponent implements OnChanges {
   private _loading!: boolean;
 
   /**
-   * Event emitted to request new data.
-   * @type {EventEmitter<void>}
-   */
-  @Output() getData = new EventEmitter<void>();
-
-  /**
    * Event emitted when search bar value changes.
    * @type {EventEmitter<string>}
    */
@@ -258,12 +252,5 @@ export class CustomTableComponent implements OnChanges {
     if (this.tableConfig.rowActions) {
       this.displayColumns.push('actions');
     }
-  }
-
-  /**
-   * Requests new data.
-   */
-  private _requestNewData(): void {
-    this.getData.emit();
   }
 }
