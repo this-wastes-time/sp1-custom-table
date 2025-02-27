@@ -47,10 +47,6 @@ export class AppComponent implements OnInit {
           field: 'name',
           header: 'Name',
           sortable: true,
-          filterOptions: {
-            type: 'select',
-            options: () => Array.from(new Set<string>(this.clientData?.map(e => e.name))).sort(),
-          }
         },
         {
           type: 'text',
@@ -64,21 +60,12 @@ export class AppComponent implements OnInit {
           field: 'symbol',
           header: 'Symbol',
           sortable: true,
-          filterOptions: {
-            type: 'select',
-            options: () => Array.from(new Set<string>(this.clientData?.map(e => e.symbol))).sort(),
-            multiple: true,
-          }
         },
         {
           type: 'text',
           field: 'discoveredBy',
           header: 'Discovered By',
           sortable: true,
-          filterOptions: {
-            type: 'text',
-            placeholder: 'Example: Davy or Breiner',
-          }
         },
         {
           type: 'text',
@@ -92,11 +79,6 @@ export class AppComponent implements OnInit {
           field: 'career',
           header: 'Career',
           sortable: true,
-          filterOptions: {
-            type: 'select',
-            options: () => Array.from(new Set<string>(this.clientData?.map(e => e.career))).sort(),
-            multiple: true,
-          }
         },
         {
           type: 'checkbox',
@@ -105,11 +87,6 @@ export class AppComponent implements OnInit {
           checked(row) {
             return row.online;
           },
-          filterOptions: {
-            type: 'select',
-            options: () => Array.from(new Set<boolean>(this.clientData?.map(e => e.online))).sort(),
-            multiple: true,
-          },
           align: 'center',
         },
         {
@@ -117,9 +94,6 @@ export class AppComponent implements OnInit {
           field: 'dob',
           header: 'Date of Birth',
           sortable: true,
-          filterOptions: {
-            type: 'dateRange',
-          }
         },
         {
           type: 'checkbox',
@@ -128,11 +102,6 @@ export class AppComponent implements OnInit {
           checked(row) {
             return row.married;
           },
-          filterOptions: {
-            type: 'select',
-            options: () => Array.from(new Set<boolean>(this.clientData?.map(e => e.married))).sort(),
-            multiple: true,
-          },
           align: 'center',
         },
         {
@@ -140,11 +109,6 @@ export class AppComponent implements OnInit {
           field: 'company',
           header: 'Company',
           sortable: true,
-          filterOptions: {
-            type: 'select',
-            options: () => Array.from(new Set<string>(this.clientData?.map(e => e.company))).sort(),
-            multiple: true,
-          }
         },
       ],
       stickyHeaders: true,
@@ -231,6 +195,12 @@ export class AppComponent implements OnInit {
   cPageSize = 10;
   cPageSizeOptions = [10, 20, 40, 80, 100];
 
+  // Client filter var.
+  clientFilter = '';
+
+  // Client sort var.
+  clientSort = { active: '', direction: '' };
+
   // Server paging vars.
   sPageIndex = 0;
   sPageSize = 10;
@@ -240,7 +210,7 @@ export class AppComponent implements OnInit {
   loading!: boolean;
 
   // Auto-refresh vars.
-  private _refreshIntervalId!: ReturnType<typeof setTimeout>;;
+  _refreshIntervalId!: ReturnType<typeof setTimeout>;;
 
   constructor(
     private mockService: MockDataService,
@@ -284,10 +254,6 @@ export class AppComponent implements OnInit {
           field: path,
           header: this._getFlattenedHeader(path),
           sortable: false,
-          filterOptions: {
-            type: 'select',
-            options: () => Array.from(new Set<boolean>(this.clientData?.map(e => this.pvp.transform(e, path)).filter((val): val is boolean => val !== undefined))).sort(),
-          },
           align: 'center',
           visible: true,
           checked: (row: any) => this.pvp.transform<typeof row, boolean>(row, path) ?? false,
@@ -298,9 +264,6 @@ export class AppComponent implements OnInit {
         field: path,
         header: this._getFlattenedHeader(path),
         sortable: true,
-        filterOptions: {
-          type: 'text',
-        },
         visible: true,
       };
     };
@@ -321,7 +284,7 @@ export class AppComponent implements OnInit {
     this.detector.detectChanges();
   }
 
-  protected updateDataClient(newData: MockModel[]): void {
+  updateDataClient(newData: MockModel[]): void {
     this.paginatedData = [...newData];
     if (this.clientPaginator) {
       // Interesting reassignment with destructuring ..
@@ -330,7 +293,7 @@ export class AppComponent implements OnInit {
     this.detector.detectChanges();
   }
 
-  protected updateDataServer(): void {
+  updateDataServer(): void {
     this.loading = true;
     ({ pageIndex: this.sPageIndex, pageSize: this.sPageSize } = this.serverPaginator.getPagination());
 
@@ -354,16 +317,13 @@ export class AppComponent implements OnInit {
     }, this._getRandomNumber(275, 1000));
   }
 
-  protected tableDataRequestClient(): void {
+  tableDataRequestClient(): void {
     let filteredData = [...this.clientData];
-    const filters = this.clientTable.getFilters();
-    const sort = this.clientTable.getSort();
 
     // Store filtering and sorting options.
-    const globalFilter = filters?.globalFilter;
-    const columnFilters = filters?.columnFilters;
-    const sortBy = sort?.active;
-    const sortDirection = sort?.direction;
+    const globalFilter = this.clientFilter;
+    const sortBy = this.clientSort.active;
+    const sortDirection = this.clientSort.direction;
 
     // Apply global filter, if provided
     if (globalFilter) {
@@ -375,43 +335,6 @@ export class AppComponent implements OnInit {
           value.toString().toLowerCase().includes(searchTerm)
         )
       );
-    }
-
-    // Apply filters, if provided
-    if (columnFilters) {
-      Object.keys(columnFilters).forEach((key) => {
-        const filterValue = columnFilters[key];
-        filteredData = filteredData.filter((item) => {
-          // Get nested value
-          const itemValue = this.pvp.transform(item, key);
-
-          // Handle range filter (e.g., "dob")
-          if (filterValue?.start || filterValue?.end) {
-            const { start, end } = filterValue;
-            const itemDate = new Date(itemValue as string).getTime();
-            return (
-              // Check if itemDate is >= start (if start exists)
-              (!start || itemDate >= start) &&
-              // Check if itemDate is <= end (if end exists)
-              (!end || itemDate <= end)
-            );
-          }
-
-          // Handle multiple values filtering (e.g., "name": ["Aluminum", "Beryllium"])
-          if (Array.isArray(filterValue)) {
-            return filterValue.includes(itemValue);
-          }
-
-          // Handle string matching (case-insensitive)
-          if (typeof itemValue === 'string') {
-            return itemValue.toLowerCase().includes(String(filterValue).toLowerCase());
-          }
-
-          // Handle direct equality checks for booleans and numbers
-          const filterPred = this.tableConfig.columnsConfig.columns.find(c => c.field === key)?.filterOptions?.filterPredicate;
-          return filterPred ? filterPred(item, filterValue) : itemValue === filterValue;
-        });
-      });
     }
 
     // Sort if sortBy is provided
@@ -452,22 +375,21 @@ export class AppComponent implements OnInit {
     this.clientPaginator.pageIndex = validatedPage;
   }
 
-  protected tableDataRequestServer(): void {
+  tableDataRequestServer(): void {
 
     this.loading = true;
     // Reset if paginator knows the data limit.
     this.serverPaginator.totalItemsKnown = false;
-    const filters = this.serverTable.getFilters();
-    const sort = this.serverTable.getSort();
+    // const filters = this.serverTable.getFilters();
+    const sort = this.serverTable as any; // LOL Please don't do this in production code.
 
     // Store filtering and sorting options.
-    const globalFilter = filters?.globalFilter;
-    const columnFilters = filters?.columnFilters;
+    const globalFilter = '';
     const sortBy = sort?.active;
     const sortDirection = sort?.direction;
 
     setTimeout(() => {
-      this.serverData$ = this.mockService.fetchData(this.sPageIndex, this.sPageSize, sortBy, sortDirection, globalFilter, columnFilters).pipe(
+      this.serverData$ = this.mockService.fetchData(this.sPageIndex, this.sPageSize, sortBy, sortDirection, globalFilter).pipe(
         catchError(() => {
           return of([]); // Return an empty array in case of error
         }),
@@ -479,7 +401,7 @@ export class AppComponent implements OnInit {
     }, this._getRandomNumber(275, 1000));
   }
 
-  protected toggleAutoRefresh(enabled: boolean): void {
+  toggleAutoRefresh(enabled: boolean): void {
     if (enabled) {
       this.stopAF();
     } else {
@@ -487,22 +409,32 @@ export class AppComponent implements OnInit {
     }
   }
 
-  protected startAF(): void {
+  startAF(): void {
     this._refreshIntervalId = setInterval(() => {
       this.loadData();
       this.tableDataRequestClient();
     }, this.tableConfig.autoRefresh?.intervalMs);
   }
 
-  protected stopAF(): void {
+  stopAF(): void {
     clearInterval(this._refreshIntervalId);
   }
 
-  private _getRandomNumber(min: number, max: number): number {
+  clientFilterChanged(updatedFilter: string): void {
+    this.clientFilter = updatedFilter;
+    this.tableDataRequestClient();
+  }
+
+  clientSortChanged(updatedSort: { active: string; direction: string }): void {
+    this.clientSort = updatedSort;
+    this.tableDataRequestClient();
+  }
+
+  _getRandomNumber(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  private _getFlattenedHeader(path: string): string {
+  _getFlattenedHeader(path: string): string {
     const parts = path.split('.').map<string>(str => str.charAt(0).toUpperCase() + str.slice(1));
     if (parts.length === 1) {
       return parts[0];

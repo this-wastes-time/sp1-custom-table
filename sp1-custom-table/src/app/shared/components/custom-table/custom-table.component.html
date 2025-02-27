@@ -11,29 +11,20 @@
           [style.z-index]="loadingTail ? 110 : -1"></div>
       
         <div class="table-filter-container">
+          <!-- Table search bar -->
+          @if (tableConfig.filterOptions) {
+            <div class="table-search-bar">
+              <app-search-bar #searchBar
+                [label]="tableConfig.filterOptions.label ?? ''"
+                [placeholder]="tableConfig.filterOptions.placeholder ?? ''"
+                (valueChange)="onFilterChange($event)">
+              </app-search-bar>
+            </div>
+          }
+
+          <app-span-filler></app-span-filler>
+
           <div class="table-buttons">
-            @if (tableConfig.filterOptions || columnFiltersPresent) {
-              <button class="smaller-padding"
-                mat-flat-button
-                color="accent"
-                [matTooltip]="resetFiltersTooltip"
-                [attr.aria-label]="resetFiltersTooltip"
-                (click)="resetFilters()">
-                Reset Filters
-              </button>
-            }
-
-            @if (columnFilters) {
-              <button class="smaller-padding"
-                mat-flat-button
-                color="accent"
-                [matTooltip]="toggleFiltersTooltip"
-                [attr.aria-label]="toggleFiltersTooltip"
-                (click)="toggleColumnFilters()">
-                {{ showColumnFilters ? 'Hide' : 'Show' }} Filters
-              </button>
-            }
-
             @if (selectedRows.length > 0) {
               <button mat-icon-button
                 color="accent"
@@ -55,20 +46,6 @@
               </mat-menu>
             }
           </div>
-
-          <app-span-filler></app-span-filler>
-
-          <!-- Table search bar -->
-          @if (tableConfig.filterOptions) {
-            <div class="table-search-bar">
-              <app-search-bar #searchBar
-                [label]="tableConfig.filterOptions.label ?? ''"
-                [placeholder]="tableConfig.filterOptions.placeholder ?? ''"
-                [animateWidth]="true"
-                (valueChange)="applyFilter($event)">
-              </app-search-bar>
-            </div>
-          }
           
           <!-- Table menu -->
           @if (tableConfig.autoRefresh) {
@@ -97,50 +74,12 @@
             </div>
           }
         </div>
-
-        @if (columnFiltersPresent) {
-          <div class="column-filters-container"
-            [class.hide-columns]="!showColumnFilters">
-            @for (column of displayedFilters; track column.field; let i = $index) {
-              @if (column.filterOptions && (column.visible ?? true)) {
-                <div class="column-filter-container">
-                  @switch (column.filterOptions.type) {
-                    @case ('text') {
-                      <ng-container
-                        *ngTemplateOutlet="textFilter;
-                          context: { $implicit: column, filters: columnFilters }">
-                      </ng-container>
-                    }
-                    @case ('select') {
-                      <ng-container
-                        *ngTemplateOutlet="selectFilter;
-                          context: { $implicit: column, filters: columnFilters }">
-                      </ng-container>
-                    }
-                    @case ('singleDate') {
-                      <ng-container
-                        *ngTemplateOutlet="singleDateFilter;
-                          context: { $implicit: column, filters: columnFilters }">
-                      </ng-container>
-                    }
-                    @case ('dateRange') {
-                      <ng-container
-                        *ngTemplateOutlet="dateRangeFilter;
-                          context: { $implicit: column, filters: columnFilters }">
-                      </ng-container>
-                    }
-                  }
-                </div>
-              }
-            }
-          </div>
-        }
       
         <div class="table-container">
           <table mat-table [dataSource]="dataSource" matSort
             [matSortActive]="tableConfig.sortOptions?.initialSort?.active ?? ''"
             [matSortDirection]="tableConfig.sortOptions?.initialSort?.direction ?? ''"
-            (matSortChange)="sortChange($event)">
+            (matSortChange)="onSortChange($event)">
       
             <!--- Note that these columns can be defined in any order.
                   The actual rendered columns are set as a property on the row definition" -->
@@ -212,7 +151,7 @@
             }
       
             <!-- Headers -->
-            <tr class="non-filter-header" mat-header-row *matHeaderRowDef="displayColumns; sticky: tableConfig.columnsConfig.stickyHeaders"></tr>
+            <tr mat-header-row *matHeaderRowDef="displayColumns; sticky: tableConfig.columnsConfig.stickyHeaders"></tr>
 
             <!-- Data rows -->
             <tr mat-row *matRowDef="let row; columns: displayColumns"
@@ -239,114 +178,4 @@
 <!-- Checkbox -->
 <ng-template #checkboxTemplate let-checked="checked" let-row="row">
   <mat-checkbox [color]="'primary'" [checked]="checked(row)" disabled></mat-checkbox>
-</ng-template>
-
-<!-- Defined Column Filter Templates -->
-<!-- Text -->
-<ng-template #textFilter let-column let-filters="filters">
-  <app-search-bar
-    [label]="column.filterOptions.label ?? 'Filter by ' + column.header"
-    [placeholder]="column.filterOptions.placeholder ?? ''"
-    [instantSearch]="column.filterOptions.instantSearch ?? false"
-    [showSearchIcon]="false"
-    [(value)]="filters[column.field]"
-    (valueChange)="applyFilters()">
-  </app-search-bar>
-</ng-template>
-<!-- Select -->
-<ng-template #selectFilter let-column let-filters="filters">
-  <mat-form-field appearance="outline">
-    <mat-label> {{ column.filterOptions.label ?? 'Filter by ' + column.header }} </mat-label>
-    <mat-select
-      [(ngModel)]="filters[column.field]"
-      (selectionChange)="applyFilters()"
-      [multiple]="column.filterOptions.multiple">
-      @if (!column.filterOptions.multiple) {
-        <mat-option [value]=""> -- </mat-option>
-      }
-      @for (option of column.filterOptions.options(); track option) {
-        <mat-option [value]="option"> {{ option }} </mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
-</ng-template>
-<!-- Single Date -->
-<ng-template #singleDateFilter let-column let-filters="filters">
-  <form [formGroup]="single">
-    <mat-form-field class="date-column-filter" appearance="outline">
-      <mat-label> {{ column.filterOptions.label ?? 'Filter by ' + column.header }} </mat-label>
-      <input matInput
-        [matDatepicker]="picker"
-        formControlName="date"
-        [placeholder]="column.filterOptions.placeholder ?? 'Select date'"
-        (dateInput)="
-          filters[column.field] = $event.value;
-          applyFilters()
-        "/>
-  
-      @if (filters[column.field]) {
-        <button mat-icon-button matSuffix
-          (click)="
-            filters[column.field] = '';
-            single.reset();
-            applyFilters()
-          "
-          [attr.aria-label]="'Clear {{column.header}} filter'">
-          <mat-icon>close</mat-icon>
-        </button>
-      }
-  
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-  
-      @if (single.invalid) {
-        <mat-error>Invalid date</mat-error>
-      }
-    </mat-form-field>
-  </form>
-</ng-template>
-<!-- Date range -->
-<ng-template #dateRangeFilter let-column let-filters="filters">
-  <mat-form-field appearance="outline">
-    <mat-label> {{ column.filterOptions.label ?? 'Filter by ' + column.header }} </mat-label>
-    <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
-      <input matStartDate
-        formControlName="start"
-        placeholder="Start date"
-        (dateInput)="
-          filters[column.field] = range.value;
-          applyFilters()
-        ">
-      <input matEndDate
-        formControlName="end"
-        placeholder="End date"
-        (dateInput)="
-          filters[column.field] = range.value;
-          applyFilters()
-        ">
-    </mat-date-range-input>
-
-    @if (filters[column.field]) {
-      <button mat-icon-button matSuffix
-        (click)="
-          filters[column.field] = '';
-          range.reset();
-          applyFilters()
-        "
-        [attr.aria-label]="'Clear {{column.header}} filter'">
-        <mat-icon>close</mat-icon>
-      </button>
-    }
-
-    <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
-    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-date-range-picker #picker></mat-date-range-picker>
-  
-    @if (range.controls.start.hasError('matStartDateInvalid')) {
-      <mat-error>Invalid start date</mat-error>
-    }
-    @if (range.controls.end.hasError('matEndDateInvalid')) {
-      <mat-error>Invalid end date</mat-error>
-    }
-  </mat-form-field>
 </ng-template>

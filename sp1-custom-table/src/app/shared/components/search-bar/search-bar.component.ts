@@ -1,3 +1,4 @@
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
 import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, OnInit, Output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -17,9 +18,20 @@ const DEBOUNCE_WAIT = 500;
   templateUrl: './search-bar.component.html',
   styleUrl: './search-bar.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: {
-    '[class.has-focus]': '_expand && animateWidth',
-  }
+  animations: [
+    trigger('floatLabel', [
+      state('float', style({
+        transform: 'translateY(-1.5em)',
+        opacity: 1,
+      })),
+      // Transition from placeholding to float
+      transition('placeholding => float', [
+        animate('0ms', style({ opacity: 0 })), // Fade out
+        animate('100ms', style({ transform: 'translateY(-1.5em)' })), // Move
+        animate('400ms ease-out', style({ opacity: 1 })), // Fade in
+      ]),
+    ])
+  ]
 })
 export class SearchBarComponent implements OnInit {
   /**
@@ -41,6 +53,12 @@ export class SearchBarComponent implements OnInit {
   @Input() color: ThemePalette = 'primary';
 
   /**
+   * Value of the input field.
+   * @type {string}
+   */
+  @Input() value = '';
+
+  /**
    * Label for the form field.
    * @type {string}
    */
@@ -53,29 +71,23 @@ export class SearchBarComponent implements OnInit {
   @Input() showSearchIcon = true;
 
   /**
-   * Whether to enable instant search and ignore debounce time.
-   * @type {boolean}
-   */
-  @Input() instantSearch!: boolean;
-
-  /**
-   * Whether to animate the width of the search bar.
-   * @type {boolean}
-   */
-  @Input() animateWidth!: boolean;
-
-  /**
    * Placeholder text for the input field.
    * @type {string}
    */
+  @Input() placeholder!: string;
+
+  /**
+   * Whether to enable instant search and ignore debounce time.
+   * @type {boolean}
+   */
   @Input()
-  get placeholder(): string {
-    return this._placeholder;
+  get instantSearch(): boolean {
+    return this._instantSearch;
   }
-  set placeholder(value: string) {
-    this._placeholder = value;
+  set instantSearch(value: BooleanInput) {
+    this._instantSearch = coerceBooleanProperty(value);
   }
-  private _placeholder!: string;
+  private _instantSearch!: boolean;
 
   /**
    * Whether the input field is required.
@@ -102,12 +114,6 @@ export class SearchBarComponent implements OnInit {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     value ? this.searchControl.disable() : this.searchControl.enable();
   }
-
-  /**
-   * Value of the input field.
-   * @type {string}
-   */
-  @Input() value!: string;
 
   /**
    * Event emitter for value changes.
@@ -151,17 +157,23 @@ export class SearchBarComponent implements OnInit {
    */
   protected focused!: boolean;
 
-  ngOnInit(): void {
-    if (this.value === undefined) {
-      this.value = '';
-    }
+  /**
+   * The state of the floating label.
+   * Can be 'placeholding' or 'float'.
+   * @type {'placeholding' | 'float'}
+   */
+  protected floatState: 'placeholding' | 'float' = 'placeholding';
 
+  ngOnInit(): void {
     this.searchControl.valueChanges.pipe(
       debounceTime(this.instantSearch ? 0 : DEBOUNCE_WAIT),
       takeUntil(this._destroy$),
       map((value: string | null) => value = value || '')
     ).subscribe(value => {
-      this.valueChange.emit(value);
+      if (this.value !== value) {
+        this.value = value;
+        this.valueChange.emit(value);
+      }
     });
   }
 
@@ -174,18 +186,11 @@ export class SearchBarComponent implements OnInit {
   }
 
   /**
-   * Determines whether to show the clear button.
-   * @returns {boolean} True if the clear button should be shown, false otherwise.
-   */
-  showClearButton(): boolean {
-    return this._expand;
-  }
-
-  /**
    * Handles the focus in event.
    */
   onFocusIn(): void {
     this.focused = true;
+    this.floatState = 'float';
   }
 
   /**
@@ -193,14 +198,7 @@ export class SearchBarComponent implements OnInit {
    */
   onBlur(): void {
     this.focused = false;
-  }
-
-  /**
-   * Gets whether the search bar should expand.
-   * @returns {boolean} True if the search bar should expand, false otherwise.
-   */
-  private get _expand(): boolean {
-    return this.focused || !this.empty();
+    this.floatState = this.value ? 'float' : 'placeholding';
   }
 
   /**

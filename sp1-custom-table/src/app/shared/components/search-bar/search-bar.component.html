@@ -1,40 +1,31 @@
-<div class="search-bar-container"
-  [class.animate-width]="animateWidth">
-  <span [class.disabled-wrapper]="disabled">
-    <mat-form-field class="search-form-field"
-      [class.animate-width]="animateWidth"
-      [appearance]="appearance"
-      [subscriptSizing]="subscriptSizing"
-      [color]="color">
-  
-      <mat-label [class.animate-width]="animateWidth">
-        {{ label }}
-      </mat-label>
-  
-      <input class="search-input"
-        type="text"
-        matInput
-        [formControl]="searchControl"
-        [placeholder]="placeholder"
-        [required]="required"
-        (focus)="onFocusIn()"
-        (blur)="onBlur()"/>
-  
-      @if (showSearchIcon) {
-        <mat-icon matPrefix>search</mat-icon>
-      }
-  
-      @if (showClearButton()) {
-        <button class="clear-button"
-          [class.animate-width]="animateWidth"
-          mat-icon-button
-          matSuffix
-          [attr.aria-label]="clearAriaLabel"
-          [disabled]="empty()"
-          (click)="clear()">
-          <mat-icon>close</mat-icon>
-        </button>
-      }
-    </mat-form-field>
-  </span>
-</div>
+<span [class.disabled-wrapper]="disabled">
+  <mat-form-field
+    [appearance]="appearance"
+    [subscriptSizing]="subscriptSizing"
+    [color]="color">
+
+    <mat-label [@floatLabel]="floatState">{{ label }}</mat-label>
+
+    <input class="search-input"
+      type="text"
+      matInput
+      [formControl]="searchControl"
+      [placeholder]="placeholder"
+      [required]="required"
+      (focus)="onFocusIn()"
+      (blur)="onBlur()"/>
+
+    @if (showSearchIcon) {
+      <mat-icon matPrefix>search</mat-icon>
+    }
+
+    <button class="clear-button"
+      mat-icon-button
+      matSuffix
+      [attr.aria-label]="clearAriaLabel"
+      [disabled]="empty()"
+      (click)="clear()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+</span>

@@ -4,17 +4,11 @@ import { TableConfig } from './models/table.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { FormControl, FormGroup } from '@angular/forms';
 import { ModifyColumnsComponent } from './child-components/modify-columns/modify-columns.component';
 import { MatSidenav } from '@angular/material/sidenav';
 import { of } from 'rxjs';
 import { Column } from './models/column.model';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
-
-interface TableFilters {
-  globalFilter: string;
-  columnFilters: Record<string, any>;
-}
 
 @Component({
   selector: 'app-custom-table',
@@ -69,10 +63,16 @@ export class CustomTableComponent implements OnChanges {
   private _loading!: boolean;
 
   /**
-   * Event emitted to request new data.
-   * @type {EventEmitter<void>}
+   * Event emitted when search bar value changes.
+   * @type {EventEmitter<string>}
    */
-  @Output() getData = new EventEmitter<void>();
+  @Output() filterChange = new EventEmitter<string>();
+
+  /**
+   * Event emitted when sort changes.
+   * @type {EventEmitter<Sort>}
+   */
+  @Output() sortChange = new EventEmitter<Sort>();
 
   @ViewChild('searchBar') searchBar!: SearchBarComponent;
   @ViewChild('sidenav') sidenav!: MatSidenav;
@@ -80,39 +80,15 @@ export class CustomTableComponent implements OnChanges {
 
   // Table data vars.
   protected dataSource = new MatTableDataSource<any>(); // MatTableDataSource instance
-  protected globalFilter!: string; // Filter string from main search box
 
   // Table column vars.
   protected displayColumns: string[] = [];
-  protected columnFiltersPresent!: boolean;
-  protected displayedFilters!: Column<any>[];
-  protected columnFilters: Record<string, string> = {}; // Store filters for each column
-  protected readonly single = new FormGroup({
-    date: new FormControl<Date | null>(null),
-  });
-  protected readonly range = new FormGroup({
-    start: new FormControl<Date | null>(null),
-    end: new FormControl<Date | null>(null),
-  });
-  protected currentSort!: Sort;
   protected defaultColumnConfig!: Column<any>[];
-  protected showColumnFilters = true;
-
-  // Current table filters: global and columns.
-  get filters(): TableFilters | null {
-    return this._filterState;
-  }
-  set filters(value: TableFilters) {
-    this._filterState = value;
-  }
-  private _filterState!: TableFilters | null;
 
   // Selected rows vars.
   protected selectedRows: any[] = []; // Store selected rows of table.
 
   // Tooltip vars.
-  protected resetFiltersTooltip = 'Clear all filters and search terms';
-  protected toggleFiltersTooltip = 'Toggle column filters';
   protected multiRowActionMenuTooltip = 'Show more actions';
 
   // Magic var.
@@ -136,13 +112,6 @@ export class CustomTableComponent implements OnChanges {
       // Store the default column configuration.
       this.defaultColumnConfig = tableConfig.columnsConfig.columns;
       this.defaultColumnConfig.forEach(col => col.visible = col.visible ?? true);
-      // Set filters to display.
-      this.displayedFilters = tableConfig.columnsConfig.columns;
-      // If any column has a filter, generate the filter columns.
-      if (tableConfig.columnsConfig.columns.some((col: Column<any>) => col.filterOptions)) {
-        this.columnFiltersPresent = true;
-        this.showColumnFilters = true;
-      }
 
       // If showing and hiding columns is allowed, add action to table.
       if (tableConfig.columnsConfig.showHideColumns || tableConfig.columnsConfig.reorderColumns) {
@@ -166,7 +135,6 @@ export class CustomTableComponent implements OnChanges {
               this.tableConfig.columnsConfig.columns = updatedCols;
               // Update columns.
               this._generateDisplayColumns(updatedCols);
-              this.displayedFilters = updatedCols;
               // Clean up the subscription and component reference
               sub.unsubscribe();
               modColumns.destroy();
@@ -182,12 +150,6 @@ export class CustomTableComponent implements OnChanges {
         ];
       }
 
-      // Set sort properties if available.
-      this.currentSort = {
-        active: tableConfig.sortOptions?.initialSort?.active ?? '',
-        direction: tableConfig.sortOptions?.initialSort?.direction ?? '',
-      };
-
       this.detector.detectChanges();
     }
 
@@ -196,22 +158,6 @@ export class CustomTableComponent implements OnChanges {
       this.dataSource = new MatTableDataSource(changes['tableData']?.currentValue);
       this.detector.detectChanges();
     }
-  }
-
-  /**
-   * Gets the current table filters.
-   * @returns {TableFilters | null} - The current table filters.
-   */
-  getFilters(): TableFilters | null {
-    return this.filters;
-  }
-
-  /**
-   * Gets the current sort state.
-   * @returns {Sort} - The current sort state.
-   */
-  getSort(): Sort {
-    return this.currentSort;
   }
 
   /**
@@ -224,30 +170,21 @@ export class CustomTableComponent implements OnChanges {
   }
 
   /**
-   * Handles sort change event.
-   * @param {Sort} event - The sort event.
-   */
-  protected sortChange(event: Sort): void {
-    const sortDirection = event.direction ? `${event.direction}ending` : 'cleared';
-    this.announcer.announce(`Sorting by ${event.active} ${sortDirection}`);
-    this.currentSort = event;
-    this._requestNewData();
-  }
-
-  /**
-   * Applies the global filter.
+   * Emits the filter change event.
    * @param {string} filterString - The filter string.
    */
-  protected applyFilter(filterString: string): void {
-    this.globalFilter = filterString;
-    this.applyFilters();
+  protected onFilterChange(filterString: string): void {
+    this.filterChange.emit(filterString);
   }
 
   /**
-   * Applies the filters.
+   * Handles sort change event and emits teh sort change event.
+   * @param {Sort} event - The sort event.
    */
-  protected applyFilters(): void {
-    this._sanitizeFilters();
+  protected onSortChange(event: Sort): void {
+    const sortDirection = event.direction ? `${event.direction}ending` : 'cleared';
+    this.announcer.announce(`Sorting by ${event.active} ${sortDirection}`);
+    this.sortChange.emit(event);
   }
 
   /**
@@ -287,18 +224,6 @@ export class CustomTableComponent implements OnChanges {
   };
 
   /**
-   * Resets all filters.
-   */
-  protected resetFilters(): void {
-    this.globalFilter = '';
-    this.searchBar.clear();
-    this.columnFilters = {};
-    this.single.reset();
-    this.range.reset();
-    this.applyFilters();
-  }
-
-  /**
    * Generates the display columns based on the column configuration.
    * @param {Column<any>[]} columns - The column configuration.
    */
@@ -319,60 +244,5 @@ export class CustomTableComponent implements OnChanges {
     if (this.tableConfig.rowActions) {
       this.displayColumns.push('actions');
     }
-  }
-
-  /**
-   * Checks if a value is empty.
-   * @param {any} value - The value to check.
-   * @returns {boolean} - True if the value is empty, false otherwise.
-   */
-  private _isEmpty(value: any): boolean {
-    if (value === null || value === undefined) {
-      return true;
-    }
-    if (Array.isArray(value)) {
-      return value.length === 0;
-    }
-    if (typeof value === 'string') {
-      return value.trim().length === 0;
-    }
-    if (typeof value === 'object' && Object.keys(value).length) {
-      return Object.keys(value).every((key) => this._isEmpty(value[key]));
-    }
-    return !value;
-  }
-
-  /**
-   * Sanitizes the filters.
-   */
-  private _sanitizeFilters(): void {
-    // Sanitize table state before emitting.
-    Object.keys(this.columnFilters).forEach((key) => {
-      if (this._isEmpty(this.columnFilters[key])) {
-        delete this.columnFilters[key];
-      }
-    });
-
-    // Update filter state of table.
-    this.filters = {
-      globalFilter: this.globalFilter,
-      columnFilters: this.columnFilters
-    };
-
-    this._requestNewData();
-  }
-
-  /**
-   * Toggles the visibility of the column filters.
-   */
-  protected toggleColumnFilters(): void {
-    this.showColumnFilters = !this.showColumnFilters;
-  }
-
-  /**
-   * Requests new data.
-   */
-  private _requestNewData(): void {
-    this.getData.emit();
   }
 }
