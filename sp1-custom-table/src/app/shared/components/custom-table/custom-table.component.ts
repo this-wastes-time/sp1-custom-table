@@ -89,7 +89,6 @@ export class CustomTableComponent implements OnChanges {
   protected selectedRows: any[] = []; // Store selected rows of table.
 
   // Tooltip vars.
-  protected resetFiltersTooltip = 'Clear all filters and search terms';
   protected multiRowActionMenuTooltip = 'Show more actions';
 
   // Magic var.
@@ -223,13 +222,6 @@ export class CustomTableComponent implements OnChanges {
     return this.dataSource._pageData(this.dataSource.data).some((row) => row.selected) &&
       !this.dataSource._pageData(this.dataSource.data).every((row) => row.selected);
   };
-
-  /**
-   * Resets all filters.
-   */
-  protected resetFilters(): void {
-    this.searchBar.clear();
-  }
 
   /**
    * Generates the display columns based on the column configuration.

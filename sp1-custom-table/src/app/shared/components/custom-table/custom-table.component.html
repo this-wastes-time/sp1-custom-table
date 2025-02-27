@@ -11,18 +11,20 @@
           [style.z-index]="loadingTail ? 110 : -1"></div>
       
         <div class="table-filter-container">
-          <div class="table-buttons">
-            @if (tableConfig.filterOptions) {
-              <button class="smaller-padding"
-                mat-flat-button
-                color="accent"
-                [matTooltip]="resetFiltersTooltip"
-                [attr.aria-label]="resetFiltersTooltip"
-                (click)="resetFilters()">
-                Reset Filters
-              </button>
-            }
+          <!-- Table search bar -->
+          @if (tableConfig.filterOptions) {
+            <div class="table-search-bar">
+              <app-search-bar #searchBar
+                [label]="tableConfig.filterOptions.label ?? ''"
+                [placeholder]="tableConfig.filterOptions.placeholder ?? ''"
+                (valueChange)="onFilterChange($event)">
+              </app-search-bar>
+            </div>
+          }
 
+          <app-span-filler></app-span-filler>
+
+          <div class="table-buttons">
             @if (selectedRows.length > 0) {
               <button mat-icon-button
                 color="accent"
@@ -44,20 +46,6 @@
               </mat-menu>
             }
           </div>
-
-          <app-span-filler></app-span-filler>
-
-          <!-- Table search bar -->
-          @if (tableConfig.filterOptions) {
-            <div class="table-search-bar">
-              <app-search-bar #searchBar
-                [label]="tableConfig.filterOptions.label ?? ''"
-                [placeholder]="tableConfig.filterOptions.placeholder ?? ''"
-                [animateWidth]="true"
-                (valueChange)="onFilterChange($event)">
-              </app-search-bar>
-            </div>
-          }
           
           <!-- Table menu -->
           @if (tableConfig.autoRefresh) {
