@@ -1,4 +1,4 @@
-import { TableFilter } from './filter.model';
+import { SearchBarConfig } from './filter.model';
 import { ColumnsConfig } from './column.model';
 import { RowActionsConfig, TableAction, SelectedRowAction } from './actions.model';
 import { SortConfig } from './sort.model';
@@ -120,9 +120,9 @@ export interface TableConfig<T> {
    */
   rowActions?: RowActionsConfig;
   /**
-   * Configuration for table filter
-   * @type {TableFilter}
+   * Configuration for table search bar filter
+   * @type {SearchBarConfig}
    * @optional
    */
-  filterOptions?: TableFilter;
+  filterOptions?: SearchBarConfig;
 }

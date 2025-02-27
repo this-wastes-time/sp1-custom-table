@@ -82,7 +82,7 @@ interface BaseColumn<T> {
    * @type {ColumnFilter}
    * @optional
    */
-  filterOptions?: ColumnFilter;
+  filterOptions?: ColumnFilter<T>;
   /**
    * Determine alignment of column text.
    * @type {'left' | 'center' | 'right'}

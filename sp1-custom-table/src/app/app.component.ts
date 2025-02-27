@@ -47,10 +47,6 @@ export class AppComponent implements OnInit {
           field: 'name',
           header: 'Name',
           sortable: true,
-          filterOptions: {
-            type: 'select',
-            options: () => Array.from(new Set<string>(this.clientData?.map(e => e.name))).sort(),
-          }
         },
         {
           type: 'text',
@@ -64,21 +60,12 @@ export class AppComponent implements OnInit {
           field: 'symbol',
           header: 'Symbol',
           sortable: true,
-          filterOptions: {
-            type: 'select',
-            options: () => Array.from(new Set<string>(this.clientData?.map(e => e.symbol))).sort(),
-            multiple: true,
-          }
         },
         {
           type: 'text',
           field: 'discoveredBy',
           header: 'Discovered By',
           sortable: true,
-          filterOptions: {
-            type: 'text',
-            placeholder: 'Example: Davy or Breiner',
-          }
         },
         {
           type: 'text',
@@ -92,11 +79,6 @@ export class AppComponent implements OnInit {
           field: 'career',
           header: 'Career',
           sortable: true,
-          filterOptions: {
-            type: 'select',
-            options: () => Array.from(new Set<string>(this.clientData?.map(e => e.career))).sort(),
-            multiple: true,
-          }
         },
         {
           type: 'checkbox',
@@ -105,11 +87,6 @@ export class AppComponent implements OnInit {
           checked(row) {
             return row.online;
           },
-          filterOptions: {
-            type: 'select',
-            options: () => Array.from(new Set<boolean>(this.clientData?.map(e => e.online))).sort(),
-            multiple: true,
-          },
           align: 'center',
         },
         {
@@ -117,9 +94,6 @@ export class AppComponent implements OnInit {
           field: 'dob',
           header: 'Date of Birth',
           sortable: true,
-          filterOptions: {
-            type: 'dateRange',
-          }
         },
         {
           type: 'checkbox',
@@ -128,11 +102,6 @@ export class AppComponent implements OnInit {
           checked(row) {
             return row.married;
           },
-          filterOptions: {
-            type: 'select',
-            options: () => Array.from(new Set<boolean>(this.clientData?.map(e => e.married))).sort(),
-            multiple: true,
-          },
           align: 'center',
         },
         {
@@ -140,11 +109,6 @@ export class AppComponent implements OnInit {
           field: 'company',
           header: 'Company',
           sortable: true,
-          filterOptions: {
-            type: 'select',
-            options: () => Array.from(new Set<string>(this.clientData?.map(e => e.company))).sort(),
-            multiple: true,
-          }
         },
       ],
       stickyHeaders: true,
@@ -284,10 +248,6 @@ export class AppComponent implements OnInit {
           field: path,
           header: this._getFlattenedHeader(path),
           sortable: false,
-          filterOptions: {
-            type: 'select',
-            options: () => Array.from(new Set<boolean>(this.clientData?.map(e => this.pvp.transform(e, path)).filter((val): val is boolean => val !== undefined))).sort(),
-          },
           align: 'center',
           visible: true,
           checked: (row: any) => this.pvp.transform<typeof row, boolean>(row, path) ?? false,
@@ -298,9 +258,6 @@ export class AppComponent implements OnInit {
         field: path,
         header: this._getFlattenedHeader(path),
         sortable: true,
-        filterOptions: {
-          type: 'text',
-        },
         visible: true,
       };
     };
@@ -355,18 +312,16 @@ export class AppComponent implements OnInit {
   }
 
   protected tableDataRequestClient(): void {
-    let filteredData = [...this.clientData];
-    const filters = this.clientTable.getFilters();
+    const filteredData = [...this.clientData];
     const sort = this.clientTable.getSort();
 
     // Store filtering and sorting options.
-    const globalFilter = filters?.globalFilter;
-    const columnFilters = filters?.columnFilters;
+    // const globalFilter = '';
     const sortBy = sort?.active;
     const sortDirection = sort?.direction;
 
     // Apply global filter, if provided
-    if (globalFilter) {
+    /* if (globalFilter) {
       const searchTerm = globalFilter.toLowerCase();
       filteredData = filteredData.filter((item) =>
         Object.values(item).some((value) =>
@@ -375,44 +330,7 @@ export class AppComponent implements OnInit {
           value.toString().toLowerCase().includes(searchTerm)
         )
       );
-    }
-
-    // Apply filters, if provided
-    if (columnFilters) {
-      Object.keys(columnFilters).forEach((key) => {
-        const filterValue = columnFilters[key];
-        filteredData = filteredData.filter((item) => {
-          // Get nested value
-          const itemValue = this.pvp.transform(item, key);
-
-          // Handle range filter (e.g., "dob")
-          if (filterValue?.start || filterValue?.end) {
-            const { start, end } = filterValue;
-            const itemDate = new Date(itemValue as string).getTime();
-            return (
-              // Check if itemDate is >= start (if start exists)
-              (!start || itemDate >= start) &&
-              // Check if itemDate is <= end (if end exists)
-              (!end || itemDate <= end)
-            );
-          }
-
-          // Handle multiple values filtering (e.g., "name": ["Aluminum", "Beryllium"])
-          if (Array.isArray(filterValue)) {
-            return filterValue.includes(itemValue);
-          }
-
-          // Handle string matching (case-insensitive)
-          if (typeof itemValue === 'string') {
-            return itemValue.toLowerCase().includes(String(filterValue).toLowerCase());
-          }
-
-          // Handle direct equality checks for booleans and numbers
-          const filterPred = this.tableConfig.columnsConfig.columns.find(c => c.field === key)?.filterOptions?.filterPredicate;
-          return filterPred ? filterPred(item, filterValue) : itemValue === filterValue;
-        });
-      });
-    }
+    } */
 
     // Sort if sortBy is provided
     if (sortBy) {
@@ -457,17 +375,16 @@ export class AppComponent implements OnInit {
     this.loading = true;
     // Reset if paginator knows the data limit.
     this.serverPaginator.totalItemsKnown = false;
-    const filters = this.serverTable.getFilters();
+    // const filters = this.serverTable.getFilters();
     const sort = this.serverTable.getSort();
 
     // Store filtering and sorting options.
-    const globalFilter = filters?.globalFilter;
-    const columnFilters = filters?.columnFilters;
+    const globalFilter = '';
     const sortBy = sort?.active;
     const sortDirection = sort?.direction;
 
     setTimeout(() => {
-      this.serverData$ = this.mockService.fetchData(this.sPageIndex, this.sPageSize, sortBy, sortDirection, globalFilter, columnFilters).pipe(
+      this.serverData$ = this.mockService.fetchData(this.sPageIndex, this.sPageSize, sortBy, sortDirection, globalFilter).pipe(
         catchError(() => {
           return of([]); // Return an empty array in case of error
         }),
