@@ -9,13 +9,15 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { of } from 'rxjs';
 import { Column } from './models/column.model';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
+import { RowSelectionService } from './services/row-selection.service';
 
 @Component({
   selector: 'app-custom-table',
   standalone: true,
   imports: [CustomTableModule, SearchBarComponent],
   templateUrl: './custom-table.component.html',
-  styleUrl: './custom-table.component.scss'
+  styleUrl: './custom-table.component.scss',
+  providers: [RowSelectionService]
 })
 export class CustomTableComponent implements OnChanges {
   /**
@@ -85,18 +87,16 @@ export class CustomTableComponent implements OnChanges {
   protected displayColumns: string[] = [];
   protected defaultColumnOrder!: Column<any>[];
 
-  // Selected rows vars.
-  protected selectedRows: any[] = []; // Store selected rows of table.
-
   // Tooltip vars.
   protected multiRowActionMenuTooltip = 'Show more actions';
 
-  // Magic var.
+  // Magic animation var.
   protected loadingTail!: boolean;
 
   constructor(
     private announcer: LiveAnnouncer,
     private detector: ChangeDetectorRef,
+    private rss: RowSelectionService<any>,
   ) { }
 
   /**
@@ -190,11 +190,21 @@ export class CustomTableComponent implements OnChanges {
   /**
    * Selects or deselects a row.
    * @param {boolean} checked - Whether the row is selected.
-   * @param {any} row - The row data.
+   * @param {T} row - The row data.
    */
-  protected selectRow(checked: boolean, row: any): void {
-    row.selected = checked;
-    this.selectedRows = this.dataSource.data.filter(row => row.selected);
+  protected toggleRowSelection<T>(checked: boolean, row: T): void {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    checked ? this.rss.selectRow(row, this.pageIndex) : this.rss.deselectRow(row, this.pageIndex);
+  }
+
+  /**
+   * Checks if a row is selected.
+   * @template T - The type of the row data.
+   * @param {T} row - The row data.
+   * @returns {boolean} - True if the row is selected, false otherwise.
+   */
+  protected isSelected<T>(row: T): boolean {
+    return this.rss.isSelected(row, this.pageIndex);
   }
 
   /**
@@ -202,8 +212,11 @@ export class CustomTableComponent implements OnChanges {
    * @param {boolean} checked - Whether all rows are selected.
    */
   protected toggleAllSelection(checked: boolean): void {
-    this.dataSource._pageData(this.dataSource.data).forEach((row) => row.selected = checked);
-    this.selectedRows = this.dataSource.data.filter(row => row.selected);
+    if (checked) {
+      this.dataSource.data.forEach(row => this.rss.selectRow(row, this.pageIndex));
+    } else {
+      this.dataSource.data.forEach(row => this.rss.deselectRow(row, this.pageIndex));
+    }
   }
 
   /**
@@ -211,7 +224,7 @@ export class CustomTableComponent implements OnChanges {
    * @returns {boolean} - True if all rows are selected, false otherwise.
    */
   protected readonly allSelected = (): boolean => {
-    return this.dataSource._pageData(this.dataSource.data).every((row) => row.selected);
+    return this.dataSource.data.every(row => this.rss.isSelected(row, this.pageIndex));
   };
 
   /**
@@ -219,9 +232,13 @@ export class CustomTableComponent implements OnChanges {
    * @returns {boolean} - True if some rows are selected, false otherwise.
    */
   protected readonly someSelected = (): boolean => {
-    return this.dataSource._pageData(this.dataSource.data).some((row) => row.selected) &&
-      !this.dataSource._pageData(this.dataSource.data).every((row) => row.selected);
+    return this.dataSource.data.some(row => this.rss.isSelected(row, this.pageIndex)) &&
+      !this.dataSource.data.every(row => this.rss.isSelected(row, this.pageIndex));
   };
+
+  protected getSelectedRows(): any[] {
+    return this.rss.getSelectedRows();
+  }
 
   /**
    * Generates the display columns based on the column configuration.
