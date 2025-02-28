@@ -1,7 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges, ViewChild, ChangeDetectorRef, EventEmitter, Output, ViewContainerRef } from '@angular/core';
 import { CustomTableModule } from './custom-table.module';
 import { TableConfig } from './models/table.model';
-import { MatTableDataSource } from '@angular/material/table';
 import { Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { ModifyColumnsComponent } from './child-components/modify-columns/modify-columns.component';
@@ -80,9 +79,6 @@ export class CustomTableComponent<T> implements OnChanges {
   @ViewChild('sidenav') sidenav!: MatSidenav;
   @ViewChild('sidenavContent', { read: ViewContainerRef }) sidenavContent!: ViewContainerRef;
 
-  // Table data vars.
-  protected dataSource = new MatTableDataSource<T>();
-
   // Table column vars.
   protected displayColumns: string[] = [];
   protected defaultColumnOrder!: Column<T>[];
@@ -152,12 +148,6 @@ export class CustomTableComponent<T> implements OnChanges {
 
       this.detector.detectChanges();
     }
-
-    // When the data for the table comes in, update the Observable.
-    if (changes['tableData']?.currentValue) {
-      this.dataSource = new MatTableDataSource(changes['tableData']?.currentValue);
-      this.detector.detectChanges();
-    }
   }
 
   /**
@@ -212,9 +202,9 @@ export class CustomTableComponent<T> implements OnChanges {
    */
   protected toggleAllSelection(checked: boolean): void {
     if (checked) {
-      this.dataSource.data.forEach(row => this.rss.selectRow(row, this.pageIndex));
+      this.tableData.forEach(row => this.rss.selectRow(row, this.pageIndex));
     } else {
-      this.dataSource.data.forEach(row => this.rss.deselectRow(row, this.pageIndex));
+      this.tableData.forEach(row => this.rss.deselectRow(row, this.pageIndex));
     }
   }
 
@@ -223,7 +213,7 @@ export class CustomTableComponent<T> implements OnChanges {
    * @returns {boolean} - True if all rows are selected, false otherwise.
    */
   protected readonly allSelected = (): boolean => {
-    return this.dataSource.data.every(row => this.rss.isSelected(row, this.pageIndex));
+    return this.tableData.every(row => this.rss.isSelected(row, this.pageIndex));
   };
 
   /**
@@ -231,8 +221,8 @@ export class CustomTableComponent<T> implements OnChanges {
    * @returns {boolean} - True if some rows are selected, false otherwise.
    */
   protected readonly someSelected = (): boolean => {
-    return this.dataSource.data.some(row => this.rss.isSelected(row, this.pageIndex)) &&
-      !this.dataSource.data.every(row => this.rss.isSelected(row, this.pageIndex));
+    return this.tableData.some(row => this.rss.isSelected(row, this.pageIndex)) &&
+      !this.tableData.every(row => this.rss.isSelected(row, this.pageIndex));
   };
 
   protected getSelectedRows(): T[] {

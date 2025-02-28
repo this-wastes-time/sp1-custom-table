@@ -76,7 +76,7 @@
         </div>
       
         <div class="table-container">
-          <table mat-table [dataSource]="dataSource" matSort
+          <table mat-table [dataSource]="tableData" matSort
             [matSortActive]="tableConfig.sortOptions?.initialSort?.active ?? ''"
             [matSortDirection]="tableConfig.sortOptions?.initialSort?.direction ?? ''"
             (matSortChange)="onSortChange($event)">
