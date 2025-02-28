@@ -79,7 +79,7 @@ export class CustomTableComponent implements OnChanges {
   @ViewChild('sidenavContent', { read: ViewContainerRef }) sidenavContent!: ViewContainerRef;
 
   // Table data vars.
-  protected dataSource = new MatTableDataSource<any>(); // MatTableDataSource instance
+  protected dataSource = new MatTableDataSource<any>();
 
   // Table column vars.
   protected displayColumns: string[] = [];
