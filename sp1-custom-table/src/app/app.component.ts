@@ -173,9 +173,8 @@ export class AppComponent implements OnInit {
         },
       ],
     },
-    filterOptions: {
-      id: 'table-filter',
-      label: 'Filter entire table',
+    searchBarConfig: {
+      label: 'Search table',
       placeholder: 'Example: Hydrogen',
     },
   };

@@ -28,7 +28,7 @@ const DEBOUNCE_WAIT = 500;
       transition('placeholding => float', [
         animate('0ms', style({ opacity: 0 })), // Fade out
         animate('100ms', style({ transform: 'translateY(-1.5em)' })), // Move
-        animate('400ms ease-out', style({ opacity: 1 })), // Fade in
+        animate('300ms ease-out', style({ opacity: 1 })), // Fade in
       ]),
     ])
   ]

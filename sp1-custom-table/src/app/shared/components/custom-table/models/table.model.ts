@@ -124,5 +124,5 @@ export interface TableConfig<T> {
    * @type {SearchBarConfig}
    * @optional
    */
-  filterOptions?: SearchBarConfig;
+  searchBarConfig?: SearchBarConfig;
 }

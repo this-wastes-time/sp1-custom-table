@@ -3,12 +3,6 @@
  */
 export interface SearchBarConfig {
   /**
-   * ID for filter input element.
-   * @type {string}
-   * @optional
-   */
-  id?: string;
-  /**
    * Label for filter input.
    * @type {string}
    * @optional

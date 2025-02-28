@@ -12,11 +12,11 @@
       
         <div class="table-filter-container">
           <!-- Table search bar -->
-          @if (tableConfig.filterOptions) {
+          @if (tableConfig.searchBarConfig) {
             <div class="table-search-bar">
               <app-search-bar #searchBar
-                [label]="tableConfig.filterOptions.label ?? ''"
-                [placeholder]="tableConfig.filterOptions.placeholder ?? ''"
+                [label]="tableConfig.searchBarConfig.label ?? ''"
+                [placeholder]="tableConfig.searchBarConfig.placeholder ?? ''"
                 (valueChange)="onFilterChange($event)">
               </app-search-bar>
             </div>
