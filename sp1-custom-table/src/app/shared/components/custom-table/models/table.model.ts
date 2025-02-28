@@ -106,7 +106,7 @@ export interface TableConfig<T> {
    * @type {TableAction<T>[]}
    * @optional
    */
-  tableActions?: TableAction<T>[];
+  tableActions?: TableAction[];
   /**
    * Array of actions that can be done in batches
    * @type {SelectedRowAction<T>[]}

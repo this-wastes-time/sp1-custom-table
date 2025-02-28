@@ -2,7 +2,7 @@
  * Represents an action that can be performed on the table.
  * @template T - The type of the rows in the table.
  */
-export interface TableAction<T> {
+export interface TableAction {
   /**
    * The text label displayed for the action.
    * @type {string}
@@ -16,18 +16,16 @@ export interface TableAction<T> {
   description?: string;
   /**
    * A function executed when the action is triggered.
-   * @param {T[]} [rows] - The rows on which the action is performed.
    * @type {function}
    */
-  action: (rows?: T[]) => void;
+  action: () => void;
   /**
    * A function to determine if the action should be disabled.
-   * @param {T[]} [rows] - The rows on which the action is performed.
    * @returns {boolean} - Whether the action is disabled.
    * @type {function}
    * @optional
    */
-  disabled?: (rows?: T[]) => boolean;
+  disabled?: () => boolean;
 }
 
 /**
