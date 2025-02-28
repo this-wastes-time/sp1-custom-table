@@ -83,7 +83,7 @@ export class CustomTableComponent implements OnChanges {
 
   // Table column vars.
   protected displayColumns: string[] = [];
-  protected defaultColumnConfig!: Column<any>[];
+  protected defaultColumnOrder!: Column<any>[];
 
   // Selected rows vars.
   protected selectedRows: any[] = []; // Store selected rows of table.
@@ -110,8 +110,8 @@ export class CustomTableComponent implements OnChanges {
       // Generate the table display.
       this._generateDisplayColumns(tableConfig.columnsConfig.columns);
       // Store the default column configuration.
-      this.defaultColumnConfig = tableConfig.columnsConfig.columns;
-      this.defaultColumnConfig.forEach(col => col.visible = col.visible ?? true);
+      this.defaultColumnOrder = tableConfig.columnsConfig.columns;
+      this.defaultColumnOrder.forEach(col => col.visible = col.visible ?? true);
 
       // If showing and hiding columns is allowed, add action to table.
       if (tableConfig.columnsConfig.showHideColumns || tableConfig.columnsConfig.reorderColumns) {
@@ -124,7 +124,7 @@ export class CustomTableComponent implements OnChanges {
             // Create the component for injection.
             const modColumns = this.sidenavContent.createComponent(ModifyColumnsComponent);
             modColumns.instance.columnConfig$ = of(this.tableConfig.columnsConfig);
-            modColumns.instance.defaultCols = this.defaultColumnConfig;
+            modColumns.instance.defaultCols = this.defaultColumnOrder;
             // Trigger change detection to ensure the columns$ observable is received
             this.detector.detectChanges();
             // Toggle sidenav visibility.
