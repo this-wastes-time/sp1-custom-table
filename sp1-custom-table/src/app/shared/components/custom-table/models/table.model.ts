@@ -103,7 +103,7 @@ export interface TableConfig<T> {
   sortOptions?: SortConfig<T>;
   /**
    * Array of table actions
-   * @type {TableAction<T>[]}
+   * @type {TableAction[]}
    * @optional
    */
   tableActions?: TableAction[];

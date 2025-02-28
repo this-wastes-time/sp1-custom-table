@@ -22,8 +22,8 @@ const AFREFRESH = 2000;
   providers: [PathValuePipe],
 })
 export class AppComponent implements OnInit {
-  @ViewChild('clientTable') clientTable!: CustomTableComponent;
-  @ViewChild('serverTable') serverTable!: CustomTableComponent;
+  @ViewChild('clientTable') clientTable!: CustomTableComponent<MockModel>;
+  @ViewChild('serverTable') serverTable!: CustomTableComponent<MockModel>;
   @ViewChild(ClientPaginatorComponent) clientPaginator!: ClientPaginatorComponent;
   @ViewChild(ServerPaginatorComponent) serverPaginator!: ServerPaginatorComponent;
 
