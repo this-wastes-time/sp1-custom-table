@@ -34,10 +34,10 @@
               </button>
               <mat-menu #selectedRowMenu="matMenu">
                 @for (action of tableConfig.selectedRowActions; track action) {
-                  <span [class.disabled-wrapper]="action.disabled?.(getSelectedRows())">
+                  <span [class.disabled-wrapper]="action.disabled?.()">
                     <button mat-menu-item
                       [attr.aria-label]="action.description"
-                      [disabled]="action.disabled?.(getSelectedRows())"
+                      [disabled]="action.disabled?.()"
                       (click)="action.action(getSelectedRows())">
                       {{ action.label }}
                     </button>
@@ -64,8 +64,8 @@
               </button>
               <mat-menu #tableMenu="matMenu">
                 @for (action of tableConfig.tableActions; track action) {
-                  <span [class.disabled-wrapper]="action.disabled">
-                    <button mat-menu-item [attr.aria-label]="action.description" [disabled]="action.disabled" (click)="action.action()">
+                  <span [class.disabled-wrapper]="action.disabled?.()">
+                    <button mat-menu-item [attr.aria-label]="action.description" [disabled]="action.disabled?.()" (click)="action.action()">
                       <span> {{ action.label }}</span>
                     </button>
                   </span>
