@@ -1,7 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges, ViewChild, ChangeDetectorRef, EventEmitter, Output, ViewContainerRef } from '@angular/core';
 import { CustomTableModule } from './custom-table.module';
 import { TableConfig } from './models/table.model';
-import { MatTableDataSource } from '@angular/material/table';
 import { Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { ModifyColumnsComponent } from './child-components/modify-columns/modify-columns.component';
@@ -9,26 +8,28 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { of } from 'rxjs';
 import { Column } from './models/column.model';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
+import { RowSelectionService } from './services/row-selection.service';
 
 @Component({
   selector: 'app-custom-table',
   standalone: true,
   imports: [CustomTableModule, SearchBarComponent],
   templateUrl: './custom-table.component.html',
-  styleUrl: './custom-table.component.scss'
+  styleUrl: './custom-table.component.scss',
+  providers: [RowSelectionService]
 })
-export class CustomTableComponent implements OnChanges {
+export class CustomTableComponent<T> implements OnChanges {
   /**
    * Table configuration.
-   * @type {TableConfig<any>}
+   * @type {TableConfig<T>}
    */
-  @Input() tableConfig!: TableConfig<any>;
+  @Input() tableConfig!: TableConfig<T>;
 
   /**
    * Data to be displayed in the table.
-   * @type {any[]}
+   * @type {T[]}
    */
-  @Input() tableData: any[] = [];
+  @Input() tableData: T[] = [];
 
   /**
    * Current page index.
@@ -78,25 +79,20 @@ export class CustomTableComponent implements OnChanges {
   @ViewChild('sidenav') sidenav!: MatSidenav;
   @ViewChild('sidenavContent', { read: ViewContainerRef }) sidenavContent!: ViewContainerRef;
 
-  // Table data vars.
-  protected dataSource = new MatTableDataSource<any>(); // MatTableDataSource instance
-
   // Table column vars.
   protected displayColumns: string[] = [];
-  protected defaultColumnConfig!: Column<any>[];
-
-  // Selected rows vars.
-  protected selectedRows: any[] = []; // Store selected rows of table.
+  protected defaultColumnOrder!: Column<T>[];
 
   // Tooltip vars.
   protected multiRowActionMenuTooltip = 'Show more actions';
 
-  // Magic var.
+  // Magic animation var.
   protected loadingTail!: boolean;
 
   constructor(
     private announcer: LiveAnnouncer,
     private detector: ChangeDetectorRef,
+    private rss: RowSelectionService<T>,
   ) { }
 
   /**
@@ -110,8 +106,8 @@ export class CustomTableComponent implements OnChanges {
       // Generate the table display.
       this._generateDisplayColumns(tableConfig.columnsConfig.columns);
       // Store the default column configuration.
-      this.defaultColumnConfig = tableConfig.columnsConfig.columns;
-      this.defaultColumnConfig.forEach(col => col.visible = col.visible ?? true);
+      this.defaultColumnOrder = tableConfig.columnsConfig.columns;
+      this.defaultColumnOrder.forEach(col => col.visible = col.visible ?? true);
 
       // If showing and hiding columns is allowed, add action to table.
       if (tableConfig.columnsConfig.showHideColumns || tableConfig.columnsConfig.reorderColumns) {
@@ -124,13 +120,13 @@ export class CustomTableComponent implements OnChanges {
             // Create the component for injection.
             const modColumns = this.sidenavContent.createComponent(ModifyColumnsComponent);
             modColumns.instance.columnConfig$ = of(this.tableConfig.columnsConfig);
-            modColumns.instance.defaultCols = this.defaultColumnConfig;
+            modColumns.instance.defaultCols = this.defaultColumnOrder;
             // Trigger change detection to ensure the columns$ observable is received
             this.detector.detectChanges();
             // Toggle sidenav visibility.
             this.sidenav.toggle();
             // Subscribe to the emitted event
-            const sub = modColumns.instance.columnMods.subscribe((updatedCols: Column<any>[]) => {
+            const sub = modColumns.instance.columnMods.subscribe((updatedCols: Column<T>[]) => {
               // Update table configuration.
               this.tableConfig.columnsConfig.columns = updatedCols;
               // Update columns.
@@ -150,12 +146,6 @@ export class CustomTableComponent implements OnChanges {
         ];
       }
 
-      this.detector.detectChanges();
-    }
-
-    // When the data for the table comes in, update the Observable.
-    if (changes['tableData']?.currentValue) {
-      this.dataSource = new MatTableDataSource(changes['tableData']?.currentValue);
       this.detector.detectChanges();
     }
   }
@@ -188,13 +178,22 @@ export class CustomTableComponent implements OnChanges {
   }
 
   /**
-   * Selects or deselects a row.
+   * Toggles the selection of a row.
    * @param {boolean} checked - Whether the row is selected.
-   * @param {any} row - The row data.
+   * @param {T} row - The row to be selected or deselected.
    */
-  protected selectRow(checked: boolean, row: any): void {
-    row.selected = checked;
-    this.selectedRows = this.dataSource.data.filter(row => row.selected);
+  protected toggleRowSelection(checked: boolean, row: T): void {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    checked ? this.rss.selectRow(row, this.pageIndex) : this.rss.deselectRow(row, this.pageIndex);
+  }
+
+  /**
+   * Checks if a row is selected.
+   * @param {T} row - The row to check.
+   * @returns {boolean} - True if the row is selected, false otherwise.
+   */
+  protected isSelected(row: T): boolean {
+    return this.rss.isSelected(row, this.pageIndex);
   }
 
   /**
@@ -202,8 +201,11 @@ export class CustomTableComponent implements OnChanges {
    * @param {boolean} checked - Whether all rows are selected.
    */
   protected toggleAllSelection(checked: boolean): void {
-    this.dataSource._pageData(this.dataSource.data).forEach((row) => row.selected = checked);
-    this.selectedRows = this.dataSource.data.filter(row => row.selected);
+    if (checked) {
+      this.tableData.forEach(row => this.rss.selectRow(row, this.pageIndex));
+    } else {
+      this.tableData.forEach(row => this.rss.deselectRow(row, this.pageIndex));
+    }
   }
 
   /**
@@ -211,7 +213,7 @@ export class CustomTableComponent implements OnChanges {
    * @returns {boolean} - True if all rows are selected, false otherwise.
    */
   protected readonly allSelected = (): boolean => {
-    return this.dataSource._pageData(this.dataSource.data).every((row) => row.selected);
+    return this.tableData.every(row => this.rss.isSelected(row, this.pageIndex));
   };
 
   /**
@@ -219,15 +221,23 @@ export class CustomTableComponent implements OnChanges {
    * @returns {boolean} - True if some rows are selected, false otherwise.
    */
   protected readonly someSelected = (): boolean => {
-    return this.dataSource._pageData(this.dataSource.data).some((row) => row.selected) &&
-      !this.dataSource._pageData(this.dataSource.data).every((row) => row.selected);
+    return this.tableData.some(row => this.rss.isSelected(row, this.pageIndex)) &&
+      !this.tableData.every(row => this.rss.isSelected(row, this.pageIndex));
   };
 
   /**
-   * Generates the display columns based on the column configuration.
-   * @param {Column<any>[]} columns - The column configuration.
+   * Gets the selected rows.
+   * @returns {T[]} - An array of selected rows.
    */
-  private _generateDisplayColumns(columns: Column<any>[]): void {
+  protected getSelectedRows(): T[] {
+    return this.rss.getSelectedRows();
+  }
+
+  /**
+   * Generates the display columns based on the column configuration.
+   * @param {Column<T>[]} columns - The column configuration.
+   */
+  private _generateDisplayColumns(columns: Column<T>[]): void {
     this.displayColumns = columns.filter(col => col.visible ?? true).map(col => col.field);
 
     // Include the row number column.

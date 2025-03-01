@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Column } from '../models/column.model';
+import { Column } from '../components/custom-table/models/column.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class FlattenToColumnService {
+export class TableColumnService {
   /**
    * Flattens an object into an array of Column objects.
    * @template T - The type of the rows in the table.

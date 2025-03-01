@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
-import { FlattenToColumnService } from './flatten-to-column.service';
+import { TableColumnService } from './table-column.service';
 import { Column } from '../models/column.model';
 
-describe('FlattenToColumnService', () => {
-  let service: FlattenToColumnService;
+describe('TableColumnService', () => {
+  let service: TableColumnService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(FlattenToColumnService);
+    service = TestBed.inject(TableColumnService);
   });
 
   it('should be created', () => {

@@ -7,7 +7,7 @@ import { ServerPaginatorComponent } from './shared/components/custom-paginator/s
 import { catchError, finalize, map, Observable, of } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { MatDividerModule } from '@angular/material/divider';
-import { FlattenToColumnService } from './shared/components/custom-table/services/flatten-to-column.service';
+import { TableColumnService } from './shared/services/table-column.service';
 import { Column } from './shared/components/custom-table/models/column.model';
 import { PathValuePipe } from './shared/pipes/path-value.pipe';
 
@@ -22,8 +22,8 @@ const AFREFRESH = 2000;
   providers: [PathValuePipe],
 })
 export class AppComponent implements OnInit {
-  @ViewChild('clientTable') clientTable!: CustomTableComponent;
-  @ViewChild('serverTable') serverTable!: CustomTableComponent;
+  @ViewChild('clientTable') clientTable!: CustomTableComponent<MockModel>;
+  @ViewChild('serverTable') serverTable!: CustomTableComponent<MockModel>;
   @ViewChild(ClientPaginatorComponent) clientPaginator!: ClientPaginatorComponent;
   @ViewChild(ServerPaginatorComponent) serverPaginator!: ServerPaginatorComponent;
 
@@ -153,14 +153,13 @@ export class AppComponent implements OnInit {
       {
         label: 'Delete rows',
         description: 'Delete selected rows',
-        action: (rows?: MockModel[]) => rows?.forEach((row) => console.log('Deleting:', row)),
-        disabled: (rows?: MockModel[]) => !rows || rows.length === 0,
+        action: (rows: MockModel[]) => rows?.forEach((row) => console.log('Deleting:', row)),
       },
       {
         label: 'Export rows',
         description: 'Export selected rows',
         action: () => console.log('Exporting selected rows'),
-        disabled: (rows?: MockModel[]) => !rows || rows.length === 0,
+        disabled: (rows: MockModel[]) => rows?.some(row => row.career === 'Paleontologist'),
       },
     ],
     rowActions: {
@@ -173,9 +172,8 @@ export class AppComponent implements OnInit {
         },
       ],
     },
-    filterOptions: {
-      id: 'table-filter',
-      label: 'Filter entire table',
+    searchBarConfig: {
+      label: 'Search table',
       placeholder: 'Example: Hydrogen',
     },
   };
@@ -215,7 +213,7 @@ export class AppComponent implements OnInit {
   constructor(
     private mockService: MockDataService,
     private detector: ChangeDetectorRef,
-    private flattenService: FlattenToColumnService,
+    private flattenService: TableColumnService,
     private pvp: PathValuePipe,
   ) {
     this.loading = true;
