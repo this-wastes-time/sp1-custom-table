@@ -118,6 +118,9 @@
                     @case ('checkbox') {
                       <ng-container *ngTemplateOutlet="checkboxTemplate; context: {checked: column.checked, row: row}"></ng-container>
                     }
+                    @case ('slideToggle') {
+                      <ng-container *ngTemplateOutlet="slideToggleTemplate; context: {checked: column.checked, row: row}"></ng-container>
+                    }
                     @default {
                       {{ column.valueGetter?.(row) ?? row | pathValue: column.field }}
                     }
@@ -175,4 +178,8 @@
 <!-- Checkbox -->
 <ng-template #checkboxTemplate let-checked="checked" let-row="row">
   <mat-checkbox [color]="'primary'" [checked]="checked(row)" disabled></mat-checkbox>
+</ng-template>
+<!-- Slide toggle -->
+<ng-template #slideToggleTemplate let-checked="checked" let-row="row">
+  <mat-slide-toggle [color]="'primary'" [checked]="checked(row)" disabled></mat-slide-toggle>
 </ng-template>

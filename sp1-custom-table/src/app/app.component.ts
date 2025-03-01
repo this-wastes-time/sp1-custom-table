@@ -248,7 +248,7 @@ export class AppComponent implements OnInit {
     const determineColumnType = (_key: string, value: any, path: string): Column<any> => {
       if (typeof value === 'boolean') {
         return {
-          type: 'checkbox',
+          type: 'slideToggle',
           field: path,
           header: this._getFlattenedHeader(path),
           sortable: false,
