@@ -1,16 +1,17 @@
 .column-modifications-container {
-  display: flex;
-  flex-flow: column wrap;
-  height: 99.5%;
+  display: grid;
+  height: 100%;
   box-sizing: border-box;
 }
 
 ul {
+  display: flex;
+  flex-flow: column wrap;
   padding: 0 .625em;
   margin-bottom: 0;
+  list-style: none;
 
   li {
-    list-style-type: none;
     display: flex;
     align-items: center;
     height: 45px;
@@ -28,17 +29,19 @@ ul {
 .action-buttons {
   display: flex;
   flex-flow: column wrap;
+  margin-top: 1rem;
+  padding: 0.25em;
+
+  button {
+    width: 100%;
+  }
 
   .two-buttons {
     display: flex;
-
-    button {
-      width: 100%;
-    }
   }
 
   button {
-    margin: .125rem;
+    margin: .125rem auto;
   }
 }
 
