@@ -15,7 +15,6 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { GeneralSpinnerDirective } from '../../directives/general-spinner.directive';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { ReorderAnimationDirective } from '../../directives/reorder-animation.directive';
 import { SpanFillerComponent } from '../span-filler/span-filler.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
@@ -41,7 +40,6 @@ import { PathValuePipe } from '../../pipes/path-value.pipe';
     ReactiveFormsModule,
     MatSlideToggleModule,
     MatSidenavModule,
-    ReorderAnimationDirective,
     SpanFillerComponent,
     MatTooltipModule,
     SearchBarComponent,
@@ -65,7 +63,6 @@ import { PathValuePipe } from '../../pipes/path-value.pipe';
     ReactiveFormsModule,
     MatSlideToggleModule,
     MatSidenavModule,
-    ReorderAnimationDirective,
     SpanFillerComponent,
     MatTooltipModule,
     SearchBarComponent,

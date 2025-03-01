@@ -1,15 +1,28 @@
 <div class="column-modifications-container">
   <ul>
     @for (column of moddedCols; track column.field; let i = $index) {
-      @if (useAnimations) {
-        <li class="mat-elevation-z1" *appReorderAnimation>
-          <ng-container *ngTemplateOutlet="listItemColumn; context: { column: column, i: i }"></ng-container>
-        </li>
-      } @else {
-        <li class="mat-elevation-z1">
-          <ng-container *ngTemplateOutlet="listItemColumn; context: { column: column, i: i }"></ng-container>
-        </li>
-      }
+      <li class="mat-elevation-z1">
+        @if (config.showHideColumns) {
+          <button mat-icon-button (click)="toggleColumn(column)">
+            <mat-icon>{{ column.visible ? 'visibility' : 'visibility_off' }}</mat-icon>
+          </button>
+        }
+        @if (config.reorderColumns) {
+          <button mat-icon-button
+            [disabled]="i === 0 || !column.visible"
+            [attr.aria-label]="'Move {{ column.header }} up'"
+            (click)="moveColumn(i, -1)">
+            <mat-icon>arrow_upward</mat-icon>
+          </button>
+          <button mat-icon-button
+            [disabled]="i === moddedCols.length - 1 || !column.visible"
+            [attr.aria-label]="'Move {{ column.header }} down'"
+            (click)="moveColumn(i, 1)">
+            <mat-icon>arrow_downward</mat-icon>
+          </button>
+        }
+        <span [class.disabled-col]="!column.visible">{{ column.header }}</span>
+      </li>
     }
   </ul>
 
@@ -29,27 +42,3 @@
     </div>
   </div>
 </div>
-
-<!-- List item template -->
-<ng-template #listItemColumn let-column="column" let-i="i">
-  @if (config.showHideColumns) {
-    <button mat-icon-button (click)="toggleColumn(column)">
-      <mat-icon>{{ column.visible ? 'visibility' : 'visibility_off' }}</mat-icon>
-    </button>
-  }
-  @if (config.reorderColumns) {
-    <button mat-icon-button
-      [disabled]="i === 0 || !column.visible"
-      [attr.aria-label]="'Move {{ column.header }} up'"
-      (click)="moveColumn(i, -1)">
-      <mat-icon>arrow_upward</mat-icon>
-    </button>
-    <button mat-icon-button
-      [disabled]="i === moddedCols.length - 1 || !column.visible"
-      [attr.aria-label]="'Move {{ column.header }} down'"
-      (click)="moveColumn(i, 1)">
-      <mat-icon>arrow_downward</mat-icon>
-    </button>
-  }
-  <span [class.disabled-col]="!column.visible">{{ column.header }}</span>
-</ng-template>

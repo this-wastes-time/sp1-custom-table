@@ -121,8 +121,6 @@ export class CustomTableComponent<T> implements OnChanges {
             const modColumns = this.sidenavContent.createComponent(ModifyColumnsComponent);
             modColumns.instance.columnConfig$ = of(this.tableConfig.columnsConfig);
             modColumns.instance.defaultCols = this.defaultColumnOrder;
-            // REMOVE THIS LINE OF CODE IF YOU CAN FIGURE OUT HOW KEEP ANIMATIONS WHILE USING POSITION ABSOLUTE..
-            modColumns.instance.disableAnimations();
             // Trigger change detection to ensure the columns$ observable is received
             this.detector.detectChanges();
             // Toggle sidenav visibility.

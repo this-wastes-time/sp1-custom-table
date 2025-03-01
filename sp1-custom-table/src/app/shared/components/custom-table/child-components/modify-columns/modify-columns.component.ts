@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -8,7 +8,6 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { Observable } from 'rxjs';
 import { Column, ColumnsConfig } from '../../models/column.model';
 import { CustomTableModule } from '../../custom-table.module';
-import { ReorderAnimationDirective } from '../../../../directives/reorder-animation.directive';
 
 @Component({
   selector: 'app-modify-columns',
@@ -17,18 +16,12 @@ import { ReorderAnimationDirective } from '../../../../directives/reorder-animat
   templateUrl: './modify-columns.component.html',
   styleUrl: './modify-columns.component.scss',
 })
-export class ModifyColumnsComponent implements OnInit, AfterViewInit {
+export class ModifyColumnsComponent implements OnInit {
   /**
    * Event emitter for column modifications.
    * @type {EventEmitter<Column[]>}
    */
   @Output() columnMods = new EventEmitter<Column<any>[]>();
-
-  /**
-   * Query list of ReorderAnimationDirective instances.
-   * @type {QueryList<ReorderAnimationDirective>}
-   */
-  @ViewChildren(ReorderAnimationDirective) colAnimations!: QueryList<ReorderAnimationDirective>;
 
   /**
    * Observable for column configuration.
@@ -101,16 +94,6 @@ export class ModifyColumnsComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Lifecycle hook that is called after the component's view has been fully initialized.
-   */
-  ngAfterViewInit(): void {
-    this.colAnimations.forEach((ani, i) => {
-      ani.left = this._left;
-      ani.top = this._initialTop + (this._listItemSizeHeight * i);
-    });
-  }
-
-  /**
    * Toggles the visibility of a column.
    * @param {Column} column - The column to toggle.
    */
@@ -127,28 +110,13 @@ export class ModifyColumnsComponent implements OnInit, AfterViewInit {
     const newIndex = index + direction;
     if (newIndex < 0 || newIndex >= this.moddedCols.length) return;
     [this.moddedCols[index], this.moddedCols[newIndex]] = [this.moddedCols[newIndex], this.moddedCols[index]];
-    this._animateColumn(index, newIndex);
   }
 
   /**
    * Resets the columns to their original order.
    */
   protected resetColumns(): void {
-    // Create map for access to indices
-    const indexMap = new Map<string, number>();
-    this.defaultCols.forEach((col, i) => indexMap.set(col.field, i));
-    this.moddedCols.forEach((col, i) => {
-      let origIndex = indexMap.get(col.field)!;
-      while (origIndex !== i) {
-        [this.moddedCols[i], this.moddedCols[origIndex]] = [this.moddedCols[origIndex], this.moddedCols[i]];
-        this._animateColumn(i, origIndex);
-        this.cdr.detectChanges();
-        origIndex = indexMap.get(this.moddedCols[i].field)!;
-      }
-    });
-    this.moddedCols.forEach((col, i) => {
-      col.visible = this.defaultCols[i].visible;
-    });
+    this.moddedCols = this.defaultCols;
   }
 
   /**
@@ -163,37 +131,5 @@ export class ModifyColumnsComponent implements OnInit, AfterViewInit {
    */
   protected close(): void {
     this.columnMods.emit(this.moddedCols);
-  }
-
-  /**
-   * Enables animations.
-   */
-  enableAnimations(): void {
-    this._useAnimations = true;
-  }
-
-  /**
-   * Disables animations.
-   */
-  disableAnimations(): void {
-    this._useAnimations = false;
-  }
-
-  /**
-   * Animates the movement of columns.
-   * @param {number} index - The current index of the column.
-   * @param {number} newIndex - The new index of the column.
-   */
-  private _animateColumn(index: number, newIndex: number): void {
-    const colAnimation = this.colAnimations.get(index);
-    const colAnimation2 = this.colAnimations.get(newIndex);
-    if (colAnimation) {
-      colAnimation.top = this._initialTop + (this._listItemSizeHeight * newIndex);
-      colAnimation.animateGo();
-    }
-    if (colAnimation2) {
-      colAnimation2.top = this._initialTop + (this._listItemSizeHeight * index);
-      colAnimation2.animateGo();
-    }
   }
 }
