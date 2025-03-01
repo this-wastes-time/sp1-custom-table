@@ -7,7 +7,7 @@ import { ServerPaginatorComponent } from './shared/components/custom-paginator/s
 import { catchError, finalize, map, Observable, of } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { MatDividerModule } from '@angular/material/divider';
-import { FlattenToColumnService } from './shared/components/custom-table/services/flatten-to-column.service';
+import { TableColumnService } from './shared/services/table-column.service';
 import { Column } from './shared/components/custom-table/models/column.model';
 import { PathValuePipe } from './shared/pipes/path-value.pipe';
 
@@ -213,7 +213,7 @@ export class AppComponent implements OnInit {
   constructor(
     private mockService: MockDataService,
     private detector: ChangeDetectorRef,
-    private flattenService: FlattenToColumnService,
+    private flattenService: TableColumnService,
     private pvp: PathValuePipe,
   ) {
     this.loading = true;
