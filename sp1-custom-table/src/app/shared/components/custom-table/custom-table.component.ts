@@ -225,6 +225,10 @@ export class CustomTableComponent<T> implements OnChanges {
       !this.tableData.every(row => this.rss.isSelected(row, this.pageIndex));
   };
 
+  /**
+   * Gets the selected rows.
+   * @returns {T[]} - An array of selected rows.
+   */
   protected getSelectedRows(): T[] {
     return this.rss.getSelectedRows();
   }
