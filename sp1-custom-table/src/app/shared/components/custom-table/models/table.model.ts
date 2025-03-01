@@ -2,34 +2,7 @@ import { SearchBarConfig } from './filter.model';
 import { ColumnsConfig } from './column.model';
 import { RowActionsConfig, TableAction, SelectedRowAction } from './actions.model';
 import { SortConfig } from './sort.model';
-
-/**
- * Example usage of AutoRefreshConfig
- * @example
- * const autoRefreshConfig: AutoRefreshConfig = {
- *   enabled: true,
- *   intervalMs: 60000,
- *   autoRefreshFunc: (enabled) => { if (enabled) { refreshTableData(); } }
- * };
- */
-interface AutoRefreshConfig {
-  /**
-   * Whether the auto-refresh is currently on
-   * @type {boolean}
-   */
-  enabled: boolean;
-  /**
-   * Interval time in milliseconds
-   * @type {number}
-   */
-  intervalMs: number;
-  /**
-   * Function to call to refresh table data automatically.
-   * @param {boolean} enabled - Indicates if auto-refresh is enabled
-   * @type {function}
-   */
-  autoRefreshFunc: (enabled: boolean) => void;
-}
+import { AutoRefreshConfig } from './auto-refresh.model';
 
 /**
  * Example usage of TableConfig
@@ -40,17 +13,13 @@ interface AutoRefreshConfig {
  *   columnsConfig: myColumnsConfig,
  *   showRowNumbers: true,
  *   multiRowSelection: false,
- *   autoRefresh: {
- *     enabled: true,
- *     intervalMs: 60000,
- *     autoRefreshFunc: (enabled) => { if (enabled) { refreshTableData(); } }
- *   },
+ *   autoRefresh: myAutoRefreshConfig,
  *   rowClass: (row) => row.isActive ? 'active-row' : 'inactive-row',
  *   sortOptions: mySortConfig,
  *   tableActions: myTableActions,
  *   selectedRowActions: mySelectedRowActions,
  *   rowActions: myRowActionsConfig,
- *   filterOptions: myTableFilter
+ *   searchBarConfig: mySearchBarConfig
  * };
  */
 export interface TableConfig<T> {
