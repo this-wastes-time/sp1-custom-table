@@ -105,5 +105,5 @@ export interface SelectedRowAction<T> {
    * @type {function}
    * @optional
    */
-  disabled?: (rows?: T[]) => boolean;
+  disabled?: (rows: T[]) => boolean;
 }

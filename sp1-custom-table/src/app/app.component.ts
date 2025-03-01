@@ -159,7 +159,7 @@ export class AppComponent implements OnInit {
         label: 'Export rows',
         description: 'Export selected rows',
         action: () => console.log('Exporting selected rows'),
-        disabled: (rows?: MockModel[]) => rows?.some(row => row.career === 'Paleontologist') ?? false,
+        disabled: (rows: MockModel[]) => rows?.some(row => row.career === 'Paleontologist'),
       },
     ],
     rowActions: {
