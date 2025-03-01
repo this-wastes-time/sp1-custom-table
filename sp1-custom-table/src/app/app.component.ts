@@ -153,14 +153,13 @@ export class AppComponent implements OnInit {
       {
         label: 'Delete rows',
         description: 'Delete selected rows',
-        action: (rows?: MockModel[]) => rows?.forEach((row) => console.log('Deleting:', row)),
-        disabled: (rows?: MockModel[]) => !rows || rows.length === 0,
+        action: (rows: MockModel[]) => rows?.forEach((row) => console.log('Deleting:', row)),
       },
       {
         label: 'Export rows',
         description: 'Export selected rows',
         action: () => console.log('Exporting selected rows'),
-        disabled: (rows?: MockModel[]) => !rows || rows.length === 0,
+        disabled: (rows?: MockModel[]) => rows?.some(row => row.career === 'Paleontologist') ?? false,
       },
     ],
     rowActions: {

@@ -97,12 +97,13 @@ export interface SelectedRowAction<T> {
    * @param {T[]} [rows] - The rows on which the action is performed.
    * @type {function}
    */
-  action: (rows?: T[]) => void;
+  action: (rows: T[]) => void;
   /**
    * A function to determine if the action should be disabled.
+   * @param {T[]} [rows] - The rows on which the action is performed.
    * @returns {boolean} - Whether the action is disabled.
    * @type {function}
    * @optional
    */
-  disabled?: () => boolean;
+  disabled?: (rows?: T[]) => boolean;
 }

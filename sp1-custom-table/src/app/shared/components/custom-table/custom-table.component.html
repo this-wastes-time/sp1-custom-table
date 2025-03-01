@@ -34,10 +34,10 @@
               </button>
               <mat-menu #selectedRowMenu="matMenu">
                 @for (action of tableConfig.selectedRowActions; track action) {
-                  <span [class.disabled-wrapper]="action.disabled?.()">
+                  <span [class.disabled-wrapper]="action.disabled?.(getSelectedRows())">
                     <button mat-menu-item
                       [attr.aria-label]="action.description"
-                      [disabled]="action.disabled?.()"
+                      [disabled]="action.disabled?.(getSelectedRows())"
                       (click)="action.action(getSelectedRows())">
                       {{ action.label }}
                     </button>
@@ -80,9 +80,6 @@
             [matSortActive]="tableConfig.sortOptions?.initialSort?.active ?? ''"
             [matSortDirection]="tableConfig.sortOptions?.initialSort?.direction ?? ''"
             (matSortChange)="onSortChange($event)">
-      
-            <!--- Note that these columns can be defined in any order.
-                  The actual rendered columns are set as a property on the row definition" -->
       
             <!-- Column for multiple row checkbox selection. -->
             @if (tableConfig.multiRowSelection) {
