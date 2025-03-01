@@ -213,7 +213,7 @@ export class CustomTableComponent<T> implements OnChanges {
    * @returns {boolean} - True if all rows are selected, false otherwise.
    */
   protected readonly allSelected = (): boolean => {
-    return this.tableData.every(row => this.rss.isSelected(row, this.pageIndex));
+    return this.tableData?.every(row => this.rss.isSelected(row, this.pageIndex));
   };
 
   /**
@@ -221,8 +221,8 @@ export class CustomTableComponent<T> implements OnChanges {
    * @returns {boolean} - True if some rows are selected, false otherwise.
    */
   protected readonly someSelected = (): boolean => {
-    return this.tableData.some(row => this.rss.isSelected(row, this.pageIndex)) &&
-      !this.tableData.every(row => this.rss.isSelected(row, this.pageIndex));
+    return this.tableData?.some(row => this.rss.isSelected(row, this.pageIndex)) &&
+      !this.tableData?.every(row => this.rss.isSelected(row, this.pageIndex));
   };
 
   /**
