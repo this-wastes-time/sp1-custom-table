@@ -4,7 +4,7 @@ import { ColumnFilter } from './filter.model';
  * Represents a column configuration.
  * @template T - The type of the rows in the table.
  */
-export type Column<T> = TextColumn<T> | ButtonColumn<T> | CheckboxColumn<T>;
+export type Column<T> = TextColumn<T> | ButtonColumn<T> | CheckboxColumn<T> | SlideToggleColumn<T>;
 
 /**
  * Configuration for columns.
@@ -152,8 +152,31 @@ interface CheckboxColumn<T> extends BaseColumn<T> {
    */
   checked: (row: T) => boolean;
   /**
-   * Function to handle checkbox change.
+   * Function to handle checkbox value change.
    * @param {boolean} checked - Whether the checkbox is checked.
+   * @param {T} row - The row data.
+   * @type {function}
+   * @optional
+   */
+  onChange?: (checked: boolean, row: T) => void;
+}
+
+interface SlideToggleColumn<T> extends BaseColumn<T> {
+  /**
+   * Discriminator to distinguish this as a slide toggle column.
+   * @type {'slideToggle'}
+   */
+  type: 'slideToggle';
+  /**
+   * Whether the slide toggle is checked.
+   * @param {T} row - The row data.
+   * @returns {boolean} - Whether the slide toggle is checked.
+   * @type {function}
+   */
+  checked: (row: T) => boolean;
+  /**
+   * Function to handle slide toggle value change.
+   * @param {boolean} checked - Whether the slide toggle is checked.
    * @param {T} row - The row data.
    * @type {function}
    * @optional

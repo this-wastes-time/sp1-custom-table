@@ -6,12 +6,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSortModule } from '@angular/material/sort';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
-import { MatOptionModule, provideNativeDateAdapter } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
+import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { GeneralSpinnerDirective } from '../../directives/general-spinner.directive';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -20,56 +16,36 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
 import { PathValuePipe } from '../../pipes/path-value.pipe';
 
+const material = [
+  CommonModule,
+  MatTableModule,
+  MatButtonModule,
+  MatMenuModule,
+  MatIconModule,
+  MatSortModule,
+  MatCheckboxModule,
+  MatSlideToggleModule,
+  MatSidenavModule,
+  MatTooltipModule,
+  FormsModule,
+  ReactiveFormsModule,
+];
+
 @NgModule({
   declarations: [],
   imports: [
-    CommonModule,
-    MatTableModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatIconModule,
-    MatSortModule,
-    MatCheckboxModule,
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatDatepickerModule,
+    material,
     GeneralSpinnerDirective,
-    ReactiveFormsModule,
-    MatSlideToggleModule,
-    MatSidenavModule,
     SpanFillerComponent,
-    MatTooltipModule,
     SearchBarComponent,
     PathValuePipe,
   ],
   exports: [
-    CommonModule,
-    MatTableModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatIconModule,
-    MatSortModule,
-    MatCheckboxModule,
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatDatepickerModule,
+    material,
     GeneralSpinnerDirective,
-    ReactiveFormsModule,
-    MatSlideToggleModule,
-    MatSidenavModule,
     SpanFillerComponent,
-    MatTooltipModule,
     SearchBarComponent,
     PathValuePipe,
   ],
-  providers: [
-    provideNativeDateAdapter(),
-  ]
 })
 export class CustomTableModule { }
