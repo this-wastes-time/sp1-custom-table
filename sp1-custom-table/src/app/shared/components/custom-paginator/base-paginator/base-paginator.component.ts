@@ -103,6 +103,13 @@ export abstract class BasePaginatorComponent {
   disabled = false;
 
   /**
+   * Whether to show the Go to page input to the user.
+   * @type {boolean}
+   */
+  @Input({ transform: booleanAttribute })
+  showGoToPage = false;
+
+  /**
    * Event emitted when the paginator changes the page size or page index.
    * @type {EventEmitter<number>}
    */
@@ -116,6 +123,9 @@ export abstract class BasePaginatorComponent {
   previousPageTooltip = 'Previous page';
   nextPageTooltip = 'Next page';
   lastPageTooltip = 'Last page';
+
+  // Label
+  goToPageLabel = 'Go to page:';
 
   constructor(
     private detector: ChangeDetectorRef,

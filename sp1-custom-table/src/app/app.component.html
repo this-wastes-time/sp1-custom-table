@@ -18,8 +18,9 @@
       [pageIndex]="cPageIndex"
       [pageSize]="cPageSize"
       [pageSizeOptions]="cPageSizeOptions"
-      [showFirstLastButtons]="showFirstLast"
       [totalData]="filteredData"
+      showFirstLastButtons
+      showGoToPage
       (paginatedData)="updateDataClient($event)">
     </app-client-paginator>
   </div>
