@@ -49,6 +49,7 @@ export class ClientPaginatorComponent extends BasePaginatorComponent implements 
    */
   override paginate(page: number): void {
     super.paginate(page);
+    this.pageInput = page + 1;
     this.emitPaginatedData();
   }
 
@@ -58,6 +59,7 @@ export class ClientPaginatorComponent extends BasePaginatorComponent implements 
    */
   protected override onPageSizeChange(newPageSize: number): void {
     super.onPageSizeChange(newPageSize);
+    this.pageInput = 1;
     this.emitPaginatedData();
   }
 
