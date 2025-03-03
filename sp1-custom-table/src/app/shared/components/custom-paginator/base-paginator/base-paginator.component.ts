@@ -185,9 +185,24 @@ export abstract class BasePaginatorComponent {
   }
 
   /**
+   * Retrieves the value from the event target.
+   * @param {Event} event - The event triggered by the user.
+   * @returns {string} - The value from the event target.
+   */
+  protected _getValue(event: Event): string {
+    return (event.target as HTMLInputElement).value;
+  }
+
+  /**
    * Abstract method to emit paginated data.
    */
   protected abstract emitPaginatedData(): void;
+
+  /**
+   * Abstract method to navigate to the specified page based on the user input.
+   * @param {Event} event - The event triggered by the user.
+   */
+  protected abstract goToPage(event: Event): void;
 
   /**
    * Updates the page size options.

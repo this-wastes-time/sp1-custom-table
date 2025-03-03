@@ -29,11 +29,29 @@
             <div class="mat-mdc-paginator-page-size-value">{{ pageSize }}</div>
           }
         }
-        <div class="paginator-range-actions">
-          <div class="paginator-range-label" aria-live="polite">
-            {{ getRangeLabel(pageIndex, pageSize) }}
+
+        <app-span-filler></app-span-filler>
+
+        <!-- Go to Page Input -->
+        @if (showGoToPage) {
+          <div class="paginator-go-to-page">
+            {{ goToPageLabel }}
+            <mat-form-field class="paginator-go-to-page-input small"
+              appearance="outline"
+              subscriptSizing="dynamic">
+              <input type="number"
+                matInput
+                [(ngModel)]="pageInput"
+                min="0"
+                [max]="totalItemsKnown ? totalPageCount : knownPages"
+                [disabled]="disabled"
+                (keydown.enter)="goToPage($event)"/>
+            </mat-form-field>
+            / {{totalItemsKnown ? totalPageCount : '?'}}
           </div>
-  
+        }
+
+        <div class="paginator-range-actions">  
           @if (showFirstLastButtons) {
             <button
               mat-icon-button
@@ -72,6 +90,13 @@
               <mat-icon>last_page</mat-icon>
             </button>
           }
+        </div>
+
+        <app-span-filler></app-span-filler>
+
+        <div class="paginator-range-label" aria-live="polite">
+          <!-- TODO: This needs to update when more data comes in?? -->
+          {{ getRangeLabel(pageIndex, pageSize) }}
         </div>
       </div>
     </div>

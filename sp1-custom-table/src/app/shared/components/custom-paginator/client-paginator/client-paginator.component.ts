@@ -71,15 +71,6 @@ export class ClientPaginatorComponent extends BasePaginatorComponent implements 
   }
 
   /**
-   * Retrieves the value from the event target.
-   * @param {Event} event - The event triggered by the user.
-   * @returns {string} - The value from the event target.
-   */
-  private _getValue(event: Event): string {
-    return (event.target as HTMLInputElement).value;
-  }
-
-  /**
    * Navigates to the specified page based on the user input.
    * @param {Event} event - The event triggered by the user.
    */
@@ -101,5 +92,4 @@ export class ClientPaginatorComponent extends BasePaginatorComponent implements 
     super.paginate(page);
     this.emitPaginatedData();
   }
-
 }
