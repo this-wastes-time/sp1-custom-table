@@ -47,7 +47,7 @@
                 [disabled]="disabled"
                 (keydown.enter)="goToPage($event)"/>
             </mat-form-field>
-            / {{totalItemsKnown ? totalPageCount : '?'}}
+            / {{totalItemsKnown ? totalPageCount : 'Unknown page limit'}}
           </div>
         }
 
