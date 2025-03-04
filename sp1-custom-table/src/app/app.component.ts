@@ -276,7 +276,7 @@ export class AppComponent implements OnInit {
     this.loadData();
 
     // Check auto-refresh state.
-    if (this.tableConfig.autoRefresh?.enabled) {
+    if (this.clientConfig.autoRefresh?.enabled) {
       this.startAF();
     }
   }
@@ -448,7 +448,7 @@ export class AppComponent implements OnInit {
     this._refreshIntervalId = setInterval(() => {
       this.loadData();
       this.tableDataRequestClient();
-    }, this.tableConfig.autoRefresh?.intervalMs);
+    }, this.clientConfig.autoRefresh?.intervalMs);
   }
 
   stopAF(): void {
