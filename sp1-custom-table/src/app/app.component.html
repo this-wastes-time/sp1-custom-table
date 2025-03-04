@@ -3,7 +3,7 @@
 <div class="outer-table-container">
   <div class="table-paginator-container">
     <app-custom-table #clientTable
-      [tableConfig]="tableConfig"
+      [tableConfig]="clientConfig"
       [tableData]="paginatedData"
       [pageIndex]="cPageIndex"
       [pageSize]="cPageSize"
@@ -32,7 +32,7 @@
   <div class="table-paginator-container">
     <app-custom-table #serverTable
       [loading]="loading"
-      [tableConfig]="tableConfig"
+      [tableConfig]="serverConfig"
       [tableData]="(serverData$ | async) ?? []"
       [pageIndex]="sPageIndex"
       [pageSize]="sPageSize"

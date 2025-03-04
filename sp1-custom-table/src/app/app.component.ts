@@ -117,13 +117,6 @@ export class AppComponent implements OnInit {
     },
     showRowNumbers: true,
     multiRowSelection: true,
-    autoRefresh: {
-      enabled: false,
-      intervalMs: AFREFRESH,
-      autoRefreshFunc: (afState) => {
-        this.toggleAutoRefresh(afState);
-      },
-    },
     rowClass: (row: MockModel) => (row.name === 'Calcium' ? ['gold', 'bold'] : ''),
     sortOptions: {
       sortFunc(item, property): string | number {
@@ -139,16 +132,6 @@ export class AppComponent implements OnInit {
         return value;
       },
     },
-    tableActions: [
-      {
-        label: 'Refresh table',
-        description: 'Update table with latest data',
-        action: () => {
-          this.loadData();
-          this.tableDataRequestClient();
-        }
-      },
-    ],
     selectedRowActions: [
       {
         label: 'Delete rows',
@@ -172,8 +155,58 @@ export class AppComponent implements OnInit {
         },
       ],
     },
+  };
+
+  // Client table config
+  clientConfig: TableConfig<MockModel> = {
+    ...this.tableConfig,
+    autoRefresh: {
+      enabled: false,
+      intervalMs: AFREFRESH,
+      autoRefreshFunc: (afState) => {
+        this.toggleAutoRefresh(afState);
+      },
+    },
+    tableActions: [
+      {
+        label: 'Refresh table',
+        description: 'Update table with latest data',
+        action: () => {
+          this.loadData();
+          this.tableDataRequestClient();
+        }
+      },
+    ],
     searchBarConfig: {
-      label: 'Search table',
+      label: 'Search client table',
+      placeholder: 'Example: Hydrogen',
+    },
+  };
+
+  // Server table config
+  serverConfig: TableConfig<MockModel> = {
+    ...this.tableConfig,
+    tableActions: [
+      {
+        label: 'Refresh table',
+        description: 'Update table with latest data',
+        action: () => {
+          // Author note: It would be considered a best practice to reset the paginator state of whether all items are known upon refresh.
+          this.serverPaginator.totalItemsKnown = false;
+          this.serverData$ = this.mockService.fetchData(this.sPageIndex, this.sPageSize).pipe(
+            catchError(() => {
+              return of([]); // Return an empty array in case of error
+            }),
+            finalize(() => {
+              this.loading = false;
+              this.detector.detectChanges();
+            })
+          );
+        }
+      },
+    ],
+    searchBarConfig: {
+      label: 'Search server table',
       placeholder: 'Example: Hydrogen',
     },
   };
