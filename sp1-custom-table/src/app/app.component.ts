@@ -227,10 +227,8 @@ export class AppComponent implements OnInit {
   cPageIndex = 0;
   cPageSize = 10;
   cPageSizeOptions = [10, 20, 40, 80, 100];
-
   // Client filter var.
   clientFilter = '';
-
   // Client sort var.
   clientSort = { active: '', direction: '' };
 
@@ -238,6 +236,10 @@ export class AppComponent implements OnInit {
   sPageIndex = 0;
   sPageSize = 10;
   sPageSizeOptions = [5, 10, 20, 45, 100];
+  // Server filter var.
+  serverFilter = '';
+  // Server sort var.
+  serverSort = { active: '', direction: '' };
 
   // Loading spinner var.
   loading!: boolean;
@@ -416,13 +418,10 @@ export class AppComponent implements OnInit {
     this.loading = true;
     // Reset if paginator knows the data limit.
     this.serverPaginator.totalItemsKnown = false;
-    // const filters = this.serverTable.getFilters();
-    const sort = this.serverTable as any; // LOL Please don't do this in production code.
+    const globalFilter = this.serverFilter;
+    const sortBy = this.serverSort.active;
+    const sortDirection = this.serverSort.direction;
 
-    // Store filtering and sorting options.
-    const globalFilter = '';
-    const sortBy = sort?.active;
-    const sortDirection = sort?.direction;
 
     setTimeout(() => {
       this.serverData$ = this.mockService.fetchData(this.sPageIndex, this.sPageSize, sortBy, sortDirection, globalFilter).pipe(
@@ -464,6 +463,16 @@ export class AppComponent implements OnInit {
   clientSortChanged(updatedSort: { active: string; direction: string }): void {
     this.clientSort = updatedSort;
     this.tableDataRequestClient();
+  }
+
+  serverFilterChanged(updatedFilter: string): void {
+    this.serverFilter = updatedFilter;
+    this.tableDataRequestServer();
+  }
+
+  serverSortChanged(updatedSort: { active: string; direction: string }): void {
+    this.serverSort = updatedSort;
+    this.tableDataRequestServer();
   }
 
   onToggleChange(checked: boolean): void {

@@ -43,7 +43,9 @@
         [tableData]="(serverData$ | async) ?? []"
         [pageIndex]="sPageIndex"
         [pageSize]="sPageSize"
-        (getData)="tableDataRequestServer()">
+        (getData)="tableDataRequestServer()"
+        (filterChange)="serverFilterChanged($event)"
+        (sortChange)="serverSortChanged($event)">
       </app-custom-table>
   
       <mat-divider></mat-divider>
