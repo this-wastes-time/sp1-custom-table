@@ -10,13 +10,15 @@ import { MatDividerModule } from '@angular/material/divider';
 import { TableColumnService } from './shared/services/table-column.service';
 import { Column } from './shared/components/custom-table/models/column.model';
 import { PathValuePipe } from './shared/pipes/path-value.pipe';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { SpanFillerComponent } from './shared/components/span-filler/span-filler.component';
 
 const AFREFRESH = 2000;
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CustomTableComponent, ClientPaginatorComponent, ServerPaginatorComponent, AsyncPipe, MatDividerModule],
+  imports: [CustomTableComponent, ClientPaginatorComponent, ServerPaginatorComponent, AsyncPipe, MatDividerModule, MatSlideToggleModule, SpanFillerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   providers: [PathValuePipe],
@@ -243,6 +245,9 @@ export class AppComponent implements OnInit {
   // Auto-refresh vars.
   _refreshIntervalId!: ReturnType<typeof setTimeout>;;
 
+  // Example toggle var.
+  toggleExample: 'client' | 'server' = 'client';
+
   constructor(
     private mockService: MockDataService,
     private detector: ChangeDetectorRef,
@@ -459,6 +464,10 @@ export class AppComponent implements OnInit {
   clientSortChanged(updatedSort: { active: string; direction: string }): void {
     this.clientSort = updatedSort;
     this.tableDataRequestClient();
+  }
+
+  onToggleChange(checked: boolean): void {
+    this.toggleExample = checked ? 'server' : 'client';
   }
 
   _getRandomNumber(min: number, max: number): number {
