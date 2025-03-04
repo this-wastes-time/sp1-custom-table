@@ -51,8 +51,8 @@
           @if (tableConfig.autoRefresh) {
             <div class="auto-refresh-toggle">
               <mat-slide-toggle
-                [(ngModel)]="tableConfig.autoRefresh.enabled"
-                (toggleChange)="tableConfig.autoRefresh.autoRefreshFunc(tableConfig.autoRefresh.enabled)">
+                [checked]="tableConfig.autoRefresh.enabled"
+                (change)="tableConfig.autoRefresh.onChange(!$event.checked)">
                 Auto refresh
               </mat-slide-toggle>
             </div>
