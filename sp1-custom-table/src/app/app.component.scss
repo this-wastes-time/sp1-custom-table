@@ -1,3 +1,13 @@
+.project-example-header {
+  display: flex;
+  align-items: center;
+
+  mat-slide-toggle,
+  span {
+    margin-bottom: 22.5px;
+  }
+}
+
 .outer-table-container {
   margin: .625rem;
 }

@@ -26,6 +26,13 @@ export class ClientPaginatorComponent extends BasePaginatorComponent implements 
   @Output() paginatedData = new EventEmitter<any[]>();
 
   /**
+   * The current page input value.
+   * This is a 1-based index representing the page number input by the user.
+   * @type {number}
+   */
+  protected pageInput = 1;
+
+  /**
    * Lifecycle hook that is called when any data-bound property of a directive changes.
    * @param {SimpleChanges} changes - The changed properties.
    */
@@ -42,6 +49,7 @@ export class ClientPaginatorComponent extends BasePaginatorComponent implements 
    */
   override paginate(page: number): void {
     super.paginate(page);
+    this.pageInput = page + 1;
     this.emitPaginatedData();
   }
 
@@ -51,6 +59,7 @@ export class ClientPaginatorComponent extends BasePaginatorComponent implements 
    */
   protected override onPageSizeChange(newPageSize: number): void {
     super.onPageSizeChange(newPageSize);
+    this.pageInput = 1;
     this.emitPaginatedData();
   }
 
@@ -61,5 +70,28 @@ export class ClientPaginatorComponent extends BasePaginatorComponent implements 
     const startIndex = this.pageIndex * this.pageSize;
     const endIndex = startIndex + this.pageSize;
     this.paginatedData.emit(this.totalData.slice(startIndex, endIndex));
+  }
+
+  /**
+   * Navigates to the specified page based on the user input.
+   * @param {Event} event - The event triggered by the user.
+   */
+  protected goToPage(event: Event): void {
+    // Get the value from the event target
+    const value = this._getValue(event);
+
+    // Convert the value to a zero-based page index
+    let page = parseInt(value, 10) - 1;
+
+    // Validate the page index
+    if (page < 0 || page > (this.totalPages - 1)) {
+      // If invalid, revert to the current page index
+      page = this.pageIndex;
+    }
+    // Update the page input to reflect the current page
+    this.pageInput = page + 1;
+
+    super.paginate(page);
+    this.emitPaginatedData();
   }
 }

@@ -29,16 +29,34 @@
             <div class="mat-mdc-paginator-page-size-value">{{ pageSize }}</div>
           }
         }
-        <div class="paginator-range-actions">
-          <div class="paginator-range-label" aria-live="polite">
-            {{ paginatorIntl.getRangeLabel(pageIndex, pageSize, length) }}
+
+        <app-span-filler></app-span-filler>
+
+        <!-- Go to Page Input -->
+        @if (showGoToPage) {
+          <div class="paginator-go-to-page">
+            {{ goToPageLabel }}
+            <mat-form-field class="paginator-go-to-page-input small"
+              appearance="outline"
+              subscriptSizing="dynamic">
+              <input type="number"
+                matInput
+                [(ngModel)]="pageInput"
+                min="0"
+                [max]="totalPages"
+                [disabled]="disabled"
+                (keydown.enter)="goToPage($event)"/>
+            </mat-form-field>
+            / {{totalPages}}
           </div>
-  
+        }
+
+        <div class="paginator-range-actions">
           @if (showFirstLastButtons) {
             <button
               mat-icon-button
               [matTooltip]="firstPageTooltip"
-              [disabled]="hasPrev()  || disabled"
+              [disabled]="hasPrev() || disabled"
               [attr.aria-label]="firstPageTooltip"
               (click)="paginate(0)">
               <mat-icon>first_page</mat-icon>
@@ -48,15 +66,20 @@
           <button
             mat-icon-button
             [matTooltip]="previousPageTooltip"
-            [disabled]="hasPrev()  || disabled"
+            [disabled]="hasPrev() || disabled"
             [attr.aria-label]="previousPageTooltip"
             (click)="paginate(pageIndex-1)">
             <mat-icon>keyboard_arrow_left</mat-icon>
           </button>
+
+          <!-- <span class="paginator-page-display">
+            {{ pageIndex + 1 }}
+          </span> -->
+
           <button
             mat-icon-button
             [matTooltip]="nextPageTooltip"
-            [disabled]="hasNext()  || disabled"
+            [disabled]="hasNext() || disabled"
             [attr.aria-label]="nextPageTooltip"
             (click)="paginate(pageIndex+1)">
             <mat-icon>keyboard_arrow_right</mat-icon>
@@ -66,12 +89,18 @@
             <button
               mat-icon-button
               [matTooltip]="lastPageTooltip"
-              [disabled]="hasNext()  || disabled"
+              [disabled]="hasNext() || disabled"
               [attr.aria-label]="lastPageTooltip"
               (click)="paginate(totalPages-1)">
               <mat-icon>last_page</mat-icon>
             </button>
           }
+        </div>
+
+        <app-span-filler></app-span-filler>
+
+        <div class="paginator-range-label" aria-live="polite">
+          {{ paginatorIntl.getRangeLabel(pageIndex, pageSize, length) }}
         </div>
       </div>
     </div>

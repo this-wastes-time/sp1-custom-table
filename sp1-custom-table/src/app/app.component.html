@@ -1,53 +1,65 @@
-<!-- Client paging setup -->
-<h2>Client side paged table</h2>
-<div class="outer-table-container">
-  <div class="table-paginator-container">
-    <app-custom-table #clientTable
-      [tableConfig]="tableConfig"
-      [tableData]="paginatedData"
-      [pageIndex]="cPageIndex"
-      [pageSize]="cPageSize"
-      (filterChange)="clientFilterChanged($event)"
-      (sortChange)="clientSortChanged($event)">
-    </app-custom-table>
-
-    <mat-divider></mat-divider>
-    
-    <app-client-paginator
-      [accessibleLabel]="accessibleLabel"
-      [pageIndex]="cPageIndex"
-      [pageSize]="cPageSize"
-      [pageSizeOptions]="cPageSizeOptions"
-      [showFirstLastButtons]="showFirstLast"
-      [totalData]="filteredData"
-      (paginatedData)="updateDataClient($event)">
-    </app-client-paginator>
-  </div>
+<div class="project-example-header">
+  <h2>{{ toggleExample === 'client' ? 'Client side paged table' : 'Server side paged table' }}</h2>
+  <app-span-filler></app-span-filler>
+  <span>Client</span>
+  <mat-slide-toggle color="warn" (change)="onToggleChange($event.checked)"></mat-slide-toggle>
+  <span>Server</span>
 </div>
 
-<!-- Server paging setup -->
-<!-- <h2>Server side paged table</h2>
-<div class="outer-table-container">
-  <div class="table-paginator-container">
-    <app-custom-table #serverTable
-      [loading]="loading"
-      [tableConfig]="tableConfig"
-      [tableData]="(serverData$ | async) ?? []"
-      [pageIndex]="sPageIndex"
-      [pageSize]="sPageSize"
-      (getData)="tableDataRequestServer()">
-    </app-custom-table>
-
-    <mat-divider></mat-divider>
-
-    <app-server-paginator
-      [accessibleLabel]="accessibleLabel"
-      [pageIndex]="sPageIndex"
-      [pageSize]="sPageSize"
-      [pageSizeOptions]="sPageSizeOptions"
-      [disabled]="loading"
-      [showFirstLastButtons]="showFirstLast"
-      (fetchData)="updateDataServer()">
-    </app-server-paginator>
+@if (toggleExample === 'client') {
+  <!-- Client paging setup -->
+  <div class="outer-table-container">
+    <div class="table-paginator-container">
+      <app-custom-table #clientTable
+        [tableConfig]="clientConfig"
+        [tableData]="paginatedData"
+        [pageIndex]="cPageIndex"
+        [pageSize]="cPageSize"
+        (filterChange)="clientFilterChanged($event)"
+        (sortChange)="clientSortChanged($event)">
+      </app-custom-table>
+  
+      <mat-divider></mat-divider>
+      
+      <app-client-paginator
+        [accessibleLabel]="accessibleLabel"
+        [pageIndex]="cPageIndex"
+        [pageSize]="cPageSize"
+        [pageSizeOptions]="cPageSizeOptions"
+        [totalData]="filteredData"
+        showFirstLastButtons
+        showGoToPage
+        (paginatedData)="updateDataClient($event)">
+      </app-client-paginator>
+    </div>
   </div>
-</div> -->
+} @else {
+  <!-- Server paging setup -->
+  <div class="outer-table-container">
+    <div class="table-paginator-container">
+      <app-custom-table #serverTable
+        [loading]="loading"
+        [tableConfig]="serverConfig"
+        [tableData]="(serverData$ | async) ?? []"
+        [pageIndex]="sPageIndex"
+        [pageSize]="sPageSize"
+        (getData)="tableDataRequestServer()"
+        (filterChange)="serverFilterChanged($event)"
+        (sortChange)="serverSortChanged($event)">
+      </app-custom-table>
+  
+      <mat-divider></mat-divider>
+  
+      <app-server-paginator
+        [accessibleLabel]="accessibleLabel"
+        [pageIndex]="sPageIndex"
+        [pageSize]="sPageSize"
+        [pageSizeOptions]="sPageSizeOptions"
+        [disabled]="loading"
+        showFirstLastButtons
+        showGoToPage
+        (fetchData)="updateDataServer()">
+      </app-server-paginator>
+    </div>
+  </div>
+}

@@ -32,12 +32,36 @@ export class ServerPaginatorComponent extends BasePaginatorComponent {
    */
   @Output() fetchData = new EventEmitter<PaginatorState>();
 
-  // Label vars.
+  /**
+   * Label for the items per page dropdown.
+   * @type {string}
+   */
   itemsPerPageLabel = 'Items per page:';
 
-  // Variables to determine paginator length.
-  totalItemsKnown = false; // Whether totalItems has been determined
-  totalPageCount!: number; // Total page count
+  /**
+   * Indicates whether the total number of items is known.
+   * @type {boolean}
+   */
+  totalItemsKnown = false;
+
+  /**
+   * The total number of pages.
+   * @type {number}
+   */
+  totalPageCount!: number;
+
+  /**
+   * The current page input value.
+   * This is a 1-based index representing the page number input by the user.
+   * @type {number}
+   */
+  protected pageInput = 1;
+
+  /**
+   * The number of pages that are known.
+   * @type {number}
+   */
+  protected knownPages = 1;
 
   /**
    * Gets the total number of items.
@@ -56,17 +80,20 @@ export class ServerPaginatorComponent extends BasePaginatorComponent {
     this.totalItemsKnown = value !== null; // Update the state
 
     if (value) {
-      this.totalPageCount = Math.floor(value / this.pageSize);
+      this.totalPageCount = Math.ceil(value / this.pageSize);
     }
   }
   private _totalItems: number | null = null;
 
   /**
    * Paginates to the target page and emits the paginated data.
+   * Increases known page count.
    * @param {number} page - The target page index.
    */
   override paginate(page: number): void {
     super.paginate(page);
+    this.pageInput = this.pageIndex + 1;
+    this.knownPages = Math.max(this.knownPages, this.pageInput);
     this.emitPaginatedData();
   }
 
@@ -78,8 +105,10 @@ export class ServerPaginatorComponent extends BasePaginatorComponent {
     super.onPageSizeChange(newPageSize);
     // Recalculate total page count, if known.
     if (this.totalItemsKnown) {
-      this.totalPageCount = Math.floor(this.totalItems! / this.pageSize);
+      this.totalPageCount = Math.ceil(this.totalItems! / this.pageSize);
     }
+    this.pageInput = 1;
+    this.knownPages = 1;
     this.emitPaginatedData();
   }
 
@@ -126,4 +155,28 @@ export class ServerPaginatorComponent extends BasePaginatorComponent {
       return `${start}–${end} of ${this.totalItems}`;
     }
   };
+
+  /**
+   * Navigates to the specified page based on the user input.
+   * @param {Event} event - The event triggered by the user.
+   */
+  protected goToPage(event: Event): void {
+    // Get the value from the event target
+    const value = this._getValue(event);
+    const max = this.totalItemsKnown ? this.totalPageCount - 1 : this.knownPages - 1;
+
+    // Convert the value to a zero-based page index
+    let page = parseInt(value, 10) - 1;
+
+    // Validate the page index
+    if (page < 0 || page > max) {
+      // If invalid, revert to the current page index
+      page = this.pageIndex;
+    }
+    // Update the page input to reflect the current page
+    this.pageInput = page + 1;
+
+    super.paginate(page);
+    this.emitPaginatedData();
+  }
 }

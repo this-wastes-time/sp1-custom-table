@@ -10,13 +10,15 @@ import { MatDividerModule } from '@angular/material/divider';
 import { TableColumnService } from './shared/services/table-column.service';
 import { Column } from './shared/components/custom-table/models/column.model';
 import { PathValuePipe } from './shared/pipes/path-value.pipe';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { SpanFillerComponent } from './shared/components/span-filler/span-filler.component';
 
 const AFREFRESH = 2000;
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CustomTableComponent, ClientPaginatorComponent, ServerPaginatorComponent, AsyncPipe, MatDividerModule],
+  imports: [CustomTableComponent, ClientPaginatorComponent, ServerPaginatorComponent, AsyncPipe, MatDividerModule, MatSlideToggleModule, SpanFillerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   providers: [PathValuePipe],
@@ -117,13 +119,6 @@ export class AppComponent implements OnInit {
     },
     showRowNumbers: true,
     multiRowSelection: true,
-    autoRefresh: {
-      enabled: false,
-      intervalMs: AFREFRESH,
-      autoRefreshFunc: (afState) => {
-        this.toggleAutoRefresh(afState);
-      },
-    },
     rowClass: (row: MockModel) => (row.name === 'Calcium' ? ['gold', 'bold'] : ''),
     sortOptions: {
       sortFunc(item, property): string | number {
@@ -139,16 +134,6 @@ export class AppComponent implements OnInit {
         return value;
       },
     },
-    tableActions: [
-      {
-        label: 'Refresh table',
-        description: 'Update table with latest data',
-        action: () => {
-          this.loadData();
-          this.tableDataRequestClient();
-        }
-      },
-    ],
     selectedRowActions: [
       {
         label: 'Delete rows',
@@ -172,8 +157,58 @@ export class AppComponent implements OnInit {
         },
       ],
     },
+  };
+
+  // Client table config
+  clientConfig: TableConfig<MockModel> = {
+    ...this.tableConfig,
+    autoRefresh: {
+      enabled: false,
+      intervalMs: AFREFRESH,
+      autoRefreshFunc: (afState) => {
+        this.toggleAutoRefresh(afState);
+      },
+    },
+    tableActions: [
+      {
+        label: 'Refresh table',
+        description: 'Update table with latest data',
+        action: () => {
+          this.loadData();
+          this.tableDataRequestClient();
+        }
+      },
+    ],
     searchBarConfig: {
-      label: 'Search table',
+      label: 'Search client table',
+      placeholder: 'Example: Hydrogen',
+    },
+  };
+
+  // Server table config
+  serverConfig: TableConfig<MockModel> = {
+    ...this.tableConfig,
+    tableActions: [
+      {
+        label: 'Refresh table',
+        description: 'Update table with latest data',
+        action: () => {
+          // Author note: It would be considered a best practice to reset the paginator state of whether all items are known upon refresh.
+          this.serverPaginator.totalItemsKnown = false;
+          this.serverData$ = this.mockService.fetchData(this.sPageIndex, this.sPageSize).pipe(
+            catchError(() => {
+              return of([]); // Return an empty array in case of error
+            }),
+            finalize(() => {
+              this.loading = false;
+              this.detector.detectChanges();
+            })
+          );
+        }
+      },
+    ],
+    searchBarConfig: {
+      label: 'Search server table',
       placeholder: 'Example: Hydrogen',
     },
   };
@@ -192,10 +227,8 @@ export class AppComponent implements OnInit {
   cPageIndex = 0;
   cPageSize = 10;
   cPageSizeOptions = [10, 20, 40, 80, 100];
-
   // Client filter var.
   clientFilter = '';
-
   // Client sort var.
   clientSort = { active: '', direction: '' };
 
@@ -203,12 +236,19 @@ export class AppComponent implements OnInit {
   sPageIndex = 0;
   sPageSize = 10;
   sPageSizeOptions = [5, 10, 20, 45, 100];
+  // Server filter var.
+  serverFilter = '';
+  // Server sort var.
+  serverSort = { active: '', direction: '' };
 
   // Loading spinner var.
   loading!: boolean;
 
   // Auto-refresh vars.
   _refreshIntervalId!: ReturnType<typeof setTimeout>;;
+
+  // Example toggle var.
+  toggleExample: 'client' | 'server' = 'client';
 
   constructor(
     private mockService: MockDataService,
@@ -236,7 +276,7 @@ export class AppComponent implements OnInit {
     this.loadData();
 
     // Check auto-refresh state.
-    if (this.tableConfig.autoRefresh?.enabled) {
+    if (this.clientConfig.autoRefresh?.enabled) {
       this.startAF();
     }
   }
@@ -378,13 +418,10 @@ export class AppComponent implements OnInit {
     this.loading = true;
     // Reset if paginator knows the data limit.
     this.serverPaginator.totalItemsKnown = false;
-    // const filters = this.serverTable.getFilters();
-    const sort = this.serverTable as any; // LOL Please don't do this in production code.
+    const globalFilter = this.serverFilter;
+    const sortBy = this.serverSort.active;
+    const sortDirection = this.serverSort.direction;
 
-    // Store filtering and sorting options.
-    const globalFilter = '';
-    const sortBy = sort?.active;
-    const sortDirection = sort?.direction;
 
     setTimeout(() => {
       this.serverData$ = this.mockService.fetchData(this.sPageIndex, this.sPageSize, sortBy, sortDirection, globalFilter).pipe(
@@ -411,7 +448,7 @@ export class AppComponent implements OnInit {
     this._refreshIntervalId = setInterval(() => {
       this.loadData();
       this.tableDataRequestClient();
-    }, this.tableConfig.autoRefresh?.intervalMs);
+    }, this.clientConfig.autoRefresh?.intervalMs);
   }
 
   stopAF(): void {
@@ -426,6 +463,20 @@ export class AppComponent implements OnInit {
   clientSortChanged(updatedSort: { active: string; direction: string }): void {
     this.clientSort = updatedSort;
     this.tableDataRequestClient();
+  }
+
+  serverFilterChanged(updatedFilter: string): void {
+    this.serverFilter = updatedFilter;
+    this.tableDataRequestServer();
+  }
+
+  serverSortChanged(updatedSort: { active: string; direction: string }): void {
+    this.serverSort = updatedSort;
+    this.tableDataRequestServer();
+  }
+
+  onToggleChange(checked: boolean): void {
+    this.toggleExample = checked ? 'server' : 'client';
   }
 
   _getRandomNumber(min: number, max: number): number {

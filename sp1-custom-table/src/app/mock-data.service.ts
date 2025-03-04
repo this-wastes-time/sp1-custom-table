@@ -1,6 +1,5 @@
 import { formatDate } from '@angular/common';
 import { Injectable } from '@angular/core';
-import { SortDirection } from '@angular/material/sort';
 import { Observable, of } from 'rxjs';
 
 /**
@@ -208,7 +207,7 @@ export class MockDataService {
     page: number,
     pageSize: number,
     sortBy?: string,
-    sortDirection?: SortDirection,
+    sortDirection?: string,
     globalFilter?: string,
     filters?: Record<string, any>
   ): Observable<MockModel[]> {
