@@ -80,10 +80,7 @@ export class ServerPaginatorComponent extends BasePaginatorComponent {
     this.totalItemsKnown = value !== null; // Update the state
 
     if (value) {
-      this.totalPageCount = Math.floor(value / this.pageSize);
-      // Decrement page counter and known pages back 1
-      this.pageInput--;
-      this.knownPages--;
+      this.totalPageCount = Math.ceil(value / this.pageSize);
     }
   }
   private _totalItems: number | null = null;
@@ -108,7 +105,7 @@ export class ServerPaginatorComponent extends BasePaginatorComponent {
     super.onPageSizeChange(newPageSize);
     // Recalculate total page count, if known.
     if (this.totalItemsKnown) {
-      this.totalPageCount = Math.floor(this.totalItems! / this.pageSize);
+      this.totalPageCount = Math.ceil(this.totalItems! / this.pageSize);
     }
     this.pageInput = 1;
     this.knownPages = 1;
@@ -166,12 +163,13 @@ export class ServerPaginatorComponent extends BasePaginatorComponent {
   protected goToPage(event: Event): void {
     // Get the value from the event target
     const value = this._getValue(event);
+    const max = this.totalItemsKnown ? this.totalPageCount - 1 : this.knownPages - 1;
 
     // Convert the value to a zero-based page index
     let page = parseInt(value, 10) - 1;
 
     // Validate the page index
-    if (page < 0 || page > (this.knownPages - 1)) {
+    if (page < 0 || page > max) {
       // If invalid, revert to the current page index
       page = this.pageIndex;
     }
