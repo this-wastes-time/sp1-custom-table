@@ -163,10 +163,9 @@ export class AppComponent implements OnInit {
   clientConfig: TableConfig<MockModel> = {
     ...this.tableConfig,
     autoRefresh: {
-      enabled: false,
-      intervalMs: AFREFRESH,
-      autoRefreshFunc: (afState) => {
-        this.toggleAutoRefresh(afState);
+      enabled: true,
+      onChange: (enabled) => {
+        this.toggleAutoRefresh(enabled);
       },
     },
     tableActions: [
@@ -275,10 +274,8 @@ export class AppComponent implements OnInit {
     // Client side pagination start.
     this.loadData();
 
-    // Check auto-refresh state.
-    if (this.clientConfig.autoRefresh?.enabled) {
-      this.startAF();
-    }
+    // Start auto refresh on client table.
+    this.startAF();
   }
 
   loadData(): void {
@@ -448,7 +445,7 @@ export class AppComponent implements OnInit {
     this._refreshIntervalId = setInterval(() => {
       this.loadData();
       this.tableDataRequestClient();
-    }, this.clientConfig.autoRefresh?.intervalMs);
+    }, AFREFRESH);
   }
 
   stopAF(): void {

@@ -102,7 +102,7 @@ export class CustomTableComponent<T> implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     // When a table configuration comes in, set the columns.
     if (changes['tableConfig']?.currentValue) {
-      const tableConfig = changes['tableConfig'].currentValue;
+      const tableConfig = changes['tableConfig'].currentValue as TableConfig<T>;
       // Generate the table display.
       this._generateDisplayColumns(tableConfig.columnsConfig.columns);
       // Store the default column configuration.
@@ -140,10 +140,12 @@ export class CustomTableComponent<T> implements OnChanges {
           }
         };
 
-        tableConfig.tableActions = [
-          showHideCols,
-          ...(tableConfig.tableActions || [])
-        ];
+        // Check if modifying the columns has already been added
+        // Author note: this is checked for the same table being created with the same configuration object.
+        const hasModifyAction = tableConfig.tableActions?.some(action => action.label === 'Modify columns');
+        if (tableConfig.tableActions && !hasModifyAction) {
+          tableConfig.tableActions.unshift(showHideCols);
+        }
       }
 
       this.detector.detectChanges();
