@@ -74,6 +74,10 @@
             </div>
           }
         </div>
+
+        <ng-content />
+
+        <ng-content select="quick-filter-chips" />
       
         <div class="table-container">
           <table mat-table [dataSource]="tableData" matSort
