@@ -65,9 +65,6 @@ export class ModifyColumnsComponent implements OnInit {
     return this._useAnimations;
   }
 
-  /**
-   * Lifecycle hook that is called after data-bound properties are initialized.
-   */
   ngOnInit(): void {
     this.columnConfig$.subscribe(config => {
       this.config = config;

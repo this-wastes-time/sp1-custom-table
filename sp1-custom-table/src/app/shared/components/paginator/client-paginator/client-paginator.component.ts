@@ -29,10 +29,6 @@ export class ClientPaginatorComponent extends BasePaginatorComponent implements 
    */
   protected pageInput = 1;
 
-  /**
-   * Lifecycle hook that is called when any data-bound property of a directive changes.
-   * @param changes - The changed properties.
-   */
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['totalData']?.currentValue) {
       this.length = changes['totalData'].currentValue.length;

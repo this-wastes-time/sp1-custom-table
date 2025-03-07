@@ -88,10 +88,6 @@ export class TableComponent<T> implements OnChanges {
     private rss: RowSelectionService<T>,
   ) { }
 
-  /**
-   * Lifecycle hook that is called when any data-bound property of a directive changes.
-   * @param changes - The changed properties.
-   */
   ngOnChanges(changes: SimpleChanges): void {
     // When a table configuration comes in, set the columns.
     if (changes['tableConfig']?.currentValue) {

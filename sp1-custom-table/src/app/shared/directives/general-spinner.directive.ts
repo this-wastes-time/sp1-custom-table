@@ -36,10 +36,6 @@ export class GeneralSpinnerDirective implements OnChanges {
     private aniBuilder: AnimationBuilder,
   ) { }
 
-  /**
-   * Lifecycle hook that is called when any data-bound property of a directive changes.
-   * @param changes - The changed properties.
-   */
   ngOnChanges(changes: SimpleChanges): void {
     // If there's no spinnerBusy value, skip all changes.
     if (changes['spinnerBusy'] === undefined) {
