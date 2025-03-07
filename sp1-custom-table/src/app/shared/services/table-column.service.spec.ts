@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { TableColumnService } from './table-column.service';
-import { Column } from '../models/column.model';
+import { Column } from '../components/table/models/column.model';
 
 describe('TableColumnService', () => {
   let service: TableColumnService;
