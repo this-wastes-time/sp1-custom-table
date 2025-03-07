@@ -25,8 +25,8 @@ export interface SearchBarConfig {
 export interface ColumnFilter<T> {
   /**
    * Custom filter logic.
-   * @param {any} data - The data to filter.
-   * @param {string} filter - The filter value.
+   * @param data - The data to filter.
+   * @param filter - The filter value.
    * @returns Whether the data matches the filter.
    * @optional
    */

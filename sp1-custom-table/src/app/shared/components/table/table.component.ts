@@ -90,7 +90,7 @@ export class TableComponent<T> implements OnChanges {
 
   /**
    * Lifecycle hook that is called when any data-bound property of a directive changes.
-   * @param {SimpleChanges} changes - The changed properties.
+   * @param changes - The changed properties.
    */
   ngOnChanges(changes: SimpleChanges): void {
     // When a table configuration comes in, set the columns.
@@ -147,7 +147,7 @@ export class TableComponent<T> implements OnChanges {
 
   /**
    * Gets the row number based on the index.
-   * @param {number} index - The index of the row.
+   * @param index - The index of the row.
    * @returns The row number.
    */
   protected getRowNumber(index: number): number {
@@ -156,7 +156,7 @@ export class TableComponent<T> implements OnChanges {
 
   /**
    * Emits the filter change event.
-   * @param {string} filterString - The filter string.
+   * @param filterString - The filter string.
    */
   protected onFilterChange(filterString: string): void {
     this.filterChange.emit(filterString);
@@ -164,7 +164,7 @@ export class TableComponent<T> implements OnChanges {
 
   /**
    * Handles sort change event and emits teh sort change event.
-   * @param {Sort} event - The sort event.
+   * @param event - The sort event.
    */
   protected onSortChange(event: Sort): void {
     const sortDirection = event.direction ? `${event.direction}ending` : 'cleared';
@@ -174,8 +174,8 @@ export class TableComponent<T> implements OnChanges {
 
   /**
    * Toggles the selection of a row.
-   * @param {boolean} checked - Whether the row is selected.
-   * @param {T} row - The row to be selected or deselected.
+   * @param checked - Whether the row is selected.
+   * @param row - The row to be selected or deselected.
    */
   protected toggleRowSelection(checked: boolean, row: T): void {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -184,7 +184,7 @@ export class TableComponent<T> implements OnChanges {
 
   /**
    * Checks if a row is selected.
-   * @param {T} row - The row to check.
+   * @param row - The row to check.
    * @returns True if the row is selected, false otherwise.
    */
   protected isSelected(row: T): boolean {
@@ -193,7 +193,7 @@ export class TableComponent<T> implements OnChanges {
 
   /**
    * Toggles the selection of all rows.
-   * @param {boolean} checked - Whether all rows are selected.
+   * @param checked - Whether all rows are selected.
    */
   protected toggleAllSelection(checked: boolean): void {
     if (checked) {
@@ -230,7 +230,7 @@ export class TableComponent<T> implements OnChanges {
 
   /**
    * Generates the display columns based on the column configuration.
-   * @param {Column<T>[]} columns - The column configuration.
+   * @param columns - The column configuration.
    */
   private _generateDisplayColumns(columns: Column<T>[]): void {
     this.displayColumns = columns.filter(col => col.visible ?? true).map(col => col.field);

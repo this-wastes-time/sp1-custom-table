@@ -54,12 +54,12 @@ interface RowAction<T> {
   description?: string;
   /**
    * A function executed when the action is triggered.
-   * @param {T} row - The row on which the action is performed.
+   * @param row - The row on which the action is performed.
    */
   action: (row: T) => void;
   /**
    * A function to determine if the action should be disabled.
-   * @param {T} row - The row on which the action is performed.
+   * @param row - The row on which the action is performed.
    * @returns Whether the action is disabled.
    * @optional
    */
@@ -82,12 +82,12 @@ export interface SelectedRowAction<T> {
   description?: string;
   /**
    * A function executed when the action is triggered.
-   * @param {T[]} [rows] - The rows on which the action is performed.
+   * @param [rows] - The rows on which the action is performed.
    */
   action: (rows: T[]) => void;
   /**
    * A function to determine if the action should be disabled.
-   * @param {T[]} [rows] - The rows on which the action is performed.
+   * @param [rows] - The rows on which the action is performed.
    * @returns Whether the action is disabled.
    * @optional
    */

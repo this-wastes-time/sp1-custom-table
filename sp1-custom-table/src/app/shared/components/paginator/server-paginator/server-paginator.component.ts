@@ -64,7 +64,7 @@ export class ServerPaginatorComponent extends BasePaginatorComponent {
 
   /**
    * Sets the total number of items and updates the total page count.
-   * @param {number | null} value - The total number of items.
+   * @param value - The total number of items.
    */
   set totalItems(value: number | null) {
     this._totalItems = value;
@@ -79,7 +79,7 @@ export class ServerPaginatorComponent extends BasePaginatorComponent {
   /**
    * Paginates to the target page and emits the paginated data.
    * Increases known page count.
-   * @param {number} page - The target page index.
+   * @param page - The target page index.
    */
   override paginate(page: number): void {
     super.paginate(page);
@@ -90,7 +90,7 @@ export class ServerPaginatorComponent extends BasePaginatorComponent {
 
   /**
    * Handles the change in page size and emits the paginated data.
-   * @param {number} newPageSize - The new page size.
+   * @param newPageSize - The new page size.
    */
   protected override onPageSizeChange(newPageSize: number): void {
     super.onPageSizeChange(newPageSize);
@@ -131,8 +131,8 @@ export class ServerPaginatorComponent extends BasePaginatorComponent {
 
   /**
    * Gets the range label for the current page.
-   * @param {number} page - The current page index.
-   * @param {number} pageSize - The current page size.
+   * @param page - The current page index.
+   * @param pageSize - The current page size.
    * @returns The range label.
    */
   protected getRangeLabel = (page: number, pageSize: number): string => {
@@ -149,7 +149,7 @@ export class ServerPaginatorComponent extends BasePaginatorComponent {
 
   /**
    * Navigates to the specified page based on the user input.
-   * @param {Event} event - The event triggered by the user.
+   * @param event - The event triggered by the user.
    */
   protected goToPage(event: Event): void {
     // Get the value from the event target

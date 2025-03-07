@@ -18,8 +18,8 @@ export class RowSelectionService<T> {
 
   /**
    * Selects a row.
-   * @param {T} row - The row to select.
-   * @param {number} pageIndex - The page index of the row.
+   * @param row - The row to select.
+   * @param pageIndex - The page index of the row.
    */
   selectRow(row: T, pageIndex: number) {
     if (!this._selectedRows.has(pageIndex)) {
@@ -31,8 +31,8 @@ export class RowSelectionService<T> {
 
   /**
    * Deselects a row.
-   * @param {T} row - The row to deselect.
-   * @param {number} pageIndex - The page index of the row.
+   * @param row - The row to deselect.
+   * @param pageIndex - The page index of the row.
    */
   deselectRow(row: T, pageIndex: number) {
     this._selectedRows.get(pageIndex)?.delete(row);
@@ -44,8 +44,8 @@ export class RowSelectionService<T> {
 
   /**
    * Checks if a row is selected.
-   * @param {T} row - The row to check.
-   * @param {number} pageIndex - The page index of the row.
+   * @param row - The row to check.
+   * @param pageIndex - The page index of the row.
    * @returns True if the row is selected, false otherwise.
    */
   isSelected(row: T, pageIndex: number): boolean {

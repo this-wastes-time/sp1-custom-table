@@ -50,14 +50,14 @@ interface BaseColumn<T> {
   header: string;
   /**
    * Function to determine CSS class for a cell.
-   * @param {T} row - The row data.
+   * @param row - The row data.
    * @returns CSS class or classes for the cell.
    * @optional
    */
   cellClass?: (row: T) => string | string[];
   /**
    * Function to determine the displayed value in the cell.
-   * @param {T} row - The row data.
+   * @param row - The row data.
    * @returns The value to display in the cell.
    * @optional
    */
@@ -106,13 +106,13 @@ interface ButtonColumn<T> extends BaseColumn<T> {
   type: 'button';
   /**
    * Label for the button.
-   * @param {T} row - The row data.
+   * @param row - The row data.
    * @returns The label for the button.
    */
   label: (row: T) => string;
   /**
    * Function to handle button click.
-   * @param {T} row - The row data.
+   * @param row - The row data.
    */
   onClick: (row: T) => void;
 }
@@ -128,14 +128,14 @@ interface CheckboxColumn<T> extends BaseColumn<T> {
   type: 'checkbox';
   /**
    * Whether the checkbox is checked.
-   * @param {T} row - The row data.
+   * @param row - The row data.
    * @returns Whether the checkbox is checked.
    */
   checked: (row: T) => boolean;
   /**
    * Function to handle checkbox value change.
-   * @param {boolean} checked - Whether the checkbox is checked.
-   * @param {T} row - The row data.
+   * @param checked - Whether the checkbox is checked.
+   * @param row - The row data.
    * @optional
    */
   onChange?: (checked: boolean, row: T) => void;
@@ -148,14 +148,14 @@ interface SlideToggleColumn<T> extends BaseColumn<T> {
   type: 'slideToggle';
   /**
    * Whether the slide toggle is checked.
-   * @param {T} row - The row data.
+   * @param row - The row data.
    * @returns Whether the slide toggle is checked.
    */
   checked: (row: T) => boolean;
   /**
    * Function to handle slide toggle value change.
-   * @param {boolean} checked - Whether the slide toggle is checked.
-   * @param {T} row - The row data.
+   * @param checked - Whether the slide toggle is checked.
+   * @param row - The row data.
    * @optional
    */
   onChange?: (checked: boolean, row: T) => void;

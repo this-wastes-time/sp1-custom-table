@@ -52,7 +52,7 @@ export interface TableConfig<T> {
   autoRefresh?: AutoRefreshConfig;
   /**
    * Function to determine CSS class for a row
-   * @param {T} row - The row data
+   * @param row - The row data
    * @returns CSS class or classes for the row
    * @optional
    */

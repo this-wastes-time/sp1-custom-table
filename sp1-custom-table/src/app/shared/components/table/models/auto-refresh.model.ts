@@ -13,7 +13,7 @@ export interface AutoRefreshConfig {
   enabled: boolean;
   /**
    * Function to call to refresh table data automatically.
-   * @param {boolean} enabled - Indicates if auto-refresh is enabled
+   * @param enabled - Indicates if auto-refresh is enabled
    */
   onChange: (enabled: boolean) => void;
 }

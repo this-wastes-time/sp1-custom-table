@@ -133,7 +133,7 @@ export abstract class BasePaginatorComponent {
 
   /**
    * Handles the change in page size.
-   * @param {number} newPageSize - The new page size.
+   * @param newPageSize - The new page size.
    */
   protected onPageSizeChange(newPageSize: number): void {
     // Go to first page.
@@ -151,7 +151,7 @@ export abstract class BasePaginatorComponent {
 
   /**
    * Paginates to the target page.
-   * @param {number} targetPage - The target page index.
+   * @param targetPage - The target page index.
    */
   protected paginate(targetPage: number): void {
     this.pageIndex = targetPage;
@@ -176,7 +176,7 @@ export abstract class BasePaginatorComponent {
 
   /**
    * Retrieves the value from the event target.
-   * @param {Event} event - The event triggered by the user.
+   * @param event - The event triggered by the user.
    * @returns The value from the event target.
    */
   protected _getValue(event: Event): string {
@@ -190,7 +190,7 @@ export abstract class BasePaginatorComponent {
 
   /**
    * Abstract method to navigate to the specified page based on the user input.
-   * @param {Event} event - The event triggered by the user.
+   * @param event - The event triggered by the user.
    */
   protected abstract goToPage(event: Event): void;
 

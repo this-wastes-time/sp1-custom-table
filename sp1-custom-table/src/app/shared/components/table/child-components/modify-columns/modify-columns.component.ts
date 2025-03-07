@@ -67,7 +67,7 @@ export class ModifyColumnsComponent implements OnInit {
 
   /**
    * Constructor to inject dependencies.
-   * @param {ChangeDetectorRef} cdr - Change detector reference.
+   * @param cdr - Change detector reference.
    */
   constructor(private cdr: ChangeDetectorRef) { }
 
@@ -86,7 +86,7 @@ export class ModifyColumnsComponent implements OnInit {
 
   /**
    * Toggles the visibility of a column.
-   * @param {Column} column - The column to toggle.
+   * @param column - The column to toggle.
    */
   protected toggleColumn(column: Column<any>): void {
     column.visible = !column.visible;
@@ -94,8 +94,8 @@ export class ModifyColumnsComponent implements OnInit {
 
   /**
    * Moves a column in the specified direction.
-   * @param {number} index - The current index of the column.
-   * @param {number} direction - The direction to move the column (-1 for up, 1 for down).
+   * @param index - The current index of the column.
+   * @param direction - The direction to move the column (-1 for up, 1 for down).
    */
   protected moveColumn(index: number, direction: number): void {
     const newIndex = index + direction;

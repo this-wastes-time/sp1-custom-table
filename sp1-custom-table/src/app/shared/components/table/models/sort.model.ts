@@ -8,8 +8,8 @@ export interface SortConfig<T> {
   initialSort?: InitialSort;
   /**
    * Custom sort function
-   * @param {T} item - The item to be sorted
-   * @param {string} property - The property to sort by
+   * @param item - The item to be sorted
+   * @param property - The property to sort by
    * @returns The value to sort by
    * @optional
    */
