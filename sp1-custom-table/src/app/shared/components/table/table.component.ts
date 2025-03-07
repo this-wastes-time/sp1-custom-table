@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges, ViewChild, ChangeDetectorRef, EventEmitter, Output, ViewContainerRef } from '@angular/core';
-import { CustomTableModule } from './custom-table.module';
+import { TableModule } from './table.module';
 import { TableConfig } from './models/table.model';
 import { Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
@@ -13,12 +13,12 @@ import { RowSelectionService } from './services/row-selection.service';
 @Component({
   selector: 'app-custom-table',
   standalone: true,
-  imports: [CustomTableModule, SearchBarComponent],
-  templateUrl: './custom-table.component.html',
-  styleUrl: './custom-table.component.scss',
+  imports: [TableModule, SearchBarComponent],
+  templateUrl: './table.component.html',
+  styleUrl: './table.component.scss',
   providers: [RowSelectionService]
 })
-export class CustomTableComponent<T> implements OnChanges {
+export class TableComponent<T> implements OnChanges {
   /**
    * Table configuration.
    * @type {TableConfig<T>}

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Column } from '../components/custom-table/models/column.model';
+import { Column } from '../components/table/models/column.model';
 
 @Injectable({
   providedIn: 'root'

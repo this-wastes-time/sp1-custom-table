@@ -19,13 +19,15 @@
       <mat-icon matPrefix>search</mat-icon>
     }
 
-    <button class="clear-button"
-      mat-icon-button
-      matSuffix
-      [attr.aria-label]="clearAriaLabel"
-      [disabled]="empty()"
-      (click)="clear()">
-      <mat-icon>close</mat-icon>
-    </button>
+    @if (searchControl.value) {
+      <button class="clear-button"
+        mat-icon-button
+        matSuffix
+        [attr.aria-label]="clearAriaLabel"
+        [disabled]="empty()"
+        (click)="clear()">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
   </mat-form-field>
 </span>

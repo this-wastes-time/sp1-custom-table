@@ -36,4 +36,4 @@ const components = [
     components,
   ],
 })
-export class CustomPaginatorModule { }
+export class PaginatorModule { }

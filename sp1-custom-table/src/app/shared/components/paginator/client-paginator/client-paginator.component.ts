@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { BasePaginatorComponent } from '../base-paginator/base-paginator.component';
-import { CustomPaginatorModule } from '../custom-paginator.module';
+import { PaginatorModule } from '../paginator.module';
 
 @Component({
   selector: 'app-client-paginator',
   standalone: true,
-  imports: [CustomPaginatorModule],
+  imports: [PaginatorModule],
   templateUrl: './client-paginator.component.html',
   styleUrl: './client-paginator.component.scss',
   host: {

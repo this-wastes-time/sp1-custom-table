@@ -1,14 +1,14 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { TableConfig } from './shared/components/custom-table/models/table.model';
-import { CustomTableComponent } from './shared/components/custom-table/custom-table.component';
+import { TableConfig } from './shared/components/table/models/table.model';
+import { TableComponent } from './shared/components/table/table.component';
 import { MockDataService, MockModel, COMPOUND_FIELDS } from './mock-data.service';
-import { ClientPaginatorComponent } from './shared/components/custom-paginator/client-paginator/client-paginator.component';
-import { ServerPaginatorComponent } from './shared/components/custom-paginator/server-paginator/server-paginator.component';
+import { ClientPaginatorComponent } from './shared/components/paginator/client-paginator/client-paginator.component';
+import { ServerPaginatorComponent } from './shared/components/paginator/server-paginator/server-paginator.component';
 import { catchError, finalize, map, Observable, of } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { MatDividerModule } from '@angular/material/divider';
 import { TableColumnService } from './shared/services/table-column.service';
-import { Column } from './shared/components/custom-table/models/column.model';
+import { Column } from './shared/components/table/models/column.model';
 import { PathValuePipe } from './shared/pipes/path-value.pipe';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { SpanFillerComponent } from './shared/components/span-filler/span-filler.component';
@@ -22,7 +22,7 @@ const AFREFRESH = 2000;
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CustomTableComponent, ClientPaginatorComponent, ServerPaginatorComponent, AsyncPipe, MatDividerModule, MatSlideToggleModule, SpanFillerComponent,
+  imports: [TableComponent, ClientPaginatorComponent, ServerPaginatorComponent, AsyncPipe, MatDividerModule, MatSlideToggleModule, SpanFillerComponent,
     MatChipsModule, MatSelectModule, MatFormFieldModule, FormsModule
   ],
   templateUrl: './app.component.html',
@@ -30,8 +30,8 @@ const AFREFRESH = 2000;
   providers: [PathValuePipe],
 })
 export class AppComponent implements OnInit {
-  @ViewChild('clientTable') clientTable!: CustomTableComponent<MockModel>;
-  @ViewChild('serverTable') serverTable!: CustomTableComponent<MockModel>;
+  @ViewChild('clientTable') clientTable!: TableComponent<MockModel>;
+  @ViewChild('serverTable') serverTable!: TableComponent<MockModel>;
   @ViewChild(ClientPaginatorComponent) clientPaginator!: ClientPaginatorComponent;
   @ViewChild(ServerPaginatorComponent) serverPaginator!: ServerPaginatorComponent;
 

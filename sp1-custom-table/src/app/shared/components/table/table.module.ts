@@ -31,21 +31,32 @@ const material = [
   ReactiveFormsModule,
 ];
 
+const components = [
+  SpanFillerComponent,
+  SearchBarComponent,
+];
+
+const pipes = [
+  PathValuePipe,
+];
+
+const directives = [
+  GeneralSpinnerDirective,
+];
+
 @NgModule({
   declarations: [],
   imports: [
     material,
-    GeneralSpinnerDirective,
-    SpanFillerComponent,
-    SearchBarComponent,
-    PathValuePipe,
+    components,
+    pipes,
+    directives,
   ],
   exports: [
     material,
-    GeneralSpinnerDirective,
-    SpanFillerComponent,
-    SearchBarComponent,
-    PathValuePipe,
+    components,
+    pipes,
+    directives,
   ],
 })
-export class CustomTableModule { }
+export class TableModule { }

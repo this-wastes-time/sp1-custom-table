@@ -1,5 +1,5 @@
 import { booleanAttribute, ChangeDetectorRef, Component, EventEmitter, inject, Input, numberAttribute, Output } from '@angular/core';
-import { CustomPaginatorModule } from '../custom-paginator.module';
+import { PaginatorModule } from '../paginator.module';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 
 const DEFAULT_PAGE_SIZE = 10;
@@ -7,7 +7,7 @@ const DEFAULT_PAGE_SIZE = 10;
 @Component({
   selector: 'app-paginator',
   standalone: true,
-  imports: [CustomPaginatorModule],
+  imports: [PaginatorModule],
   template: ``,
 })
 export abstract class BasePaginatorComponent {
