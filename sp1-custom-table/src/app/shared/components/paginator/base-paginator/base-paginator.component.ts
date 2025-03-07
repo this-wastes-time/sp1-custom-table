@@ -123,7 +123,7 @@ export abstract class BasePaginatorComponent {
 
   /**
    * Gets the current pagination state.
-   * @returns {{ pageIndex: number, pageSize: number }} - The current page index and page size.
+   * @returns The current page index and page size.
    */
   getPagination(): { pageIndex: number, pageSize: number } {
     return {
@@ -143,7 +143,7 @@ export abstract class BasePaginatorComponent {
 
   /**
    * Gets the total number of pages.
-   * @returns {number} - The total number of pages.
+   * @returns The total number of pages.
    */
   protected get totalPages(): number {
     return Math.ceil(this.length / this.pageSize) || 0;
@@ -160,7 +160,7 @@ export abstract class BasePaginatorComponent {
 
   /**
    * Checks if there is a previous page.
-   * @returns {boolean} - True if there is a previous page, false otherwise.
+   * @returns True if there is a previous page, false otherwise.
    */
   protected hasPrev(): boolean {
     return this.pageIndex <= 0;
@@ -168,7 +168,7 @@ export abstract class BasePaginatorComponent {
 
   /**
    * Checks if there is a next page.
-   * @returns {boolean} - True if there is a next page, false otherwise.
+   * @returns True if there is a next page, false otherwise.
    */
   protected hasNext(): boolean {
     return this.pageIndex >= (this.totalPages - 1);
@@ -177,7 +177,7 @@ export abstract class BasePaginatorComponent {
   /**
    * Retrieves the value from the event target.
    * @param {Event} event - The event triggered by the user.
-   * @returns {string} - The value from the event target.
+   * @returns The value from the event target.
    */
   protected _getValue(event: Event): string {
     return (event.target as HTMLInputElement).value;

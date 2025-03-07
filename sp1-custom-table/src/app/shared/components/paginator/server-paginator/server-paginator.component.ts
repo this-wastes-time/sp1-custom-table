@@ -105,7 +105,7 @@ export class ServerPaginatorComponent extends BasePaginatorComponent {
 
   /**
    * Checks if there is a next page.
-   * @returns {boolean} - True if there is a next page, false otherwise.
+   * @returns True if there is a next page, false otherwise.
    */
   protected override hasNext(): boolean {
     return this.totalItemsKnown === false ? false : this.pageIndex >= (this.totalPageCount - 1);
@@ -113,7 +113,7 @@ export class ServerPaginatorComponent extends BasePaginatorComponent {
 
   /**
    * Checks if there is a last page.
-   * @returns {boolean} - True if there is a last page, false otherwise.
+   * @returns True if there is a last page, false otherwise.
    */
   protected hasLast(): boolean {
     return !this.totalItemsKnown ? true : this.pageIndex >= (this.totalPageCount - 1);
@@ -133,7 +133,7 @@ export class ServerPaginatorComponent extends BasePaginatorComponent {
    * Gets the range label for the current page.
    * @param {number} page - The current page index.
    * @param {number} pageSize - The current page size.
-   * @returns {string} - The range label.
+   * @returns The range label.
    */
   protected getRangeLabel = (page: number, pageSize: number): string => {
     if (!this.totalItemsKnown) {

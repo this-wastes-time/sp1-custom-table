@@ -11,7 +11,7 @@ export class TableColumnService {
    * @param {Record<string, any>} obj - The object to flatten.
    * @param {(key: string, value: any, path: string) => Column<T>} determineColumnType - Callback to determine the column type.
    * @param {string} [prefix=''] - The prefix for nested fields (used internally for recursion).
-   * @returns {Column<T>[]} - An array of Column objects.
+   * @returns An array of Column objects.
    * @example
    * const nestedObject = { id: 1, name: 'John Doe' };
    * const determineColumnType = (key, value, path) => ({
@@ -56,7 +56,7 @@ export class TableColumnService {
    * @param {(key: string, value: any, path: string) => Column<T>} determineColumnType - Callback to determine the column type.
    * @param {string} [prefix=''] - The prefix for nested fields (used internally for recursion).
    * @param {Column<T>[]} existingColumns - Existing array of Column objects to merge with.
-   * @returns {Column<T>[]} - A merged array of Column objects.
+   * @returns A merged array of Column objects.
    * @example
    * // Existing columns
    * const existingColumns = [

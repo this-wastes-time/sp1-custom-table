@@ -18,7 +18,7 @@ export interface TableAction {
   action: () => void;
   /**
    * A function to determine if the action should be disabled.
-   * @returns {boolean} - Whether the action is disabled.
+   * @returns Whether the action is disabled.
    * @optional
    */
   disabled?: () => boolean;
@@ -60,7 +60,7 @@ interface RowAction<T> {
   /**
    * A function to determine if the action should be disabled.
    * @param {T} row - The row on which the action is performed.
-   * @returns {boolean} - Whether the action is disabled.
+   * @returns Whether the action is disabled.
    * @optional
    */
   disabled?: (row: T) => boolean;
@@ -88,7 +88,7 @@ export interface SelectedRowAction<T> {
   /**
    * A function to determine if the action should be disabled.
    * @param {T[]} [rows] - The rows on which the action is performed.
-   * @returns {boolean} - Whether the action is disabled.
+   * @returns Whether the action is disabled.
    * @optional
    */
   disabled?: (rows: T[]) => boolean;

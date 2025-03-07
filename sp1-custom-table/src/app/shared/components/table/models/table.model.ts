@@ -53,7 +53,7 @@ export interface TableConfig<T> {
   /**
    * Function to determine CSS class for a row
    * @param {T} row - The row data
-   * @returns {string | string[]} - CSS class or classes for the row
+   * @returns CSS class or classes for the row
    * @optional
    */
   rowClass?: (row: T) => string | string[];

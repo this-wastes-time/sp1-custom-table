@@ -161,7 +161,7 @@ export class SearchBarComponent implements OnInit {
 
   /**
    * Checks if the search input is empty.
-   * @returns {boolean} True if the search input is empty, false otherwise.
+   * @returns True if the search input is empty, false otherwise.
    */
   protected empty(): boolean {
     return !this.searchControl.value;

@@ -51,14 +51,14 @@ interface BaseColumn<T> {
   /**
    * Function to determine CSS class for a cell.
    * @param {T} row - The row data.
-   * @returns {string | string[]} - CSS class or classes for the cell.
+   * @returns CSS class or classes for the cell.
    * @optional
    */
   cellClass?: (row: T) => string | string[];
   /**
    * Function to determine the displayed value in the cell.
    * @param {T} row - The row data.
-   * @returns {any} - The value to display in the cell.
+   * @returns The value to display in the cell.
    * @optional
    */
   valueGetter?: (row: T) => any;
@@ -107,7 +107,7 @@ interface ButtonColumn<T> extends BaseColumn<T> {
   /**
    * Label for the button.
    * @param {T} row - The row data.
-   * @returns {string} - The label for the button.
+   * @returns The label for the button.
    */
   label: (row: T) => string;
   /**
@@ -129,7 +129,7 @@ interface CheckboxColumn<T> extends BaseColumn<T> {
   /**
    * Whether the checkbox is checked.
    * @param {T} row - The row data.
-   * @returns {boolean} - Whether the checkbox is checked.
+   * @returns Whether the checkbox is checked.
    */
   checked: (row: T) => boolean;
   /**
@@ -149,7 +149,7 @@ interface SlideToggleColumn<T> extends BaseColumn<T> {
   /**
    * Whether the slide toggle is checked.
    * @param {T} row - The row data.
-   * @returns {boolean} - Whether the slide toggle is checked.
+   * @returns Whether the slide toggle is checked.
    */
   checked: (row: T) => boolean;
   /**

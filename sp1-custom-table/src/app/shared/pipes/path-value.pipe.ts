@@ -13,7 +13,7 @@ export class PathValuePipe implements PipeTransform {
    * @template K - The expected return type of the value.
    * @param {T} row - The object to retrieve the value from.
    * @param {string} field - The dot-notated path to the property.
-   * @returns {K | undefined} - The extracted value or undefined if not found.
+   * @returns The extracted value or undefined if not found.
    *
    * @example
    * // In a component:

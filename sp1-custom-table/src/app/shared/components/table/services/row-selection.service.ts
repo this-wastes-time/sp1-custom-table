@@ -10,7 +10,7 @@ export class RowSelectionService<T> {
 
   /**
    * Gets an observable that emits selection changes.
-   * @returns {Observable<T[]>} - An observable of the selected rows.
+   * @returns An observable of the selected rows.
    */
   get selectionChanges() {
     return this._selectionChange$.asObservable();
@@ -46,7 +46,7 @@ export class RowSelectionService<T> {
    * Checks if a row is selected.
    * @param {T} row - The row to check.
    * @param {number} pageIndex - The page index of the row.
-   * @returns {boolean} - True if the row is selected, false otherwise.
+   * @returns True if the row is selected, false otherwise.
    */
   isSelected(row: T, pageIndex: number): boolean {
     return this._selectedRows.get(pageIndex)?.has(row) ?? false;
@@ -62,7 +62,7 @@ export class RowSelectionService<T> {
 
   /**
    * Gets all selected rows.
-   * @returns {T[]} - An array of all selected rows.
+   * @returns An array of all selected rows.
    */
   getSelectedRows(): T[] {
     return Array.from(this._selectedRows.values()).flatMap(set => Array.from(set));

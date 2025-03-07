@@ -27,7 +27,7 @@ export interface ColumnFilter<T> {
    * Custom filter logic.
    * @param {any} data - The data to filter.
    * @param {string} filter - The filter value.
-   * @returns {boolean} - Whether the data matches the filter.
+   * @returns Whether the data matches the filter.
    * @optional
    */
   filterPredicate?: (data: T, filter: string) => boolean;

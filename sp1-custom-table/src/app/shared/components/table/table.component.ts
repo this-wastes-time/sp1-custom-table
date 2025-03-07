@@ -148,7 +148,7 @@ export class TableComponent<T> implements OnChanges {
   /**
    * Gets the row number based on the index.
    * @param {number} index - The index of the row.
-   * @returns {number} - The row number.
+   * @returns The row number.
    */
   protected getRowNumber(index: number): number {
     return this.pageIndex * this.pageSize + index + 1;
@@ -185,7 +185,7 @@ export class TableComponent<T> implements OnChanges {
   /**
    * Checks if a row is selected.
    * @param {T} row - The row to check.
-   * @returns {boolean} - True if the row is selected, false otherwise.
+   * @returns True if the row is selected, false otherwise.
    */
   protected isSelected(row: T): boolean {
     return this.rss.isSelected(row, this.pageIndex);
@@ -205,7 +205,7 @@ export class TableComponent<T> implements OnChanges {
 
   /**
    * Checks if all rows are selected.
-   * @returns {boolean} - True if all rows are selected, false otherwise.
+   * @returns True if all rows are selected, false otherwise.
    */
   protected readonly allSelected = (): boolean => {
     return this.tableData?.every(row => this.rss.isSelected(row, this.pageIndex));
@@ -213,7 +213,7 @@ export class TableComponent<T> implements OnChanges {
 
   /**
    * Checks if some rows are selected.
-   * @returns {boolean} - True if some rows are selected, false otherwise.
+   * @returns True if some rows are selected, false otherwise.
    */
   protected readonly someSelected = (): boolean => {
     return this.tableData?.some(row => this.rss.isSelected(row, this.pageIndex)) &&
@@ -222,7 +222,7 @@ export class TableComponent<T> implements OnChanges {
 
   /**
    * Gets the selected rows.
-   * @returns {T[]} - An array of selected rows.
+   * @returns An array of selected rows.
    */
   protected getSelectedRows(): T[] {
     return this.rss.getSelectedRows();

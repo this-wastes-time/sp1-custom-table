@@ -96,7 +96,7 @@ export class GeneralSpinnerDirective implements OnChanges {
 
   /**
    * Creates and returns a fade out animation.
-   * @returns {AnimationMetadata[]} - The fade out animation metadata.
+   * @returns The fade out animation metadata.
    */
   private fadeOut(): AnimationMetadata[] {
     const settings = `${SPAMTIMER}ms ease-in`;
