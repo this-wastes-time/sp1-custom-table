@@ -13,6 +13,9 @@ import { PathValuePipe } from './shared/pipes/path-value.pipe';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { SpanFillerComponent } from './shared/components/span-filler/span-filler.component';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
 
 const AFREFRESH = 2000;
 
@@ -20,7 +23,7 @@ const AFREFRESH = 2000;
   selector: 'app-root',
   standalone: true,
   imports: [CustomTableComponent, ClientPaginatorComponent, ServerPaginatorComponent, AsyncPipe, MatDividerModule, MatSlideToggleModule, SpanFillerComponent,
-    MatChipsModule
+    MatChipsModule, MatSelectModule, MatFormFieldModule, FormsModule
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -166,7 +169,7 @@ export class AppComponent implements OnInit {
   clientConfig: TableConfig<MockModel> = {
     ...this.tableConfig,
     autoRefresh: {
-      enabled: true,
+      enabled: false,
       onChange: (enabled) => {
         this.toggleAutoRefresh(enabled);
       },
@@ -232,6 +235,7 @@ export class AppComponent implements OnInit {
   // Client filter vars.
   clientSearchBarText = '';
   clientColumnFilters: Record<string, unknown> = {};
+  clientSymbols: string[] = [];
   // Client sort var.
   clientSort = { active: '', direction: '' };
 
@@ -277,9 +281,6 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     // Client side pagination start.
     this.loadData();
-
-    // Start auto refresh on client table.
-    // this.startAF();
   }
 
   loadData(): void {
@@ -320,6 +321,7 @@ export class AppComponent implements OnInit {
     );
 
     this.filteredData = [...this.clientData];
+    this.clientSymbols = Array.from(new Set(this.clientData.map((data: MockModel) => data.symbol))).sort();
     this.detector.detectChanges();
   }
 
@@ -507,6 +509,14 @@ export class AppComponent implements OnInit {
   onChipChange(changes: { field: string; value: string }[]): void {
     this.clientColumnFilters = {};
     changes.forEach(change => this.clientColumnFilters[change.field] = change.value);
+    this.tableDataRequestClient();
+  }
+
+  onSelectChange(value: MatSelectChange): void {
+    this.clientColumnFilters['symbol'] = value;
+    if (!this.clientColumnFilters['symbol']) {
+      delete this.clientColumnFilters['symbol'];
+    }
     this.tableDataRequestClient();
   }
 
