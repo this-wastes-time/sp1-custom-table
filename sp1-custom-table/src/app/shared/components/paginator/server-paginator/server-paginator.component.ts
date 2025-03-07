@@ -8,12 +8,10 @@ import { PaginatorModule } from '../paginator.module';
 interface PaginatorState {
   /**
    * The current page index.
-   * @type {number}
    */
   pageIndex: number;
   /**
    * The number of items per page.
-   * @type {number}
    */
   pageSize: number;
 }
@@ -28,44 +26,37 @@ interface PaginatorState {
 export class ServerPaginatorComponent extends BasePaginatorComponent {
   /**
    * Event emitted to fetch data based on the current pagination state.
-   * @type {EventEmitter<PaginatorState>}
    */
   @Output() fetchData = new EventEmitter<PaginatorState>();
 
   /**
    * Label for the items per page dropdown.
-   * @type {string}
    */
   itemsPerPageLabel = 'Items per page:';
 
   /**
    * Indicates whether the total number of items is known.
-   * @type {boolean}
    */
   totalItemsKnown = false;
 
   /**
    * The total number of pages.
-   * @type {number}
    */
   totalPageCount!: number;
 
   /**
    * The current page input value.
    * This is a 1-based index representing the page number input by the user.
-   * @type {number}
    */
   protected pageInput = 1;
 
   /**
    * The number of pages that are known.
-   * @type {number}
    */
   protected knownPages = 1;
 
   /**
    * Gets the total number of items.
-   * @type {number | null}
    */
   get totalItems(): number | null {
     return this._totalItems;

@@ -14,7 +14,6 @@ export abstract class BasePaginatorComponent {
 
   /**
    * The current page index.
-   * @type {number}
    */
   @Input({ transform: numberAttribute })
   get pageIndex(): number {
@@ -28,7 +27,6 @@ export abstract class BasePaginatorComponent {
 
   /**
    * The length of the total number of items that are being paginated. Defaulted to 0.
-   * @type {number}
    */
   @Input({ transform: numberAttribute })
   get length(): number {
@@ -42,7 +40,6 @@ export abstract class BasePaginatorComponent {
 
   /**
    * Number of items to display on a page. By default set to 10.
-   * @type {number}
    */
   @Input({ transform: numberAttribute })
   get pageSize(): number {
@@ -56,7 +53,6 @@ export abstract class BasePaginatorComponent {
 
   /**
    * The set of provided page size options to display to the user.
-   * @type {number[]}
    */
   @Input()
   get pageSizeOptions(): number[] {
@@ -70,7 +66,6 @@ export abstract class BasePaginatorComponent {
 
   /**
    * Accessible label for the paginator.
-   * @type {string}
    */
   @Input({ required: true })
   get accessibleLabel(): string {
@@ -83,35 +78,30 @@ export abstract class BasePaginatorComponent {
 
   /**
    * Whether to hide the page size selection UI from the user.
-   * @type {boolean}
    */
   @Input({ transform: booleanAttribute })
   hidePageSize = false;
 
   /**
    * Whether to show the first/last buttons UI to the user.
-   * @type {boolean}
    */
   @Input({ transform: booleanAttribute })
   showFirstLastButtons = false;
 
   /**
    * Whether the paginator is disabled.
-   * @type {boolean}
    */
   @Input({ transform: booleanAttribute })
   disabled = false;
 
   /**
    * Whether to show the Go to page input to the user.
-   * @type {boolean}
    */
   @Input({ transform: booleanAttribute })
   showGoToPage = false;
 
   /**
    * Event emitted when the paginator changes the page size or page index.
-   * @type {EventEmitter<number>}
    */
   @Output() readonly page: EventEmitter<number> = new EventEmitter<number>();
 

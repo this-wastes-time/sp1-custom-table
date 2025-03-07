@@ -15,20 +15,17 @@ import { PaginatorModule } from '../paginator.module';
 export class ClientPaginatorComponent extends BasePaginatorComponent implements OnChanges {
   /**
    * The total data to be paginated.
-   * @type {any[]}
    */
   @Input() totalData: any[] = [];
 
   /**
    * Event emitted with the paginated data.
-   * @type {EventEmitter<any[]>}
    */
   @Output() paginatedData = new EventEmitter<any[]>();
 
   /**
    * The current page input value.
    * This is a 1-based index representing the page number input by the user.
-   * @type {number}
    */
   protected pageInput = 1;
 

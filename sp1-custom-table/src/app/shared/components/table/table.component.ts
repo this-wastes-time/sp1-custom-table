@@ -21,31 +21,26 @@ import { RowSelectionService } from './services/row-selection.service';
 export class TableComponent<T> implements OnChanges {
   /**
    * Table configuration.
-   * @type {TableConfig<T>}
    */
   @Input() tableConfig!: TableConfig<T>;
 
   /**
    * Data to be displayed in the table.
-   * @type {T[]}
    */
   @Input() tableData: T[] = [];
 
   /**
    * Current page index.
-   * @type {number}
    */
   @Input() pageIndex!: number;
 
   /**
    * Number of items per page.
-   * @type {number}
    */
   @Input() pageSize!: number;
 
   /**
    * Loading state of the table.
-   * @type {boolean}
    */
   @Input()
   get loading(): boolean {
@@ -65,13 +60,11 @@ export class TableComponent<T> implements OnChanges {
 
   /**
    * Event emitted when search bar value changes.
-   * @type {EventEmitter<string>}
    */
   @Output() filterChange = new EventEmitter<string>();
 
   /**
    * Event emitted when sort changes.
-   * @type {EventEmitter<Sort>}
    */
   @Output() sortChange = new EventEmitter<Sort>();
 

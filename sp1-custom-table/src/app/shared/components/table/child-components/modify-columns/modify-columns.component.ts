@@ -19,55 +19,46 @@ import { TableModule } from '../../table.module';
 export class ModifyColumnsComponent implements OnInit {
   /**
    * Event emitter for column modifications.
-   * @type {EventEmitter<Column[]>}
    */
   @Output() columnMods = new EventEmitter<Column<any>[]>();
 
   /**
    * Observable for column configuration.
-   * @type {Observable<ColumnsConfig>}
    */
   columnConfig$ = new Observable<ColumnsConfig>();
 
   /**
    * Column configuration.
-   * @type {ColumnsConfig}
    */
   protected config!: ColumnsConfig;
 
   /**
    * Modified columns.
-   * @type {Column[]}
    */
   protected moddedCols: Column<any>[] = [];
 
   /**
    * Default state columns.
-   * @type {Column[]}
    */
   defaultCols: Column<any>[] = [];
 
   /**
    * Initial top position for the element.
-   * @type {number}
    */
   private readonly _initialTop = 16;
 
   /**
    * Height of each list item.
-   * @type {number}
    */
   private readonly _listItemSizeHeight = 45;
 
   /**
    * Left position for the element.
-   * @type {number}
    */
   private readonly _left = 10;
 
   /**
    * Indicates whether animations are enabled.
-   * @type {boolean}
    */
   private _useAnimations = true;
   get useAnimations(): boolean {

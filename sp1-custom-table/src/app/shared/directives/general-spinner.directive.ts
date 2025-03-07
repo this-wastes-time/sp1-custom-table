@@ -14,19 +14,16 @@ export class GeneralSpinnerDirective implements OnChanges {
 
   /**
    * Indicates whether the spinner should be displayed.
-   * @type {boolean}
    */
   @Input({ required: true }) spinnerBusy = false;
 
   /**
    * The color of the spinner.
-   * @type {ThemePalette}
    */
   @Input() spinnerColor: ThemePalette = 'primary';
 
   /**
    * The diameter of the spinner.
-   * @type {number}
    */
   @Input() spinnerDiameter = 100;
 
