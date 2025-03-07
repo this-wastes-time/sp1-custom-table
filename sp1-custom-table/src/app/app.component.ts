@@ -12,13 +12,19 @@ import { Column } from './shared/components/custom-table/models/column.model';
 import { PathValuePipe } from './shared/pipes/path-value.pipe';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { SpanFillerComponent } from './shared/components/span-filler/span-filler.component';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
 
 const AFREFRESH = 2000;
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CustomTableComponent, ClientPaginatorComponent, ServerPaginatorComponent, AsyncPipe, MatDividerModule, MatSlideToggleModule, SpanFillerComponent],
+  imports: [CustomTableComponent, ClientPaginatorComponent, ServerPaginatorComponent, AsyncPipe, MatDividerModule, MatSlideToggleModule, SpanFillerComponent,
+    MatChipsModule, MatSelectModule, MatFormFieldModule, FormsModule
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   providers: [PathValuePipe],
@@ -73,7 +79,7 @@ export class AppComponent implements OnInit {
           type: 'text',
           field: 'discoveryLocation',
           header: 'Discovery Location',
-          valueGetter: (row) => `${row.university} (${row.country})`,
+          valueGetter: (row: MockModel) => `${row.university} (${row.country})`,
           sortable: true,
         },
         {
@@ -86,7 +92,7 @@ export class AppComponent implements OnInit {
           type: 'checkbox',
           field: 'online',
           header: 'Online Graduate',
-          checked(row) {
+          checked(row: MockModel) {
             return row.online;
           },
           align: 'center',
@@ -101,7 +107,7 @@ export class AppComponent implements OnInit {
           type: 'checkbox',
           field: 'married',
           header: 'Married',
-          checked(row) {
+          checked(row: MockModel) {
             return row.married;
           },
           align: 'center',
@@ -153,7 +159,7 @@ export class AppComponent implements OnInit {
         {
           label: 'Show details',
           description: 'Show more details',
-          action: (row) => console.log('Showing details:', row),
+          action: (row: MockModel) => console.log('Showing details:', row),
         },
       ],
     },
@@ -163,7 +169,7 @@ export class AppComponent implements OnInit {
   clientConfig: TableConfig<MockModel> = {
     ...this.tableConfig,
     autoRefresh: {
-      enabled: true,
+      enabled: false,
       onChange: (enabled) => {
         this.toggleAutoRefresh(enabled);
       },
@@ -226,8 +232,10 @@ export class AppComponent implements OnInit {
   cPageIndex = 0;
   cPageSize = 10;
   cPageSizeOptions = [10, 20, 40, 80, 100];
-  // Client filter var.
-  clientFilter = '';
+  // Client filter vars.
+  clientSearchBarText = '';
+  clientColumnFilters: Record<string, unknown> = {};
+  clientSymbols: string[] = [];
   // Client sort var.
   clientSort = { active: '', direction: '' };
 
@@ -273,9 +281,6 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     // Client side pagination start.
     this.loadData();
-
-    // Start auto refresh on client table.
-    this.startAF();
   }
 
   loadData(): void {
@@ -316,6 +321,7 @@ export class AppComponent implements OnInit {
     );
 
     this.filteredData = [...this.clientData];
+    this.clientSymbols = Array.from(new Set(this.clientData.map((data: MockModel) => data.symbol))).sort();
     this.detector.detectChanges();
   }
 
@@ -356,13 +362,14 @@ export class AppComponent implements OnInit {
     let filteredData = [...this.clientData];
 
     // Store filtering and sorting options.
-    const globalFilter = this.clientFilter;
+    const searchBarText = this.clientSearchBarText;
+    const columnFilters = this.clientColumnFilters;
     const sortBy = this.clientSort.active;
     const sortDirection = this.clientSort.direction;
 
     // Apply global filter, if provided
-    if (globalFilter) {
-      const searchTerm = globalFilter.toLowerCase();
+    if (searchBarText) {
+      const searchTerm = searchBarText.toLowerCase();
       filteredData = filteredData.filter((item) =>
         Object.values(item).some((value) =>
           value !== null &&
@@ -370,6 +377,29 @@ export class AppComponent implements OnInit {
           value.toString().toLowerCase().includes(searchTerm)
         )
       );
+    }
+
+    if (columnFilters) {
+      Object.keys(columnFilters).forEach((key) => {
+        const filterValue = columnFilters[key];
+        filteredData = filteredData.filter((item) => {
+          // Get nested value
+          const itemValue = this.pvp.transform(item, key);
+
+          // Handle multiple values filtering (e.g., "name": ["Aluminum", "Beryllium"])
+          if (Array.isArray(filterValue)) {
+            return filterValue.includes(itemValue);
+          }
+
+          // Handle string matching (case-insensitive)
+          if (typeof itemValue === 'string') {
+            return itemValue.toLowerCase().includes(String(filterValue).toLowerCase());
+          }
+
+          // Handle direct equality checks for booleans and numbers
+          return itemValue === filterValue;
+        });
+      });
     }
 
     // Sort if sortBy is provided
@@ -415,13 +445,13 @@ export class AppComponent implements OnInit {
     this.loading = true;
     // Reset if paginator knows the data limit.
     this.serverPaginator.totalItemsKnown = false;
-    const globalFilter = this.serverFilter;
+    const searchBarText = this.serverFilter;
     const sortBy = this.serverSort.active;
     const sortDirection = this.serverSort.direction;
 
 
     setTimeout(() => {
-      this.serverData$ = this.mockService.fetchData(this.sPageIndex, this.sPageSize, sortBy, sortDirection, globalFilter).pipe(
+      this.serverData$ = this.mockService.fetchData(this.sPageIndex, this.sPageSize, sortBy, sortDirection, searchBarText).pipe(
         catchError(() => {
           return of([]); // Return an empty array in case of error
         }),
@@ -453,7 +483,7 @@ export class AppComponent implements OnInit {
   }
 
   clientFilterChanged(updatedFilter: string): void {
-    this.clientFilter = updatedFilter;
+    this.clientSearchBarText = updatedFilter;
     this.tableDataRequestClient();
   }
 
@@ -474,6 +504,20 @@ export class AppComponent implements OnInit {
 
   onToggleChange(checked: boolean): void {
     this.toggleExample = checked ? 'server' : 'client';
+  }
+
+  onChipChange(changes: { field: string; value: string }[]): void {
+    this.clientColumnFilters = {};
+    changes.forEach(change => this.clientColumnFilters[change.field] = change.value);
+    this.tableDataRequestClient();
+  }
+
+  onSelectChange(value: MatSelectChange): void {
+    this.clientColumnFilters['symbol'] = value;
+    if (!this.clientColumnFilters['symbol']) {
+      delete this.clientColumnFilters['symbol'];
+    }
+    this.tableDataRequestClient();
   }
 
   _getRandomNumber(min: number, max: number): number {

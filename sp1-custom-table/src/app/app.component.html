@@ -17,6 +17,30 @@
         [pageSize]="cPageSize"
         (filterChange)="clientFilterChanged($event)"
         (sortChange)="clientSortChanged($event)">
+        <div>
+          <mat-form-field appearance="outline">
+            <mat-label>Filter by Symbol</mat-label>
+            <mat-select #symbolSelect
+              [(ngModel)]="clientColumnFilters['symbol']"
+              (selectionChange)="onSelectChange($event.value)">
+              @if (!symbolSelect.multiple) {
+                <mat-option [value]=""> -- </mat-option>
+              }
+              @for (symbol of clientSymbols; track symbol) {
+                <mat-option [value]="symbol">{{ symbol }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-chip-listbox aria-label="select a filter"
+            (change)="onChipChange($event.value)"
+            multiple>
+            <mat-chip-option color="primary" [value]="{ field: 'name', value:'Carbon' }"> Carbon </mat-chip-option>
+            <mat-chip-option color="primary" [value]="{ field: 'online', value:true }"> Online Graduate </mat-chip-option>
+            <mat-chip-option color="primary" [value]="{ field: 'career', value:'Paleontologist' }"> Paleontologist </mat-chip-option>
+          </mat-chip-listbox>
+        </div>
       </app-custom-table>
   
       <mat-divider></mat-divider>

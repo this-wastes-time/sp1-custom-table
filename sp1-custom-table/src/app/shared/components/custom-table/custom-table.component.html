@@ -74,6 +74,9 @@
             </div>
           }
         </div>
+
+        <!-- Slot for anything to enhance table visuals like column filter and/or mat-chip quick filter options. -->
+        <ng-content />
       
         <div class="table-container">
           <table mat-table [dataSource]="tableData" matSort
@@ -122,7 +125,7 @@
                       <ng-container *ngTemplateOutlet="slideToggleTemplate; context: {checked: column.checked, row: row}"></ng-container>
                     }
                     @default {
-                      {{ column.valueGetter?.(row) ?? row | pathValue: column.field }}
+                      {{ column.valueGetter ? column.valueGetter(row) : (row | pathValue: column.field) }}
                     }
                   }
                 </td>
