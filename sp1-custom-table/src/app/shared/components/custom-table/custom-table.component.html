@@ -75,9 +75,8 @@
           }
         </div>
 
+        <!-- Slot for anything to enhance table visuals like column filter and/or mat-chip quick filter options. -->
         <ng-content />
-
-        <ng-content select="quick-filter-chips" />
       
         <div class="table-container">
           <table mat-table [dataSource]="tableData" matSort
