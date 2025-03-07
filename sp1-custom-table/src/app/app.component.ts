@@ -198,7 +198,7 @@ export class AppComponent implements OnInit {
         label: 'Refresh table',
         description: 'Update table with latest data',
         action: () => {
-          // Author note: It would be considered a best practice to reset the paginator state of whether all items are known upon refresh.
+          // Author note: It would be considered a "best practice" to reset the paginator state of whether all items are known upon refresh.
           this.serverPaginator.totalItemsKnown = false;
           this.serverData$ = this.mockService.fetchData(this.sPageIndex, this.sPageSize).pipe(
             catchError(() => {
