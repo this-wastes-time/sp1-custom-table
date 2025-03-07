@@ -25,6 +25,9 @@
           <app-span-filler></app-span-filler>
 
           <div class="table-buttons">
+            @if (getSelectedRows().length) {
+              <span>{{ getSelectedRows().length | number }} row{{ getSelectedRows().length > 1 ? 's' : '' }} selected</span>
+            }
             @if (someSelected() || allSelected()) {
               <button mat-icon-button
                 color="accent"
