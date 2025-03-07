@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { BasePaginatorComponent } from '../base-paginator/base-paginator.component';
-import { CustomPaginatorModule } from '../custom-paginator.module';
+import { PaginatorModule } from '../paginator.module';
 
 /**
  * Represents the state of the paginator.
@@ -21,7 +21,7 @@ interface PaginatorState {
 @Component({
   selector: 'app-server-paginator',
   standalone: true,
-  imports: [CustomPaginatorModule],
+  imports: [PaginatorModule],
   templateUrl: './server-paginator.component.html',
   styleUrl: './server-paginator.component.scss',
 })
