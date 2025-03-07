@@ -48,4 +48,4 @@ const material = [
     PathValuePipe,
   ],
 })
-export class CustomTableModule { }
+export class TableModule { }

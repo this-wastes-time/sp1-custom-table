@@ -7,12 +7,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { Observable } from 'rxjs';
 import { Column, ColumnsConfig } from '../../models/column.model';
-import { CustomTableModule } from '../../custom-table.module';
+import { TableModule } from '../../table.module';
 
 @Component({
   selector: 'app-modify-columns',
   standalone: true,
-  imports: [MatCheckboxModule, MatButtonModule, MatIconModule, MatFormFieldModule, ReactiveFormsModule, MatButtonToggleModule, CustomTableModule],
+  imports: [MatCheckboxModule, MatButtonModule, MatIconModule, MatFormFieldModule, ReactiveFormsModule, MatButtonToggleModule, TableModule],
   templateUrl: './modify-columns.component.html',
   styleUrl: './modify-columns.component.scss',
 })
