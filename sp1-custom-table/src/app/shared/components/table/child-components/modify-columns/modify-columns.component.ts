@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -64,12 +64,6 @@ export class ModifyColumnsComponent implements OnInit {
   get useAnimations(): boolean {
     return this._useAnimations;
   }
-
-  /**
-   * Constructor to inject dependencies.
-   * @param cdr - Change detector reference.
-   */
-  constructor(private cdr: ChangeDetectorRef) { }
 
   /**
    * Lifecycle hook that is called after data-bound properties are initialized.
