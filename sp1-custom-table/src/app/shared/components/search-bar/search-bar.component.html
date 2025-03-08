@@ -1,33 +1,31 @@
-<span [class.disabled-wrapper]="disabled">
-  <mat-form-field
-    [appearance]="appearance"
-    [subscriptSizing]="subscriptSizing"
-    [color]="color">
+<mat-form-field
+  [appearance]="appearance"
+  [subscriptSizing]="subscriptSizing"
+  [color]="color">
 
-    <mat-label [@floatLabel]="floatState">{{ label }}</mat-label>
+  <mat-label [@floatLabel]="floatState">{{ label }}</mat-label>
 
-    <input class="search-input"
-      type="text"
-      matInput
-      [formControl]="searchControl"
-      [placeholder]="placeholder"
-      [required]="required"
-      (focus)="onFocusIn()"
-      (blur)="onBlur()"/>
+  <input class="search-input"
+    type="text"
+    matInput
+    [formControl]="searchControl"
+    [placeholder]="placeholder"
+    [required]="required"
+    (focus)="onFocusIn()"
+    (blur)="onBlur()"/>
 
-    @if (showSearchIcon) {
-      <mat-icon matPrefix>search</mat-icon>
-    }
+  @if (showSearchIcon) {
+    <mat-icon matPrefix>search</mat-icon>
+  }
 
-    @if (searchControl.value) {
-      <button class="clear-button"
-        mat-icon-button
-        matSuffix
-        [attr.aria-label]="clearAriaLabel"
-        [disabled]="empty()"
-        (click)="clear()">
-        <mat-icon>close</mat-icon>
-      </button>
-    }
-  </mat-form-field>
-</span>
+  @if (searchControl.value) {
+    <button class="clear-button"
+      mat-icon-button
+      matSuffix
+      [attr.aria-label]="clearAriaLabel"
+      [disabled]="empty()"
+      (click)="clear()">
+      <mat-icon>close</mat-icon>
+    </button>
+  }
+</mat-form-field>
