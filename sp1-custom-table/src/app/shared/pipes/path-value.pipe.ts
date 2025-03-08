@@ -11,9 +11,9 @@ export class PathValuePipe implements PipeTransform {
    *
    * @template T - The type of the input object.
    * @template K - The expected return type of the value.
-   * @param {T} row - The object to retrieve the value from.
-   * @param {string} field - The dot-notated path to the property.
-   * @returns {K | undefined} - The extracted value or undefined if not found.
+   * @param row - The object to retrieve the value from.
+   * @param field - The dot-notated path to the property.
+   * @returns The extracted value or undefined if not found.
    *
    * @example
    * // In a component:

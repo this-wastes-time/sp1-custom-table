@@ -25,72 +25,60 @@ import { AutoRefreshConfig } from './auto-refresh.model';
 export interface TableConfig<T> {
   /**
    * ID for table element
-   * @type {string}
    */
   id: string;
   /**
    * Accessibility caption for the table
-   * @type {string}
    */
   caption: string;
   /**
    * Configuration for columns
-   * @type {ColumnsConfig}
    */
   columnsConfig: ColumnsConfig;
   /**
    * Whether to display a numbered row
-   * @type {boolean}
    * @optional
    */
   showRowNumbers?: boolean;
   /**
    * Whether table is setup for multiple selection of rows
-   * @type {boolean}
    * @optional
    */
   multiRowSelection?: boolean;
   /**
    * Configuration for auto refreshing the table
-   * @type {AutoRefreshConfig}
    * @optional
    */
   autoRefresh?: AutoRefreshConfig;
   /**
    * Function to determine CSS class for a row
-   * @param {T} row - The row data
-   * @returns {string | string[]} - CSS class or classes for the row
-   * @type {function}
+   * @param row - The row data
+   * @returns CSS class or classes for the row
    * @optional
    */
   rowClass?: (row: T) => string | string[];
   /**
    * Configuration for sorting
-   * @type {SortConfig<T>}
    * @optional
    */
   sortOptions?: SortConfig<T>;
   /**
    * Array of table actions
-   * @type {TableAction[]}
    * @optional
    */
   tableActions?: TableAction[];
   /**
    * Array of actions that can be done in batches
-   * @type {SelectedRowAction<T>[]}
    * @optional
    */
   selectedRowActions?: SelectedRowAction<T>[];
   /**
    * Configuration for row actions
-   * @type {RowActionsConfig}
    * @optional
    */
   rowActions?: RowActionsConfig;
   /**
    * Configuration for table search bar filter
-   * @type {SearchBarConfig}
    * @optional
    */
   searchBarConfig?: SearchBarConfig;

@@ -15,27 +15,20 @@ import { PaginatorModule } from '../paginator.module';
 export class ClientPaginatorComponent extends BasePaginatorComponent implements OnChanges {
   /**
    * The total data to be paginated.
-   * @type {any[]}
    */
   @Input() totalData: any[] = [];
 
   /**
    * Event emitted with the paginated data.
-   * @type {EventEmitter<any[]>}
    */
   @Output() paginatedData = new EventEmitter<any[]>();
 
   /**
    * The current page input value.
    * This is a 1-based index representing the page number input by the user.
-   * @type {number}
    */
   protected pageInput = 1;
 
-  /**
-   * Lifecycle hook that is called when any data-bound property of a directive changes.
-   * @param {SimpleChanges} changes - The changed properties.
-   */
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['totalData']?.currentValue) {
       this.length = changes['totalData'].currentValue.length;
@@ -45,7 +38,7 @@ export class ClientPaginatorComponent extends BasePaginatorComponent implements 
 
   /**
    * Paginates to the target page and emits the paginated data.
-   * @param {number} page - The target page index.
+   * @param page - The target page index.
    */
   override paginate(page: number): void {
     super.paginate(page);
@@ -55,7 +48,7 @@ export class ClientPaginatorComponent extends BasePaginatorComponent implements 
 
   /**
    * Handles the change in page size and emits the paginated data.
-   * @param {number} newPageSize - The new page size.
+   * @param newPageSize - The new page size.
    */
   protected override onPageSizeChange(newPageSize: number): void {
     super.onPageSizeChange(newPageSize);
@@ -74,7 +67,7 @@ export class ClientPaginatorComponent extends BasePaginatorComponent implements 
 
   /**
    * Navigates to the specified page based on the user input.
-   * @param {Event} event - The event triggered by the user.
+   * @param event - The event triggered by the user.
    */
   protected goToPage(event: Event): void {
     // Get the value from the event target

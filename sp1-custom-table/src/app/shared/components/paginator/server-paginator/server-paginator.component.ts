@@ -8,12 +8,10 @@ import { PaginatorModule } from '../paginator.module';
 interface PaginatorState {
   /**
    * The current page index.
-   * @type {number}
    */
   pageIndex: number;
   /**
    * The number of items per page.
-   * @type {number}
    */
   pageSize: number;
 }
@@ -28,44 +26,37 @@ interface PaginatorState {
 export class ServerPaginatorComponent extends BasePaginatorComponent {
   /**
    * Event emitted to fetch data based on the current pagination state.
-   * @type {EventEmitter<PaginatorState>}
    */
   @Output() fetchData = new EventEmitter<PaginatorState>();
 
   /**
    * Label for the items per page dropdown.
-   * @type {string}
    */
   itemsPerPageLabel = 'Items per page:';
 
   /**
    * Indicates whether the total number of items is known.
-   * @type {boolean}
    */
   totalItemsKnown = false;
 
   /**
    * The total number of pages.
-   * @type {number}
    */
   totalPageCount!: number;
 
   /**
    * The current page input value.
    * This is a 1-based index representing the page number input by the user.
-   * @type {number}
    */
   protected pageInput = 1;
 
   /**
    * The number of pages that are known.
-   * @type {number}
    */
   protected knownPages = 1;
 
   /**
    * Gets the total number of items.
-   * @type {number | null}
    */
   get totalItems(): number | null {
     return this._totalItems;
@@ -73,7 +64,7 @@ export class ServerPaginatorComponent extends BasePaginatorComponent {
 
   /**
    * Sets the total number of items and updates the total page count.
-   * @param {number | null} value - The total number of items.
+   * @param value - The total number of items.
    */
   set totalItems(value: number | null) {
     this._totalItems = value;
@@ -88,7 +79,7 @@ export class ServerPaginatorComponent extends BasePaginatorComponent {
   /**
    * Paginates to the target page and emits the paginated data.
    * Increases known page count.
-   * @param {number} page - The target page index.
+   * @param page - The target page index.
    */
   override paginate(page: number): void {
     super.paginate(page);
@@ -99,7 +90,7 @@ export class ServerPaginatorComponent extends BasePaginatorComponent {
 
   /**
    * Handles the change in page size and emits the paginated data.
-   * @param {number} newPageSize - The new page size.
+   * @param newPageSize - The new page size.
    */
   protected override onPageSizeChange(newPageSize: number): void {
     super.onPageSizeChange(newPageSize);
@@ -114,7 +105,7 @@ export class ServerPaginatorComponent extends BasePaginatorComponent {
 
   /**
    * Checks if there is a next page.
-   * @returns {boolean} - True if there is a next page, false otherwise.
+   * @returns True if there is a next page, false otherwise.
    */
   protected override hasNext(): boolean {
     return this.totalItemsKnown === false ? false : this.pageIndex >= (this.totalPageCount - 1);
@@ -122,7 +113,7 @@ export class ServerPaginatorComponent extends BasePaginatorComponent {
 
   /**
    * Checks if there is a last page.
-   * @returns {boolean} - True if there is a last page, false otherwise.
+   * @returns True if there is a last page, false otherwise.
    */
   protected hasLast(): boolean {
     return !this.totalItemsKnown ? true : this.pageIndex >= (this.totalPageCount - 1);
@@ -140,9 +131,9 @@ export class ServerPaginatorComponent extends BasePaginatorComponent {
 
   /**
    * Gets the range label for the current page.
-   * @param {number} page - The current page index.
-   * @param {number} pageSize - The current page size.
-   * @returns {string} - The range label.
+   * @param page - The current page index.
+   * @param pageSize - The current page size.
+   * @returns The range label.
    */
   protected getRangeLabel = (page: number, pageSize: number): string => {
     if (!this.totalItemsKnown) {
@@ -158,7 +149,7 @@ export class ServerPaginatorComponent extends BasePaginatorComponent {
 
   /**
    * Navigates to the specified page based on the user input.
-   * @param {Event} event - The event triggered by the user.
+   * @param event - The event triggered by the user.
    */
   protected goToPage(event: Event): void {
     // Get the value from the event target

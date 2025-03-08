@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -19,70 +19,52 @@ import { TableModule } from '../../table.module';
 export class ModifyColumnsComponent implements OnInit {
   /**
    * Event emitter for column modifications.
-   * @type {EventEmitter<Column[]>}
    */
   @Output() columnMods = new EventEmitter<Column<any>[]>();
 
   /**
    * Observable for column configuration.
-   * @type {Observable<ColumnsConfig>}
    */
   columnConfig$ = new Observable<ColumnsConfig>();
 
   /**
    * Column configuration.
-   * @type {ColumnsConfig}
    */
   protected config!: ColumnsConfig;
 
   /**
    * Modified columns.
-   * @type {Column[]}
    */
   protected moddedCols: Column<any>[] = [];
 
   /**
    * Default state columns.
-   * @type {Column[]}
    */
   defaultCols: Column<any>[] = [];
 
   /**
    * Initial top position for the element.
-   * @type {number}
    */
   private readonly _initialTop = 16;
 
   /**
    * Height of each list item.
-   * @type {number}
    */
   private readonly _listItemSizeHeight = 45;
 
   /**
    * Left position for the element.
-   * @type {number}
    */
   private readonly _left = 10;
 
   /**
    * Indicates whether animations are enabled.
-   * @type {boolean}
    */
   private _useAnimations = true;
   get useAnimations(): boolean {
     return this._useAnimations;
   }
 
-  /**
-   * Constructor to inject dependencies.
-   * @param {ChangeDetectorRef} cdr - Change detector reference.
-   */
-  constructor(private cdr: ChangeDetectorRef) { }
-
-  /**
-   * Lifecycle hook that is called after data-bound properties are initialized.
-   */
   ngOnInit(): void {
     this.columnConfig$.subscribe(config => {
       this.config = config;
@@ -95,7 +77,7 @@ export class ModifyColumnsComponent implements OnInit {
 
   /**
    * Toggles the visibility of a column.
-   * @param {Column} column - The column to toggle.
+   * @param column - The column to toggle.
    */
   protected toggleColumn(column: Column<any>): void {
     column.visible = !column.visible;
@@ -103,8 +85,8 @@ export class ModifyColumnsComponent implements OnInit {
 
   /**
    * Moves a column in the specified direction.
-   * @param {number} index - The current index of the column.
-   * @param {number} direction - The direction to move the column (-1 for up, 1 for down).
+   * @param index - The current index of the column.
+   * @param direction - The direction to move the column (-1 for up, 1 for down).
    */
   protected moveColumn(index: number, direction: number): void {
     const newIndex = index + direction;

@@ -21,31 +21,26 @@ import { RowSelectionService } from './services/row-selection.service';
 export class TableComponent<T> implements OnChanges {
   /**
    * Table configuration.
-   * @type {TableConfig<T>}
    */
   @Input() tableConfig!: TableConfig<T>;
 
   /**
    * Data to be displayed in the table.
-   * @type {T[]}
    */
   @Input() tableData: T[] = [];
 
   /**
    * Current page index.
-   * @type {number}
    */
   @Input() pageIndex!: number;
 
   /**
    * Number of items per page.
-   * @type {number}
    */
   @Input() pageSize!: number;
 
   /**
    * Loading state of the table.
-   * @type {boolean}
    */
   @Input()
   get loading(): boolean {
@@ -65,13 +60,11 @@ export class TableComponent<T> implements OnChanges {
 
   /**
    * Event emitted when search bar value changes.
-   * @type {EventEmitter<string>}
    */
   @Output() filterChange = new EventEmitter<string>();
 
   /**
    * Event emitted when sort changes.
-   * @type {EventEmitter<Sort>}
    */
   @Output() sortChange = new EventEmitter<Sort>();
 
@@ -95,10 +88,6 @@ export class TableComponent<T> implements OnChanges {
     private rss: RowSelectionService<T>,
   ) { }
 
-  /**
-   * Lifecycle hook that is called when any data-bound property of a directive changes.
-   * @param {SimpleChanges} changes - The changed properties.
-   */
   ngOnChanges(changes: SimpleChanges): void {
     // When a table configuration comes in, set the columns.
     if (changes['tableConfig']?.currentValue) {
@@ -154,8 +143,8 @@ export class TableComponent<T> implements OnChanges {
 
   /**
    * Gets the row number based on the index.
-   * @param {number} index - The index of the row.
-   * @returns {number} - The row number.
+   * @param index - The index of the row.
+   * @returns The row number.
    */
   protected getRowNumber(index: number): number {
     return this.pageIndex * this.pageSize + index + 1;
@@ -163,7 +152,7 @@ export class TableComponent<T> implements OnChanges {
 
   /**
    * Emits the filter change event.
-   * @param {string} filterString - The filter string.
+   * @param filterString - The filter string.
    */
   protected onFilterChange(filterString: string): void {
     this.filterChange.emit(filterString);
@@ -171,7 +160,7 @@ export class TableComponent<T> implements OnChanges {
 
   /**
    * Handles sort change event and emits teh sort change event.
-   * @param {Sort} event - The sort event.
+   * @param event - The sort event.
    */
   protected onSortChange(event: Sort): void {
     const sortDirection = event.direction ? `${event.direction}ending` : 'cleared';
@@ -181,8 +170,8 @@ export class TableComponent<T> implements OnChanges {
 
   /**
    * Toggles the selection of a row.
-   * @param {boolean} checked - Whether the row is selected.
-   * @param {T} row - The row to be selected or deselected.
+   * @param checked - Whether the row is selected.
+   * @param row - The row to be selected or deselected.
    */
   protected toggleRowSelection(checked: boolean, row: T): void {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -191,8 +180,8 @@ export class TableComponent<T> implements OnChanges {
 
   /**
    * Checks if a row is selected.
-   * @param {T} row - The row to check.
-   * @returns {boolean} - True if the row is selected, false otherwise.
+   * @param row - The row to check.
+   * @returns True if the row is selected, false otherwise.
    */
   protected isSelected(row: T): boolean {
     return this.rss.isSelected(row, this.pageIndex);
@@ -200,7 +189,7 @@ export class TableComponent<T> implements OnChanges {
 
   /**
    * Toggles the selection of all rows.
-   * @param {boolean} checked - Whether all rows are selected.
+   * @param checked - Whether all rows are selected.
    */
   protected toggleAllSelection(checked: boolean): void {
     if (checked) {
@@ -212,7 +201,7 @@ export class TableComponent<T> implements OnChanges {
 
   /**
    * Checks if all rows are selected.
-   * @returns {boolean} - True if all rows are selected, false otherwise.
+   * @returns True if all rows are selected, false otherwise.
    */
   protected readonly allSelected = (): boolean => {
     return this.tableData?.every(row => this.rss.isSelected(row, this.pageIndex));
@@ -220,7 +209,7 @@ export class TableComponent<T> implements OnChanges {
 
   /**
    * Checks if some rows are selected.
-   * @returns {boolean} - True if some rows are selected, false otherwise.
+   * @returns True if some rows are selected, false otherwise.
    */
   protected readonly someSelected = (): boolean => {
     return this.tableData?.some(row => this.rss.isSelected(row, this.pageIndex)) &&
@@ -229,7 +218,7 @@ export class TableComponent<T> implements OnChanges {
 
   /**
    * Gets the selected rows.
-   * @returns {T[]} - An array of selected rows.
+   * @returns An array of selected rows.
    */
   protected getSelectedRows(): T[] {
     return this.rss.getSelectedRows();
@@ -237,7 +226,7 @@ export class TableComponent<T> implements OnChanges {
 
   /**
    * Generates the display columns based on the column configuration.
-   * @param {Column<T>[]} columns - The column configuration.
+   * @param columns - The column configuration.
    */
   private _generateDisplayColumns(columns: Column<T>[]): void {
     this.displayColumns = columns.filter(col => col.visible ?? true).map(col => col.field);

@@ -12,24 +12,20 @@ export type Column<T> = TextColumn<T> | ButtonColumn<T> | CheckboxColumn<T> | Sl
 export interface ColumnsConfig {
   /**
    * Array of column configurations.
-   * @type {Column<any>[]}
    */
   columns: Column<any>[];
   /**
    * Whether column headers should be sticky.
-   * @type {boolean}
    * @optional
    */
   stickyHeaders?: boolean;
   /**
    * Whether columns can be modified via hiding.
-   * @type {boolean}
    * @optional
    */
   showHideColumns?: boolean;
   /**
    * Enables/disables column reordering.
-   * @type {boolean}
    * @optional
    */
   reorderColumns?: boolean;
@@ -42,56 +38,47 @@ export interface ColumnsConfig {
 interface BaseColumn<T> {
   /**
    * Type to distinguish this as a column.
-   * @type {string}
    */
   type: string;
   /**
    * Field name in the data object.
-   * @type {string}
    */
   field: string;
   /**
    * Display name of the column.
-   * @type {string}
    */
   header: string;
   /**
    * Function to determine CSS class for a cell.
-   * @param {T} row - The row data.
-   * @returns {string | string[]} - CSS class or classes for the cell.
-   * @type {function}
+   * @param row - The row data.
+   * @returns CSS class or classes for the cell.
    * @optional
    */
   cellClass?: (row: T) => string | string[];
   /**
    * Function to determine the displayed value in the cell.
-   * @param {T} row - The row data.
-   * @returns {any} - The value to display in the cell.
-   * @type {function}
+   * @param row - The row data.
+   * @returns The value to display in the cell.
    * @optional
    */
   valueGetter?: (row: T) => any;
   /**
    * Whether the column is sortable.
-   * @type {boolean}
    * @optional
    */
   sortable?: boolean;
   /**
    * Configuration for column filter.
-   * @type {ColumnFilter}
    * @optional
    */
   filterOptions?: ColumnFilter<T>;
   /**
    * Determine alignment of column text.
-   * @type {'left' | 'center' | 'right'}
    * @optional
    */
   align?: 'left' | 'center' | 'right';
   /**
    * Whether column is visible.
-   * @type {boolean}
    * @optional
    */
   visible?: boolean;
@@ -104,7 +91,6 @@ interface BaseColumn<T> {
 interface TextColumn<T> extends BaseColumn<T> {
   /**
    * Discriminator to distinguish this as a text column.
-   * @type {'text'}
    */
   type: 'text';
 }
@@ -116,20 +102,17 @@ interface TextColumn<T> extends BaseColumn<T> {
 interface ButtonColumn<T> extends BaseColumn<T> {
   /**
    * Discriminator to distinguish this as a button column.
-   * @type {'button'}
    */
   type: 'button';
   /**
    * Label for the button.
-   * @param {T} row - The row data.
-   * @returns {string} - The label for the button.
-   * @type {function}
+   * @param row - The row data.
+   * @returns The label for the button.
    */
   label: (row: T) => string;
   /**
    * Function to handle button click.
-   * @param {T} row - The row data.
-   * @type {function}
+   * @param row - The row data.
    */
   onClick: (row: T) => void;
 }
@@ -141,21 +124,18 @@ interface ButtonColumn<T> extends BaseColumn<T> {
 interface CheckboxColumn<T> extends BaseColumn<T> {
   /**
    * Discriminator to distinguish this as a checkbox column.
-   * @type {'checkbox'}
    */
   type: 'checkbox';
   /**
    * Whether the checkbox is checked.
-   * @param {T} row - The row data.
-   * @returns {boolean} - Whether the checkbox is checked.
-   * @type {function}
+   * @param row - The row data.
+   * @returns Whether the checkbox is checked.
    */
   checked: (row: T) => boolean;
   /**
    * Function to handle checkbox value change.
-   * @param {boolean} checked - Whether the checkbox is checked.
-   * @param {T} row - The row data.
-   * @type {function}
+   * @param checked - Whether the checkbox is checked.
+   * @param row - The row data.
    * @optional
    */
   onChange?: (checked: boolean, row: T) => void;
@@ -164,21 +144,18 @@ interface CheckboxColumn<T> extends BaseColumn<T> {
 interface SlideToggleColumn<T> extends BaseColumn<T> {
   /**
    * Discriminator to distinguish this as a slide toggle column.
-   * @type {'slideToggle'}
    */
   type: 'slideToggle';
   /**
    * Whether the slide toggle is checked.
-   * @param {T} row - The row data.
-   * @returns {boolean} - Whether the slide toggle is checked.
-   * @type {function}
+   * @param row - The row data.
+   * @returns Whether the slide toggle is checked.
    */
   checked: (row: T) => boolean;
   /**
    * Function to handle slide toggle value change.
-   * @param {boolean} checked - Whether the slide toggle is checked.
-   * @param {T} row - The row data.
-   * @type {function}
+   * @param checked - Whether the slide toggle is checked.
+   * @param row - The row data.
    * @optional
    */
   onChange?: (checked: boolean, row: T) => void;

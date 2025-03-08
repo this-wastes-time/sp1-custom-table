@@ -14,7 +14,6 @@ export abstract class BasePaginatorComponent {
 
   /**
    * The current page index.
-   * @type {number}
    */
   @Input({ transform: numberAttribute })
   get pageIndex(): number {
@@ -28,7 +27,6 @@ export abstract class BasePaginatorComponent {
 
   /**
    * The length of the total number of items that are being paginated. Defaulted to 0.
-   * @type {number}
    */
   @Input({ transform: numberAttribute })
   get length(): number {
@@ -42,7 +40,6 @@ export abstract class BasePaginatorComponent {
 
   /**
    * Number of items to display on a page. By default set to 10.
-   * @type {number}
    */
   @Input({ transform: numberAttribute })
   get pageSize(): number {
@@ -56,7 +53,6 @@ export abstract class BasePaginatorComponent {
 
   /**
    * The set of provided page size options to display to the user.
-   * @type {number[]}
    */
   @Input()
   get pageSizeOptions(): number[] {
@@ -70,7 +66,6 @@ export abstract class BasePaginatorComponent {
 
   /**
    * Accessible label for the paginator.
-   * @type {string}
    */
   @Input({ required: true })
   get accessibleLabel(): string {
@@ -83,35 +78,30 @@ export abstract class BasePaginatorComponent {
 
   /**
    * Whether to hide the page size selection UI from the user.
-   * @type {boolean}
    */
   @Input({ transform: booleanAttribute })
   hidePageSize = false;
 
   /**
    * Whether to show the first/last buttons UI to the user.
-   * @type {boolean}
    */
   @Input({ transform: booleanAttribute })
   showFirstLastButtons = false;
 
   /**
    * Whether the paginator is disabled.
-   * @type {boolean}
    */
   @Input({ transform: booleanAttribute })
   disabled = false;
 
   /**
    * Whether to show the Go to page input to the user.
-   * @type {boolean}
    */
   @Input({ transform: booleanAttribute })
   showGoToPage = false;
 
   /**
    * Event emitted when the paginator changes the page size or page index.
-   * @type {EventEmitter<number>}
    */
   @Output() readonly page: EventEmitter<number> = new EventEmitter<number>();
 
@@ -133,7 +123,7 @@ export abstract class BasePaginatorComponent {
 
   /**
    * Gets the current pagination state.
-   * @returns {{ pageIndex: number, pageSize: number }} - The current page index and page size.
+   * @returns The current page index and page size.
    */
   getPagination(): { pageIndex: number, pageSize: number } {
     return {
@@ -143,7 +133,7 @@ export abstract class BasePaginatorComponent {
 
   /**
    * Handles the change in page size.
-   * @param {number} newPageSize - The new page size.
+   * @param newPageSize - The new page size.
    */
   protected onPageSizeChange(newPageSize: number): void {
     // Go to first page.
@@ -153,7 +143,7 @@ export abstract class BasePaginatorComponent {
 
   /**
    * Gets the total number of pages.
-   * @returns {number} - The total number of pages.
+   * @returns The total number of pages.
    */
   protected get totalPages(): number {
     return Math.ceil(this.length / this.pageSize) || 0;
@@ -161,7 +151,7 @@ export abstract class BasePaginatorComponent {
 
   /**
    * Paginates to the target page.
-   * @param {number} targetPage - The target page index.
+   * @param targetPage - The target page index.
    */
   protected paginate(targetPage: number): void {
     this.pageIndex = targetPage;
@@ -170,7 +160,7 @@ export abstract class BasePaginatorComponent {
 
   /**
    * Checks if there is a previous page.
-   * @returns {boolean} - True if there is a previous page, false otherwise.
+   * @returns True if there is a previous page, false otherwise.
    */
   protected hasPrev(): boolean {
     return this.pageIndex <= 0;
@@ -178,7 +168,7 @@ export abstract class BasePaginatorComponent {
 
   /**
    * Checks if there is a next page.
-   * @returns {boolean} - True if there is a next page, false otherwise.
+   * @returns True if there is a next page, false otherwise.
    */
   protected hasNext(): boolean {
     return this.pageIndex >= (this.totalPages - 1);
@@ -186,8 +176,8 @@ export abstract class BasePaginatorComponent {
 
   /**
    * Retrieves the value from the event target.
-   * @param {Event} event - The event triggered by the user.
-   * @returns {string} - The value from the event target.
+   * @param event - The event triggered by the user.
+   * @returns The value from the event target.
    */
   protected _getValue(event: Event): string {
     return (event.target as HTMLInputElement).value;
@@ -200,7 +190,7 @@ export abstract class BasePaginatorComponent {
 
   /**
    * Abstract method to navigate to the specified page based on the user input.
-   * @param {Event} event - The event triggered by the user.
+   * @param event - The event triggered by the user.
    */
   protected abstract goToPage(event: Event): void;
 
