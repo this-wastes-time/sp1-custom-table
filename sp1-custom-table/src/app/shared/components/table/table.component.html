@@ -15,6 +15,7 @@
           @if (tableConfig.searchBarConfig) {
             <div class="table-search-bar">
               <app-search-bar #searchBar
+                [disabled]="loading"
                 [label]="tableConfig.searchBarConfig.label ?? ''"
                 [placeholder]="tableConfig.searchBarConfig.placeholder ?? ''"
                 (valueChange)="onFilterChange($event)">
