@@ -65,23 +65,21 @@
             </div>
           }
           @if ((tableConfig.tableActions?.length ?? 0) > 0) {
-            <div class="table-menu">
-              <button mat-icon-button
-                [color]="'accent'"
-                [matMenuTriggerFor]="tableMenu">
-                <mat-icon>settings</mat-icon>
-              </button>
-              <mat-menu #tableMenu="matMenu">
-                @for (action of tableConfig.tableActions; track action) {
-                  <button mat-menu-item
-                    [attr.aria-label]="action.description"
-                    [disabled]="action.disabled?.()"
-                    (click)="$event.stopPropagation(); action.action()">
-                    {{ action.label }}
-                  </button>
-                }
-              </mat-menu>
-            </div>
+            <button mat-icon-button
+              [color]="'accent'"
+              [matMenuTriggerFor]="tableMenu">
+              <mat-icon>settings</mat-icon>
+            </button>
+            <mat-menu #tableMenu="matMenu">
+              @for (action of tableConfig.tableActions; track action) {
+                <button mat-menu-item
+                  [attr.aria-label]="action.description"
+                  [disabled]="action.disabled?.()"
+                  (click)="$event.stopPropagation(); action.action()">
+                  {{ action.label }}
+                </button>
+              }
+            </mat-menu>
           }
         </div>
 
