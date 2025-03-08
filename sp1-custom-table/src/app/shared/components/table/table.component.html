@@ -46,7 +46,7 @@
                   <button mat-menu-item
                     [attr.aria-label]="action.description"
                     [disabled]="action.disabled?.(getSelectedRows())"
-                    (click)="action.action(getSelectedRows())">
+                    (click)="$event.stopPropagation(); action.action(getSelectedRows())">
                     {{ action.label }}
                   </button>
                 }
@@ -73,7 +73,10 @@
               </button>
               <mat-menu #tableMenu="matMenu">
                 @for (action of tableConfig.tableActions; track action) {
-                  <button mat-menu-item [attr.aria-label]="action.description" [disabled]="action.disabled?.()" (click)="action.action()">
+                  <button mat-menu-item
+                    [attr.aria-label]="action.description"
+                    [disabled]="action.disabled?.()"
+                    (click)="$event.stopPropagation(); action.action()">
                     {{ action.label }}
                   </button>
                 }
@@ -166,7 +169,7 @@
                       <button mat-menu-item
                         [attr.aria-label]="action.description"
                         [disabled]="action.disabled?.(row)"
-                        (click)="action.action(row)">
+                        (click)="$event.stopPropagation(); action.action(row)">
                         <span> {{ action.label }}</span>
                       </button>
                     }
