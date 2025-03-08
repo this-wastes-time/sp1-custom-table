@@ -15,6 +15,7 @@
           @if (tableConfig.searchBarConfig) {
             <div class="table-search-bar">
               <app-search-bar #searchBar
+                [disabled]="loading"
                 [label]="tableConfig.searchBarConfig.label ?? ''"
                 [placeholder]="tableConfig.searchBarConfig.placeholder ?? ''"
                 (valueChange)="onFilterChange($event)">
@@ -37,14 +38,12 @@
               </button>
               <mat-menu #selectedRowMenu="matMenu">
                 @for (action of tableConfig.selectedRowActions; track action) {
-                  <span [class.disabled-wrapper]="action.disabled?.(getSelectedRows())">
-                    <button mat-menu-item
-                      [attr.aria-label]="action.description"
-                      [disabled]="action.disabled?.(getSelectedRows())"
-                      (click)="action.action(getSelectedRows())">
-                      {{ action.label }}
-                    </button>
-                  </span>
+                  <button mat-menu-item
+                    [attr.aria-label]="action.description"
+                    [disabled]="action.disabled?.(getSelectedRows())"
+                    (click)="action.action(getSelectedRows())">
+                    {{ action.label }}
+                  </button>
                 }
               </mat-menu>
             }
@@ -67,11 +66,9 @@
               </button>
               <mat-menu #tableMenu="matMenu">
                 @for (action of tableConfig.tableActions; track action) {
-                  <span [class.disabled-wrapper]="action.disabled?.()">
-                    <button mat-menu-item [attr.aria-label]="action.description" [disabled]="action.disabled?.()" (click)="action.action()">
-                      <span> {{ action.label }}</span>
-                    </button>
-                  </span>
+                  <button mat-menu-item [attr.aria-label]="action.description" [disabled]="action.disabled?.()" (click)="action.action()">
+                    {{ action.label }}
+                  </button>
                 }
               </mat-menu>
             </div>
@@ -145,11 +142,9 @@
                   </button>
                   <mat-menu #actionMenu="matMenu">
                     @for (action of tableConfig.rowActions.actions; track action) {
-                      <span [class.disabled-wrapper]="action.disabled?.(row)">
-                        <button mat-menu-item [attr.aria-label]="action.description" [disabled]="action.disabled?.(row)" (click)="action.action(row)">
-                          <span> {{ action.label }}</span>
-                        </button>
-                      </span>
+                      <button mat-menu-item [attr.aria-label]="action.description" [disabled]="action.disabled?.(row)" (click)="action.action(row)">
+                        <span> {{ action.label }}</span>
+                      </button>
                     }
                   </mat-menu>
                 </td>
