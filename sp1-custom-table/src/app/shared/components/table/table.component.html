@@ -1,14 +1,19 @@
 <mat-sidenav-container>
-  <mat-sidenav #sidenav mode="over" position="end">
+  <mat-sidenav #sidenav
+    mode="over"
+    position="end">
     <ng-container #sidenavContent></ng-container>
   </mat-sidenav>
   <mat-sidenav-content>
     @if (tableConfig) {
       <div [style.position]="'relative'">
-        <div class="spinner-div" appGeneralSpinner
-          [spinnerBusy]="loading" [spinnerColor]="'accent'"
+        <div class="spinner-div"
+          appGeneralSpinner
+          [spinnerBusy]="loading"
+          [spinnerColor]="'accent'"
           [style.background]="loading ? 'var(--spinner-background)' : 'none'"
-          [style.z-index]="loadingTail ? 110 : -1"></div>
+          [style.z-index]="loadingTail ? 110 : -1">
+        </div>
       
         <div class="table-filter-container">
           <!-- Table search bar -->
@@ -61,7 +66,9 @@
           }
           @if ((tableConfig.tableActions?.length ?? 0) > 0) {
             <div class="table-menu">
-              <button mat-icon-button [color]="'accent'" [matMenuTriggerFor]="tableMenu">
+              <button mat-icon-button
+                [color]="'accent'"
+                [matMenuTriggerFor]="tableMenu">
                 <mat-icon>settings</mat-icon>
               </button>
               <mat-menu #tableMenu="matMenu">
@@ -79,7 +86,9 @@
         <ng-content />
       
         <div class="table-container">
-          <table mat-table [dataSource]="tableData" matSort
+          <table mat-table
+            [dataSource]="tableData"
+            matSort
             [matSortActive]="tableConfig.sortOptions?.initialSort?.active ?? ''"
             [matSortDirection]="tableConfig.sortOptions?.initialSort?.direction ?? ''"
             (matSortChange)="onSortChange($event)">
@@ -88,10 +97,17 @@
             @if (tableConfig.multiRowSelection) {
               <ng-container matColumnDef="select">
                 <th mat-header-cell *matHeaderCellDef>
-                  <mat-checkbox [checked]="allSelected()" [indeterminate]="someSelected()" (change)="toggleAllSelection($event.checked)"></mat-checkbox>
+                  <mat-checkbox
+                    [checked]="allSelected()"
+                    [indeterminate]="someSelected()"
+                    (change)="toggleAllSelection($event.checked)">
+                  </mat-checkbox>
                 </th>
                 <td mat-cell *matCellDef="let row">
-                  <mat-checkbox [checked]="isSelected(row)" (change)="toggleRowSelection($event.checked, row)"></mat-checkbox>
+                  <mat-checkbox
+                    [checked]="isSelected(row)"
+                    (change)="toggleRowSelection($event.checked, row)">
+                  </mat-checkbox>
                 </td>
               </ng-container>
             }
@@ -107,12 +123,15 @@
             <!-- Columns generated from table configuration. -->
             @for (column of tableConfig.columnsConfig.columns; track column.field) {
               <ng-container matColumnDef="{{ column.field }}">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header
-                  sortActionDescription="Sort by {{column.field}}" [disabled]="!column.sortable"
+                <th mat-header-cell *matHeaderCellDef
+                  mat-sort-header
+                  sortActionDescription="Sort by {{column.field}}"
+                  [disabled]="!column.sortable"
                   [style.text-align]="column.align">
                   {{ column.header }}
                 </th>
-                <td mat-cell *matCellDef="let row" [ngClass]="column.cellClass?.(row) ?? ''"
+                <td mat-cell *matCellDef="let row"
+                  [ngClass]="column.cellClass?.(row) ?? ''"
                   [style.text-align]="column.align ?? 'left'">
                   @switch (column.type) {
                     @case ('button') {
@@ -137,12 +156,17 @@
               <ng-container matColumnDef="actions" [stickyEnd]="tableConfig.rowActions.stickyActions">
                 <th mat-header-cell *matHeaderCellDef> Actions </th>
                 <td mat-cell *matCellDef="let row">
-                  <button mat-icon-button [color]="'accent'" [matMenuTriggerFor]="actionMenu">
+                  <button mat-icon-button
+                    [color]="'accent'"
+                    [matMenuTriggerFor]="actionMenu">
                     <mat-icon>more_vert</mat-icon>
                   </button>
                   <mat-menu #actionMenu="matMenu">
                     @for (action of tableConfig.rowActions.actions; track action) {
-                      <button mat-menu-item [attr.aria-label]="action.description" [disabled]="action.disabled?.(row)" (click)="action.action(row)">
+                      <button mat-menu-item
+                        [attr.aria-label]="action.description"
+                        [disabled]="action.disabled?.(row)"
+                        (click)="action.action(row)">
                         <span> {{ action.label }}</span>
                       </button>
                     }
@@ -178,9 +202,17 @@
 </ng-template>
 <!-- Checkbox -->
 <ng-template #checkboxTemplate let-checked="checked" let-row="row">
-  <mat-checkbox [color]="'primary'" [checked]="checked(row)" disabled></mat-checkbox>
+  <mat-checkbox
+    [color]="'primary'"
+    [checked]="checked(row)"
+    disabled>
+  </mat-checkbox>
 </ng-template>
 <!-- Slide toggle -->
 <ng-template #slideToggleTemplate let-checked="checked" let-row="row">
-  <mat-slide-toggle [color]="'primary'" [checked]="checked(row)" disabled></mat-slide-toggle>
+  <mat-slide-toggle
+    [color]="'primary'"
+    [checked]="checked(row)"
+    disabled>
+  </mat-slide-toggle>
 </ng-template>
