@@ -1,19 +1,31 @@
 /**
- * Example usage of AutoRefreshConfig
+ * Configuration for automatic table data refresh.
+ *
  * @example
+ * ```typescript
  * const autoRefreshConfig: AutoRefreshConfig = {
  *   enabled: true,
- *   autoRefreshFunc: (enabled) => { if (enabled) { refreshTableData(); } }
+ *   onChange: (enabled) => { if (enabled) { refreshTableData(); } }
  * };
+ * ```
  */
 export interface AutoRefreshConfig {
   /**
-   * Whether the auto-refresh is currently on
+   * Indicates whether auto-refresh is enabled.
+   * When `true`, the table will automatically refresh at predefined intervals.
    */
   enabled: boolean;
+
   /**
-   * Function to call to refresh table data automatically.
-   * @param enabled - Indicates if auto-refresh is enabled
+   * Callback function triggered when the auto-refresh state changes.
+   * Can be used to start or stop automatic data refresh.
+   *
+   * @param enabled - `true` if auto-refresh is enabled, `false` otherwise.
+   *
+   * @example
+   * ```typescript
+   * onChange: (enabled) => { if (enabled) { refreshTableData(); } }
+   * ```
    */
   onChange: (enabled: boolean) => void;
 }
