@@ -1,148 +1,200 @@
 import { ColumnFilter } from './filter.model';
 
 /**
- * Represents a column configuration.
- * @template T - The type of the rows in the table.
+ * Defines the configuration for a column in the table.
+ * Supports multiple column types such as text, button, checkbox, and slide toggle.
+ * @template T - The type of the table row data.
  */
 export type Column<T> = TextColumn<T> | ButtonColumn<T> | CheckboxColumn<T> | SlideToggleColumn<T>;
 
 /**
- * Configuration for columns.
+ * Configuration settings for table columns.
  */
 export interface ColumnsConfig {
   /**
-   * Array of column configurations.
+   * List of column configurations.
    */
   columns: Column<any>[];
+
   /**
-   * Whether column headers should be sticky.
-   * @optional
+   * Enables sticky column headers.
+   * If `true`, column headers remain fixed at the top while scrolling.
+   * @default false
    */
   stickyHeaders?: boolean;
+
   /**
-   * Whether columns can be modified via hiding.
-   * @optional
+   * Allows users to toggle column visibility.
+   * If `true`, columns can be shown or hidden dynamically.
+   * @default false
    */
   showHideColumns?: boolean;
+
   /**
-   * Enables/disables column reordering.
-   * @optional
+   * Enables column reordering.
+   * If `true`, users can change the order of columns.
+   * @default false
    */
   reorderColumns?: boolean;
 }
 
 /**
- * Base interface for column configurations.
- * @template T - The type of the rows in the table.
+ * Example configuration for a user table.
+ * 
+ * ```typescript
+ * const userColumns: Column<User>[] = [
+ *   { type: 'text', field: 'name', header: 'Name', sortable: true },
+ *   { type: 'checkbox', field: 'active', header: 'Active', checked: row => row.active }
+ * ];
+ * ```
  */
-interface BaseColumn<T> {
+
+/**
+ * Base interface for column configurations.
+ * @template T - The type of the table row data.
+ */
+export interface BaseColumn<T> {
   /**
-   * Type to distinguish this as a column.
+   * Identifies the type of the column.
+   * Used to differentiate between column types.
    */
   type: string;
+
   /**
-   * Field name in the data object.
+   * Specifies the data field associated with this column.
+   * Example: If `field = 'name'`, then `row['name']` is displayed in this column.
    */
   field: string;
+
   /**
-   * Display name of the column.
+   * The header text displayed for the column.
    */
   header: string;
+
   /**
-   * Function to determine CSS class for a cell.
-   * @param row - The row data.
-   * @returns CSS class or classes for the cell.
-   * @optional
-   */
-  cellClass?: (row: T) => string | string[];
-  /**
-   * Function to determine the displayed value in the cell.
-   * @param row - The row data.
-   * @returns The value to display in the cell.
-   * @optional
-   */
-  valueGetter?: (row: T) => any;
-  /**
-   * Whether the column is sortable.
-   * @optional
-   */
-  sortable?: boolean;
-  /**
-   * Configuration for column filter.
-   * @optional
-   */
-  filterOptions?: ColumnFilter<T>;
-  /**
-   * Determine alignment of column text.
-   * @optional
+   * Defines the text alignment for column content.
+   * Acceptable values: `'left'`, `'center'`, `'right'`.
+   * @default 'left'
    */
   align?: 'left' | 'center' | 'right';
+
   /**
-   * Whether column is visible.
-   * @optional
+   * Controls column visibility.
+   * If `false`, the column is hidden.
+   * @default true
    */
   visible?: boolean;
+
+  /**
+   * Enables sorting for the column.
+   * If `true`, the column can be sorted.
+   * @default false
+   */
+  sortable?: boolean;
+
+  /**
+   * Applies custom CSS classes to the column cells.
+   * 
+   * @param row - The row data.
+   * @returns A string or an array of CSS class names.
+   * 
+   * @example
+   * ```typescript
+   * cellClass: (row) => row.active ? 'highlight' : 'dimmed'
+   * ```
+   */
+  cellClass?: (row: T) => string | string[];
+
+  /**
+   * Customizes how the cell content is displayed.
+   * 
+   * @param row - The row data.
+   * @returns The processed value to be displayed in the cell.
+   * 
+   * @example
+   * ```typescript
+   * valueGetter: (row) => `${row.firstName} ${row.lastName}`
+   * ```
+   */
+  valueGetter?: (row: T) => any;
+
+  /**
+   * Defines filtering options for the column.
+   */
+  filterOptions?: ColumnFilter<T>;
 }
 
 /**
- * Represents a text column configuration.
- * @template T - The type of the rows in the table.
+ * Configuration for a text column.
+ * @template T - The type of the table row data.
  */
 interface TextColumn<T> extends BaseColumn<T> {
   /**
-   * Discriminator to distinguish this as a text column.
+   * Identifies this column as a text column.
    */
   type: 'text';
 }
 
 /**
- * Represents a button column configuration.
- * @template T - The type of the rows in the table.
+ * Configuration for a button column.
+ * @template T - The type of the table row data.
  */
 interface ButtonColumn<T> extends BaseColumn<T> {
   /**
-   * Discriminator to distinguish this as a button column.
+   * Identifies this column as a button column.
    */
   type: 'button';
+
   /**
-   * Label for the button.
+   * Defines the button label.
+   * 
    * @param row - The row data.
-   * @returns The label for the button.
+   * @returns The button label text.
    */
   label: (row: T) => string;
+
   /**
-   * Function to handle button click.
+   * Handles button click events.
+   * 
    * @param row - The row data.
    */
   onClick: (row: T) => void;
 }
 
 /**
- * Represents a checkbox column configuration.
- * @template T - The type of the rows in the table.
+ * Configuration for a checkbox column.
+ * @template T - The type of the table row data.
  */
 interface CheckboxColumn<T> extends BaseColumn<T> {
   /**
-   * Discriminator to distinguish this as a checkbox column.
+   * Identifies this column as a checkbox column.
    */
   type: 'checkbox';
+
   /**
-   * Whether the checkbox is checked.
+   * Determines whether the checkbox is checked.
+   * 
    * @param row - The row data.
-   * @returns Whether the checkbox is checked.
+   * @returns `true` if checked, otherwise `false`.
    */
   checked: (row: T) => boolean;
 }
 
+/**
+ * Configuration for a slide toggle column.
+ * @template T - The type of the table row data.
+ */
 interface SlideToggleColumn<T> extends BaseColumn<T> {
   /**
-   * Discriminator to distinguish this as a slide toggle column.
+   * Identifies this column as a slide toggle column.
    */
   type: 'slideToggle';
+
   /**
-   * Whether the slide toggle is checked.
+   * Determines whether the slide toggle is enabled.
+   * 
    * @param row - The row data.
-   * @returns Whether the slide toggle is checked.
+   * @returns `true` if enabled, otherwise `false`.
    */
   checked: (row: T) => boolean;
 }
