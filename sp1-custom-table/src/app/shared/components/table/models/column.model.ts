@@ -132,13 +132,6 @@ interface CheckboxColumn<T> extends BaseColumn<T> {
    * @returns Whether the checkbox is checked.
    */
   checked: (row: T) => boolean;
-  /**
-   * Function to handle checkbox value change.
-   * @param checked - Whether the checkbox is checked.
-   * @param row - The row data.
-   * @optional
-   */
-  onChange?: (checked: boolean, row: T) => void;
 }
 
 interface SlideToggleColumn<T> extends BaseColumn<T> {
@@ -152,11 +145,4 @@ interface SlideToggleColumn<T> extends BaseColumn<T> {
    * @returns Whether the slide toggle is checked.
    */
   checked: (row: T) => boolean;
-  /**
-   * Function to handle slide toggle value change.
-   * @param checked - Whether the slide toggle is checked.
-   * @param row - The row data.
-   * @optional
-   */
-  onChange?: (checked: boolean, row: T) => void;
 }
