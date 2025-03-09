@@ -1,7 +1,21 @@
 .table-filter-container {
   padding: .625em 0;
   display: flex;
+  flex-flow: row wrap;
   align-items: center;
+
+  .table-search-bar {
+    width: 600px;
+    min-width: 300px;
+  }
+
+  .table-non-search-bar-container {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    flex: auto;
+    justify-content: flex-end;
+  }
 
   .table-buttons {
     display: flex;
@@ -9,23 +23,11 @@
     gap: .25em;
   }
 
-  .table-search-bar {
-    width: 600px;
-    min-width: 300px;
-  }
-
   .auto-refresh-toggle {
     display: flex;
     justify-content: center;
     min-width: max-content;
     padding: 0 .5em;
-  }
-
-  .table-menu {
-    width: 85px;
-    min-width: 80.5px;
-    display: flex;
-    justify-content: center;
   }
 }
 
