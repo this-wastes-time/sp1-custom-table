@@ -5,81 +5,80 @@ import { SortConfig } from './sort.model';
 import { AutoRefreshConfig } from './auto-refresh.model';
 
 /**
- * Example usage of TableConfig
- * @example
- * const tableConfig: TableConfig<MyRowType> = {
- *   id: 'myTable',
- *   caption: 'My Table',
- *   columnsConfig: myColumnsConfig,
- *   showRowNumbers: true,
- *   multiRowSelection: false,
- *   autoRefresh: myAutoRefreshConfig,
- *   rowClass: (row) => row.isActive ? 'active-row' : 'inactive-row',
- *   sortOptions: mySortConfig,
- *   tableActions: myTableActions,
- *   selectedRowActions: mySelectedRowActions,
- *   rowActions: myRowActionsConfig,
- *   searchBarConfig: mySearchBarConfig
- * };
+ * Configuration options for a table component.
+ * 
+ * @template T - The type of data represented in each row.
  */
 export interface TableConfig<T> {
   /**
-   * ID for table element
+   * Unique identifier for the table element.
    */
   id: string;
+
   /**
-   * Accessibility caption for the table
+   * Accessibility caption describing the table.
    */
   caption: string;
+
   /**
-   * Configuration for columns
+   * Configuration for table columns.
    */
   columnsConfig: ColumnsConfig;
+
   /**
-   * Whether to display a numbered row
-   * @optional
+   * Determines whether to display row numbers.
+   *
+   * @default false
    */
   showRowNumbers?: boolean;
+
   /**
-   * Whether table is setup for multiple selection of rows
-   * @optional
+   * Enables multi-row selection mode.
+   *
+   * @default false
    */
   multiRowSelection?: boolean;
+
   /**
-   * Configuration for auto refreshing the table
-   * @optional
+   * Configuration for automatically refreshing table data.
    */
   autoRefresh?: AutoRefreshConfig;
+
   /**
-   * Function to determine CSS class for a row
-   * @param row - The row data
-   * @returns CSS class or classes for the row
-   * @optional
+   * Function to determine the CSS class(es) applied to a row.
+   *
+   * @param row - The row data.
+   * @returns A string or an array of CSS class names.
+   *
+   * @example
+   * ```typescript
+   * rowClass: (row) => row.active ? 'highlight' : 'dimmed'
+   * ```
    */
   rowClass?: (row: T) => string | string[];
+
   /**
-   * Configuration for sorting
-   * @optional
+   * Configuration for table sorting options.
    */
   sortOptions?: SortConfig<T>;
+
   /**
-   * Array of table actions
-   * @optional
+   * List of actions that can be performed on the table.
    */
   tableActions?: TableAction[];
+
   /**
-   * Array of actions that can be done in batches
-   * @optional
+   * List of actions applicable to multiple selected rows.
    */
   selectedRowActions?: SelectedRowAction<T>[];
+
   /**
-   * Configuration for row actions
-   * @optional
+   * Configuration for actions available on individual rows.
    */
   rowActions?: RowActionsConfig;
+
   /**
-   * Configuration for table search bar filter
-   * @optional
+   * Configuration for the table's search bar filter.
    */
   searchBarConfig?: SearchBarConfig;
 }
