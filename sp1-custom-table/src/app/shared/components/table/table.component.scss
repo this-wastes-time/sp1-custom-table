@@ -1,17 +1,26 @@
 .table-filter-container {
   padding: .625em 0;
   display: flex;
+  flex-flow: row wrap;
   align-items: center;
+
+  .table-search-bar {
+    width: 600px;
+    min-width: 300px;
+  }
+
+  .table-non-search-bar-container {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    flex: auto;
+    justify-content: flex-end;
+  }
 
   .table-buttons {
     display: flex;
     align-items: center;
     gap: .25em;
-  }
-
-  .table-search-bar {
-    width: 600px;
-    min-width: 300px;
   }
 
   .auto-refresh-toggle {

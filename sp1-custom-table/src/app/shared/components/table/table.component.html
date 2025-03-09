@@ -30,57 +30,62 @@
 
           <app-span-filler></app-span-filler>
 
-          <div class="table-buttons">
-            @if (getSelectedRows().length) {
-              <span>{{ getSelectedRows().length | number }} row{{ getSelectedRows().length > 1 ? 's' : '' }} selected</span>
+          <div class="table-non-search-bar-container">
+            <!-- Menu trigger button for multiple row selection -->
+            <div class="table-buttons">
+              @if (getSelectedRows().length) {
+                <span>{{ getSelectedRows().length | number }} row{{ getSelectedRows().length > 1 ? 's' : '' }} selected</span>
+              }
+              @if (someSelected() || allSelected()) {
+                <button mat-icon-button
+                  color="accent"
+                  [matTooltip]="multiRowActionMenuTooltip"
+                  [matMenuTriggerFor]="selectedRowMenu">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #selectedRowMenu="matMenu">
+                  @for (action of tableConfig.selectedRowActions; track action) {
+                    <button mat-menu-item
+                      [attr.aria-label]="action.description"
+                      [disabled]="action.disabled?.(getSelectedRows())"
+                      (click)="$event.stopPropagation(); action.action(getSelectedRows())">
+                      {{ action.label }}
+                    </button>
+                  }
+                </mat-menu>
+              }
+            </div>
+
+            <!-- Auto refresh switch toggle -->
+            @if (tableConfig.autoRefresh) {
+              <div class="auto-refresh-toggle">
+                <mat-slide-toggle
+                  [checked]="tableConfig.autoRefresh.enabled"
+                  (change)="tableConfig.autoRefresh.onChange(!$event.checked)">
+                  Auto refreshing
+                </mat-slide-toggle>
+              </div>
             }
-            @if (someSelected() || allSelected()) {
+            
+            <!-- Table menu -->
+            @if ((tableConfig.tableActions?.length ?? 0) > 0) {
               <button mat-icon-button
-                color="accent"
-                [matTooltip]="multiRowActionMenuTooltip"
-                [matMenuTriggerFor]="selectedRowMenu">
-                <mat-icon>more_vert</mat-icon>
+                [color]="'accent'"
+                [matMenuTriggerFor]="tableMenu">
+                <mat-icon>settings</mat-icon>
               </button>
-              <mat-menu #selectedRowMenu="matMenu">
-                @for (action of tableConfig.selectedRowActions; track action) {
+              <mat-menu #tableMenu="matMenu">
+                @for (action of tableConfig.tableActions; track action) {
                   <button mat-menu-item
                     [attr.aria-label]="action.description"
-                    [disabled]="action.disabled?.(getSelectedRows())"
-                    (click)="$event.stopPropagation(); action.action(getSelectedRows())">
+                    [disabled]="action.disabled?.()"
+                    (click)="$event.stopPropagation(); action.action()">
                     {{ action.label }}
                   </button>
                 }
               </mat-menu>
             }
           </div>
-          
-          <!-- Table menu -->
-          @if (tableConfig.autoRefresh) {
-            <div class="auto-refresh-toggle">
-              <mat-slide-toggle
-                [checked]="tableConfig.autoRefresh.enabled"
-                (change)="tableConfig.autoRefresh.onChange(!$event.checked)">
-                Auto refreshing
-              </mat-slide-toggle>
-            </div>
-          }
-          @if ((tableConfig.tableActions?.length ?? 0) > 0) {
-            <button mat-icon-button
-              [color]="'accent'"
-              [matMenuTriggerFor]="tableMenu">
-              <mat-icon>settings</mat-icon>
-            </button>
-            <mat-menu #tableMenu="matMenu">
-              @for (action of tableConfig.tableActions; track action) {
-                <button mat-menu-item
-                  [attr.aria-label]="action.description"
-                  [disabled]="action.disabled?.()"
-                  (click)="$event.stopPropagation(); action.action()">
-                  {{ action.label }}
-                </button>
-              }
-            </mat-menu>
-          }
         </div>
 
         <!-- Slot for anything to enhance table visuals like column filter and/or mat-chip quick filter options. -->
