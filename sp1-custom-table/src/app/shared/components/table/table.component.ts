@@ -42,7 +42,7 @@ const DEBOUNCE_DELAY = 500;
       // Transition from placeholding to float
       transition('placeholding => float', [
         animate('0ms', style({ opacity: 0 })), // Fade out
-        animate('150ms', style({ transform: 'translateY(-1.5em)' })), // Move
+        animate('125ms', style({ transform: 'translateY(-1.5em)' })), // Move
         animate('300ms ease-out', style({ opacity: 1 })), // Fade in
       ]),
     ])
@@ -79,12 +79,18 @@ export class TableComponent<T> implements OnChanges, OnInit, OnDestroy {
   set loading(value: boolean) {
     this._loading = value;
     if (value) {
+      // Store the current focused element, will check later if it is the search bar for restoration.
+      this._focusedElement = document.activeElement;
       this.loadingTail = true;
       this.searchControl.disable({ emitEvent: false });
     } else {
       setTimeout(() => {
         this.loadingTail = false;
         this.searchControl.enable({ emitEvent: false });
+        // A little scuffed since the placeholder is not showing upon refocus.
+        if (this._focusedElement instanceof HTMLInputElement) {
+          this._focusedElement.focus();
+        }
       }, 500);
     }
   }
@@ -121,6 +127,9 @@ export class TableComponent<T> implements OnChanges, OnInit, OnDestroy {
   protected searchControl = new FormControl('');
   protected floatState: 'placeholding' | 'float' = 'placeholding';
   private _destroy$ = new Subject<void>();
+
+  // Focus watching var.
+  private _focusedElement!: Element | null;
 
   constructor(
     private announcer: LiveAnnouncer,

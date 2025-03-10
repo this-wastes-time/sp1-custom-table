@@ -19,7 +19,7 @@
           <!-- Table search bar -->
           @if (tableConfig.searchBarConfig) {
             <div class="table-search-bar">
-              <mat-form-field [id]="searchBarId"
+              <mat-form-field #searchBar [id]="searchBarId"
                 appearance="outline"
                 subscriptSizing="dynamic">
                 <mat-label [@floatLabel]="floatState">
