@@ -19,7 +19,8 @@
           <!-- Table search bar -->
           @if (tableConfig.searchBarConfig) {
             <div class="table-search-bar">
-              <mat-form-field #searchBar [id]="searchBarId"
+              <mat-form-field
+                [id]="searchBarId"
                 appearance="outline"
                 subscriptSizing="dynamic">
                 <mat-label [@floatLabel]="floatState">
@@ -28,7 +29,8 @@
 
                 <mat-icon matPrefix>search</mat-icon>
 
-                <input type="text"
+                <input
+                  type="text"
                   matInput
                   [formControl]="searchControl"
                   [placeholder]="tableConfig.searchBarConfig.placeholder ?? defaultPlaceholder"
