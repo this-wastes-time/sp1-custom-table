@@ -1,24 +1,54 @@
-import { Component, Input, OnChanges, SimpleChanges, ViewChild, ChangeDetectorRef, EventEmitter, Output, ViewContainerRef } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  ViewChild,
+  ChangeDetectorRef,
+  EventEmitter,
+  Output,
+  ViewContainerRef,
+  OnInit,
+  OnDestroy
+}
+  from '@angular/core';
 import { TableModule } from './table.module';
 import { TableConfig } from './models/table.model';
 import { Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { ModifyColumnsComponent } from './child-components/modify-columns/modify-columns.component';
 import { MatSidenav } from '@angular/material/sidenav';
-import { of } from 'rxjs';
+import { debounceTime, map, of, Subject, takeUntil } from 'rxjs';
 import { Column } from './models/column.model';
-import { SearchBarComponent } from '../search-bar/search-bar.component';
 import { RowSelectionService } from './services/row-selection.service';
+import { FormControl } from '@angular/forms';
+import { trigger, state, style, transition, animate } from '@angular/animations';
+
+const DEBOUNCE_DELAY = 500;
 
 @Component({
   selector: 'app-custom-table',
   standalone: true,
-  imports: [TableModule, SearchBarComponent],
+  imports: [TableModule],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss',
-  providers: [RowSelectionService]
+  providers: [RowSelectionService],
+  animations: [
+    trigger('floatLabel', [
+      state('float', style({
+        transform: 'translateY(-1.5em)',
+        opacity: 1,
+      })),
+      // Transition from placeholding to float
+      transition('placeholding => float', [
+        animate('0ms', style({ opacity: 0 })), // Fade out
+        animate('125ms', style({ transform: 'translateY(-1.5em)' })), // Move
+        animate('300ms ease-out', style({ opacity: 1 })), // Fade in
+      ]),
+    ])
+  ],
 })
-export class TableComponent<T> implements OnChanges {
+export class TableComponent<T> implements OnChanges, OnInit, OnDestroy {
   /**
    * Table configuration.
    */
@@ -49,10 +79,18 @@ export class TableComponent<T> implements OnChanges {
   set loading(value: boolean) {
     this._loading = value;
     if (value) {
+      // Store the current focused element, will check later if it is the search bar for restoration.
+      this._focusedElement = document.activeElement;
       this.loadingTail = true;
+      this.searchControl.disable({ emitEvent: false });
     } else {
       setTimeout(() => {
         this.loadingTail = false;
+        this.searchControl.enable({ emitEvent: false });
+        // A little scuffed since the placeholder is not showing upon refocus.
+        if (this._focusedElement instanceof HTMLInputElement) {
+          this._focusedElement.focus();
+        }
       }, 500);
     }
   }
@@ -68,7 +106,6 @@ export class TableComponent<T> implements OnChanges {
    */
   @Output() sortChange = new EventEmitter<Sort>();
 
-  @ViewChild('searchBar') searchBar!: SearchBarComponent;
   @ViewChild('sidenav') sidenav!: MatSidenav;
   @ViewChild('sidenavContent', { read: ViewContainerRef }) sidenavContent!: ViewContainerRef;
 
@@ -81,6 +118,18 @@ export class TableComponent<T> implements OnChanges {
 
   // Magic animation var.
   protected loadingTail!: boolean;
+
+  // Search bar filter vars.
+  static nextId = 0;
+  protected searchBarId = `app-table-search-bar-${TableComponent.nextId++}`;
+  protected defaultLabel = 'Search';
+  protected defaultPlaceholder = 'Search table for...';
+  protected searchControl = new FormControl('');
+  protected floatState: 'placeholding' | 'float' = 'placeholding';
+  private _destroy$ = new Subject<void>();
+
+  // Focus watching var.
+  private _focusedElement!: Element | null;
 
   constructor(
     private announcer: LiveAnnouncer,
@@ -139,6 +188,21 @@ export class TableComponent<T> implements OnChanges {
 
       this.detector.detectChanges();
     }
+  }
+
+  ngOnInit(): void {
+    this.searchControl.valueChanges.pipe(
+      debounceTime(this.tableConfig.searchBarConfig?.debounceDelay ?? DEBOUNCE_DELAY),
+      takeUntil(this._destroy$),
+      map((value: string | null) => value = value || '')
+    ).subscribe(value => {
+      this.filterChange.emit(value);
+    });
+  }
+
+  ngOnDestroy(): void {
+    this._destroy$.next();
+    this._destroy$.complete();
   }
 
   /**
@@ -222,6 +286,20 @@ export class TableComponent<T> implements OnChanges {
    */
   protected getSelectedRows(): T[] {
     return this.rss.getSelectedRows();
+  }
+
+  /**
+   * Handles the focus in event.
+   */
+  protected onFocusIn(): void {
+    this.floatState = 'float';
+  }
+
+  /**
+   * Handles the blur event.
+   */
+  protected onBlur(): void {
+    this.floatState = this.searchControl.value ? 'float' : 'placeholding';
   }
 
   /**

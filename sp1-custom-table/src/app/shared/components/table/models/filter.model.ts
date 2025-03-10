@@ -16,11 +16,11 @@ export interface SearchBarConfig {
   placeholder?: string;
 
   /**
-   * Enables instant filtering as the user types.
-   * If `true`, filtering is applied immediately without waiting for a debounce.
-   * @default false
+   * The delay in milliseconds before the filter is applied.
+   * Useful for reducing the number of filter operations when the user is typing.
+   * @default 500
    */
-  instantSearch?: boolean;
+  debounceDelay?: number;
 }
 
 /**

@@ -78,3 +78,7 @@ table {
     border-radius: 6px !important;
   }
 }
+
+::placeholder {
+  font-style: italic;
+}
