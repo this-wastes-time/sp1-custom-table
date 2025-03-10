@@ -6,7 +6,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSortModule } from '@angular/material/sort';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { GeneralSpinnerDirective } from '../../directives/general-spinner.directive';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -15,6 +14,8 @@ import { SpanFillerComponent } from '../span-filler/span-filler.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
 import { PathValuePipe } from '../../pipes/path-value.pipe';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 const material = [
   CommonModule,
@@ -27,8 +28,9 @@ const material = [
   MatSlideToggleModule,
   MatSidenavModule,
   MatTooltipModule,
-  FormsModule,
   ReactiveFormsModule,
+  MatFormFieldModule,
+  MatInputModule
 ];
 
 const components = [
