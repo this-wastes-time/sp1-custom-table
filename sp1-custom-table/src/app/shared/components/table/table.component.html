@@ -48,12 +48,10 @@
               </mat-form-field>
             </div>
           }
-
-          <app-span-filler></app-span-filler>
-
+          
           <div class="table-non-search-bar-container">
             <!-- Menu trigger button for multiple row selection -->
-            <div class="table-buttons">
+            <div class="multiple-selection-container">
               @if (getSelectedRows().length) {
                 <span>{{ getSelectedRows().length | number }} row{{ getSelectedRows().length > 1 ? 's' : '' }} selected</span>
               }
@@ -100,7 +98,7 @@
                   <button mat-menu-item
                     [attr.aria-label]="action.description"
                     [disabled]="action.disabled?.()"
-                    (click)="$event.stopPropagation(); action.action()">
+                    (click)="action.action()">
                     {{ action.label }}
                   </button>
                 }

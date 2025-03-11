@@ -3,6 +3,7 @@
   display: flex;
   flex-flow: row wrap;
   align-items: center;
+  overflow: hidden;
 
   .table-search-bar {
     width: 600px;
@@ -17,17 +18,14 @@
     justify-content: flex-end;
   }
 
-  .table-buttons {
+  .multiple-selection-container {
     display: flex;
     align-items: center;
     gap: .25em;
   }
 
   .auto-refresh-toggle {
-    display: flex;
-    justify-content: center;
-    min-width: max-content;
-    padding: 0 .5em;
+    padding: 0 .25em;
   }
 }
 
