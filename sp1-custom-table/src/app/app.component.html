@@ -10,7 +10,7 @@
   <!-- Client paging setup -->
   <div class="outer-table-container">
     <div class="table-paginator-container">
-      <app-custom-table #clientTable
+      <twt-table #clientTable
         [tableConfig]="clientConfig"
         [tableData]="paginatedData"
         [pageIndex]="cPageIndex"
@@ -41,11 +41,11 @@
             <mat-chip-option color="primary" [value]="{ field: 'career', value:'Paleontologist' }"> Paleontologist </mat-chip-option>
           </mat-chip-listbox>
         </div>
-      </app-custom-table>
+      </twt-table>
   
       <mat-divider></mat-divider>
       
-      <app-client-paginator
+      <twt-client-paginator
         [accessibleLabel]="accessibleLabel"
         [pageIndex]="cPageIndex"
         [pageSize]="cPageSize"
@@ -54,14 +54,14 @@
         showFirstLastButtons
         showGoToPage
         (paginatedData)="updateDataClient($event)">
-      </app-client-paginator>
+      </twt-client-paginator>
     </div>
   </div>
 } @else {
   <!-- Server paging setup -->
   <div class="outer-table-container">
     <div class="table-paginator-container">
-      <app-custom-table #serverTable
+      <twt-table #serverTable
         [loading]="loading"
         [tableConfig]="serverConfig"
         [tableData]="(serverData$ | async) ?? []"
@@ -70,11 +70,11 @@
         (getData)="tableDataRequestServer()"
         (filterChange)="serverFilterChanged($event)"
         (sortChange)="serverSortChanged($event)">
-      </app-custom-table>
+      </twt-table>
   
       <mat-divider></mat-divider>
   
-      <app-server-paginator
+      <twt-server-paginator
         [accessibleLabel]="accessibleLabel"
         [pageIndex]="sPageIndex"
         [pageSize]="sPageSize"
@@ -83,7 +83,7 @@
         showFirstLastButtons
         showGoToPage
         (fetchData)="updateDataServer()">
-      </app-server-paginator>
+      </twt-server-paginator>
     </div>
   </div>
 }

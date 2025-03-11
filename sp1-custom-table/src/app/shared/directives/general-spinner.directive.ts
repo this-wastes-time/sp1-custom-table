@@ -7,7 +7,7 @@ const STROKEWIDTH = 1.25;
 const SPAMTIMER = 334;
 
 @Directive({
-  selector: '[appGeneralSpinner]',
+  selector: '[twtGeneralSpinner]',
   standalone: true
 })
 export class GeneralSpinnerDirective implements OnChanges {

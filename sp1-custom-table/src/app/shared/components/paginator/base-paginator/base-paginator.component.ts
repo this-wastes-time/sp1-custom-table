@@ -5,7 +5,6 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
 const DEFAULT_PAGE_SIZE = 10;
 
 @Component({
-  selector: 'app-paginator',
   standalone: true,
   imports: [PaginatorModule],
   template: ``,

@@ -17,7 +17,7 @@ interface PaginatorState {
 }
 
 @Component({
-  selector: 'app-server-paginator',
+  selector: 'twt-server-paginator',
   standalone: true,
   imports: [PaginatorModule],
   templateUrl: './server-paginator.component.html',

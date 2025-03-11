@@ -3,7 +3,7 @@ import { BasePaginatorComponent } from '../base-paginator/base-paginator.compone
 import { PaginatorModule } from '../paginator.module';
 
 @Component({
-  selector: 'app-client-paginator',
+  selector: 'twt-client-paginator',
   standalone: true,
   imports: [PaginatorModule],
   templateUrl: './client-paginator.component.html',
