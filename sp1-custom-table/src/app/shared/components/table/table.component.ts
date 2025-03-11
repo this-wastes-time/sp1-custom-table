@@ -149,7 +149,7 @@ export class TableComponent<T> implements OnChanges, OnInit, OnDestroy {
 
       // If showing and hiding columns is allowed, add action to table.
       if (tableConfig.columnsConfig.showHideColumns || tableConfig.columnsConfig.reorderColumns) {
-        const showHideCols = {
+        const modifyColumns = {
           label: 'Modify columns',
           description: 'Open sidenav menu to modify columns by showing or hiding and reordering',
           action: () => {
@@ -181,9 +181,7 @@ export class TableComponent<T> implements OnChanges, OnInit, OnDestroy {
         // Check if modifying the columns has already been added
         // Author note: this is checked for the same table being created with the same configuration object.
         const hasModifyAction = tableConfig.tableActions?.some(action => action.label === 'Modify columns');
-        if (tableConfig.tableActions && !hasModifyAction) {
-          tableConfig.tableActions.unshift(showHideCols);
-        }
+        tableConfig.tableActions = (hasModifyAction === undefined) ? [modifyColumns] : [modifyColumns, ...tableConfig.tableActions!];
       }
 
       this.detector.detectChanges();
