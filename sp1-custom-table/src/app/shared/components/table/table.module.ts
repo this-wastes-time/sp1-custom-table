@@ -12,7 +12,6 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { SpanFillerComponent } from '../span-filler/span-filler.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { SearchBarComponent } from '../search-bar/search-bar.component';
 import { PathValuePipe } from '../../pipes/path-value.pipe';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -35,7 +34,6 @@ const material = [
 
 const components = [
   SpanFillerComponent,
-  SearchBarComponent,
 ];
 
 const pipes = [
