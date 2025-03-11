@@ -181,7 +181,9 @@ export class TableComponent<T> implements OnChanges, OnInit, OnDestroy {
         // Check if modifying the columns has already been added
         // Author note: this is checked for the same table being created with the same configuration object.
         const hasModifyAction = tableConfig.tableActions?.some(action => action.label === 'Modify columns');
-        tableConfig.tableActions = (hasModifyAction === undefined) ? [modifyColumns] : [modifyColumns, ...tableConfig.tableActions!];
+        if (hasModifyAction === undefined || !hasModifyAction) {
+          tableConfig.tableActions = (hasModifyAction === undefined) ? [modifyColumns] : [modifyColumns, ...tableConfig.tableActions!];
+        }
       }
 
       this.detector.detectChanges();
