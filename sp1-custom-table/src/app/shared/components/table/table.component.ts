@@ -289,6 +289,13 @@ export class TableComponent<T> implements OnChanges, OnInit, OnDestroy {
   }
 
   /**
+   * Deselects all rows in the table regardless current page.
+   */
+  protected deselectAllRows(): void {
+    this.rss.clearSelection();
+  }
+
+  /**
    * Handles the focus in event.
    */
   protected onFocusIn(): void {
