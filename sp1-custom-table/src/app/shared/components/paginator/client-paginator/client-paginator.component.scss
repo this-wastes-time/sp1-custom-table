@@ -20,6 +20,7 @@
   width: 100%;
   height: inherit;
   min-height: inherit;
+  justify-content: space-between;
 }
 
 .paginator-page-size {
@@ -34,6 +35,11 @@
 .paginator-page-size-select {
   margin: 0 .25rem;
   width: 84px;
+}
+
+.paginator-navigations {
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .paginator-go-to-page {
@@ -66,7 +72,7 @@
 // }
 
 .paginator-range-label {
-  margin: 0 2rem 0 1.5rem;
+  margin: .5rem 2rem .5rem 1.5rem;
 }
 
 .mat-mdc-select {

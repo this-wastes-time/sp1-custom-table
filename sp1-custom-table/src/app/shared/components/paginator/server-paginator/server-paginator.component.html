@@ -3,96 +3,96 @@
     <div class="paginator-outer-container">
       <div class="paginator-container">
         <!-- Can hide page size -->
-        @if (!hidePageSize) {
-          <div class="paginator-page-size">
-            <div class="paginator-size-label">
-              {{ itemsPerPageLabel }}
+        <div>
+          @if (!hidePageSize) {
+            <div class="paginator-page-size">
+              <div class="paginator-size-label">
+                {{ itemsPerPageLabel }}
+              </div>
+    
+              <mat-form-field class="paginator-page-size-select small"
+                appearance="outline"
+                subscriptSizing="dynamic">
+                <mat-select
+                  [value]="pageSize"
+                  [disabled]="disabled"
+                  (selectionChange)="onPageSizeChange($event.value)">
+                  @for (size of pageSizeOptions; track size) {
+                    <mat-option [value]="size">
+                      {{ size }}
+                    </mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
             </div>
-  
-            <mat-form-field class="paginator-page-size-select small"
-              appearance="outline"
-              subscriptSizing="dynamic">
-              <mat-select
-                [value]="pageSize"
-                [disabled]="disabled"
-                (selectionChange)="onPageSizeChange($event.value)">
-                @for (size of pageSizeOptions; track size) {
-                  <mat-option [value]="size">
-                    {{ size }}
-                  </mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
-          </div>
-  
-          @if (pageSizeOptions.length <= 1) {
-            <div class="mat-mdc-paginator-page-size-value">{{ pageSize }}</div>
-          }
-        }
-
-        <app-span-filler></app-span-filler>
-
-        <!-- Go to Page Input -->
-        @if (showGoToPage) {
-          <div class="paginator-go-to-page">
-            {{ goToPageLabel }}
-            <mat-form-field class="paginator-go-to-page-input small"
-              appearance="outline"
-              subscriptSizing="dynamic">
-              <input type="number"
-                matInput
-                [(ngModel)]="pageInput"
-                min="0"
-                [max]="totalItemsKnown ? totalPageCount : knownPages"
-                [disabled]="disabled"
-                (keydown.enter)="goToPage($event)"/>
-            </mat-form-field>
-            / {{totalItemsKnown ? totalPageCount : 'Unknown page limit'}}
-          </div>
-        }
-
-        <div class="paginator-range-actions">  
-          @if (showFirstLastButtons) {
-            <button
-              mat-icon-button
-              [matTooltip]="firstPageTooltip"
-              [disabled]="hasPrev() || disabled"
-              [attr.aria-label]="firstPageTooltip"
-              (click)="paginate(0)">
-              <mat-icon>first_page</mat-icon>
-            </button>
-          }
-  
-          <button
-            mat-icon-button
-            [matTooltip]="previousPageTooltip"
-            [disabled]="hasPrev() || disabled"
-            [attr.aria-label]="previousPageTooltip"
-            (click)="paginate(pageIndex-1)">
-            <mat-icon>keyboard_arrow_left</mat-icon>
-          </button>
-          <button
-            mat-icon-button
-            [matTooltip]="nextPageTooltip"
-            [disabled]="hasNext() || disabled"
-            [attr.aria-label]="nextPageTooltip"
-            (click)="paginate(pageIndex+1)">
-            <mat-icon>keyboard_arrow_right</mat-icon>
-          </button>
-  
-          @if (showFirstLastButtons) {
-            <button
-              mat-icon-button
-              [matTooltip]="lastPageTooltip"
-              [disabled]="hasLast() || disabled"
-              [attr.aria-label]="lastPageTooltip"
-              (click)="paginate(totalPageCount-1)">
-              <mat-icon>last_page</mat-icon>
-            </button>
+    
+            @if (pageSizeOptions.length <= 1) {
+              <div class="mat-mdc-paginator-page-size-value">{{ pageSize }}</div>
+            }
           }
         </div>
 
-        <app-span-filler></app-span-filler>
+        <div class="paginator-navigations">
+          <!-- Go to Page Input -->
+          @if (showGoToPage) {
+            <div class="paginator-go-to-page">
+              {{ goToPageLabel }}
+              <mat-form-field class="paginator-go-to-page-input small"
+                appearance="outline"
+                subscriptSizing="dynamic">
+                <input type="number"
+                  matInput
+                  [(ngModel)]="pageInput"
+                  min="0"
+                  [max]="totalItemsKnown ? totalPageCount : knownPages"
+                  [disabled]="disabled"
+                  (keydown.enter)="goToPage($event)"/>
+              </mat-form-field>
+              / {{totalItemsKnown ? totalPageCount : 'Unknown page limit'}}
+            </div>
+          }
+  
+          <div class="paginator-range-actions">  
+            @if (showFirstLastButtons) {
+              <button
+                mat-icon-button
+                [matTooltip]="firstPageTooltip"
+                [disabled]="hasPrev() || disabled"
+                [attr.aria-label]="firstPageTooltip"
+                (click)="paginate(0)">
+                <mat-icon>first_page</mat-icon>
+              </button>
+            }
+    
+            <button
+              mat-icon-button
+              [matTooltip]="previousPageTooltip"
+              [disabled]="hasPrev() || disabled"
+              [attr.aria-label]="previousPageTooltip"
+              (click)="paginate(pageIndex-1)">
+              <mat-icon>keyboard_arrow_left</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              [matTooltip]="nextPageTooltip"
+              [disabled]="hasNext() || disabled"
+              [attr.aria-label]="nextPageTooltip"
+              (click)="paginate(pageIndex+1)">
+              <mat-icon>keyboard_arrow_right</mat-icon>
+            </button>
+    
+            @if (showFirstLastButtons) {
+              <button
+                mat-icon-button
+                [matTooltip]="lastPageTooltip"
+                [disabled]="hasLast() || disabled"
+                [attr.aria-label]="lastPageTooltip"
+                (click)="paginate(totalPageCount-1)">
+                <mat-icon>last_page</mat-icon>
+              </button>
+            }
+          </div>
+        </div>
 
         <div class="paginator-range-label" aria-live="polite">
           <!-- TODO: This needs to update when more data comes in?? -->
