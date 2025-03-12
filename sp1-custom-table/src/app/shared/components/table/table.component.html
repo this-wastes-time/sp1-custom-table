@@ -59,7 +59,8 @@
                 <button mat-icon-button
                   color="accent"
                   [matTooltip]="multiRowActionMenuTooltip"
-                  [matMenuTriggerFor]="selectedRowMenu">
+                  [matMenuTriggerFor]="selectedRowMenu"
+                  [disabled]="loadingTail">
                   <mat-icon>more_vert</mat-icon>
                 </button>
                 <mat-menu #selectedRowMenu="matMenu">
@@ -97,7 +98,8 @@
             @if ((tableConfig.tableActions?.length ?? 0) > 0) {
               <button mat-icon-button
                 [color]="'accent'"
-                [matMenuTriggerFor]="tableMenu">
+                [matMenuTriggerFor]="tableMenu"
+                [disabled]="loadingTail">
                 <mat-icon>settings</mat-icon>
               </button>
               <mat-menu #tableMenu="matMenu">
