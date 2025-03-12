@@ -63,11 +63,18 @@
                   <mat-icon>more_vert</mat-icon>
                 </button>
                 <mat-menu #selectedRowMenu="matMenu">
+                  <!-- Deselect menu option -->
+                  <button mat-menu-item
+                    aria-label="Deselect all row selections"
+                    (click)="deselectAllRows()">
+                    Deselect All
+                  </button>
+
                   @for (action of tableConfig.selectedRowActions; track action) {
                     <button mat-menu-item
                       [attr.aria-label]="action.description"
                       [disabled]="action.disabled?.(getSelectedRows())"
-                      (click)="$event.stopPropagation(); action.action(getSelectedRows())">
+                      (click)="action.action(getSelectedRows())">
                       {{ action.label }}
                     </button>
                   }
