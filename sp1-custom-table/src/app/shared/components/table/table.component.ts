@@ -87,17 +87,13 @@ export class TableComponent<T> implements OnChanges, OnInit, OnDestroy {
     if (value) {
       // Store the current focused element, will check later if it is the search bar for restoration.
       this._focusedElement = document.activeElement;
-      this.loadingTail = true;
       this.searchControl.disable({ emitEvent: false });
     } else {
+      // A little scuffed since the placeholder is not showing upon refocus.
+      if (this._focusedElement instanceof HTMLInputElement) {
+        this._focusedElement.focus();
+      }
       this.searchControl.enable({ emitEvent: false });
-      setTimeout(() => {
-        this.loadingTail = false;
-        // A little scuffed since the placeholder is not showing upon refocus.
-        if (this._focusedElement instanceof HTMLInputElement) {
-          this._focusedElement.focus();
-        }
-      }, 500);
     }
   }
   private _loading!: boolean;
@@ -121,9 +117,6 @@ export class TableComponent<T> implements OnChanges, OnInit, OnDestroy {
 
   // Tooltip vars.
   protected multiRowActionMenuTooltip = 'Show more actions';
-
-  // Magic animation var.
-  protected loadingTail!: boolean;
 
   // Search bar filter vars.
   static nextId = 0;
