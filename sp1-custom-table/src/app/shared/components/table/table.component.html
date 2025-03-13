@@ -113,9 +113,10 @@
       <div class="table-container" [class.is-loading]="loading">
         @if (loading) {
           <mat-progress-bar class="progress-bar"
+            [class.pulsing]="loading"
             mode="indeterminate"
             [@fadeInOut]
-            [class.pulsing]="loading">
+            aria-label="Loading table, please wait">
           </mat-progress-bar>
         }
 
