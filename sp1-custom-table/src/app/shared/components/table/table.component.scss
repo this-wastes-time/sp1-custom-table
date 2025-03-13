@@ -32,12 +32,20 @@
 .table-container {
   margin: 0 auto;
   overflow: auto;
+  position: relative;
 
   &.is-loading {
     :not(:first-child) {
       opacity: 55%;
     }
   }
+}
+
+.progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 110;
 }
 
 table {
