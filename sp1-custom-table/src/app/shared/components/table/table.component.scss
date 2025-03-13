@@ -48,6 +48,29 @@
   z-index: 110;
 }
 
+/* Define the pulsing animation */
+@keyframes pulse {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.5;
+    transform: scale(1.5);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Apply the animation to elements with the class "pulse" */
+.pulsing {
+  animation: pulse 3s ease-in-out infinite;
+}
+
 table {
   width: 100%;
 
