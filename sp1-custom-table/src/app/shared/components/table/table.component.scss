@@ -34,7 +34,9 @@
   overflow: auto;
 
   &.is-loading {
-    opacity: 55%;
+    :not(:first-child) {
+      opacity: 55%;
+    }
   }
 }
 

@@ -255,7 +255,7 @@ export class AppComponent implements OnInit {
   _refreshIntervalId!: ReturnType<typeof setTimeout>;;
 
   // Example toggle var.
-  toggleExample: 'client' | 'server' = 'client';
+  toggleExample: 'client' | 'server' = 'server';
 
   constructor(
     private mockService: MockDataService,

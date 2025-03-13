@@ -6,218 +6,215 @@
   </mat-sidenav>
   <mat-sidenav-content>
     @if (tableConfig) {
-      <div [style.position]="'relative'">
-        <div class="spinner-div"
-          twtGeneralSpinner
-          [spinnerBusy]="loading"
-          [spinnerColor]="'accent'"
-          [style.z-index]="loadingTail ? 110 : -1">
-        </div>
-      
-        <div class="table-filter-container">
-          <!-- Table search bar -->
-          @if (tableConfig.searchBarConfig) {
-            <div class="table-search-bar">
-              <mat-form-field
-                [id]="searchBarId"
-                appearance="outline"
-                subscriptSizing="dynamic">
-                <mat-label [@floatLabel]="floatState">
-                  {{ tableConfig.searchBarConfig.label ?? defaultLabel }}
-                </mat-label>
+      <div class="table-filter-container">
+        <!-- Table search bar -->
+        @if (tableConfig.searchBarConfig) {
+          <div class="table-search-bar">
+            <mat-form-field
+              [id]="searchBarId"
+              appearance="outline"
+              subscriptSizing="dynamic">
+              <mat-label [@floatLabel]="floatState">
+                {{ tableConfig.searchBarConfig.label ?? defaultLabel }}
+              </mat-label>
 
-                <mat-icon matPrefix>search</mat-icon>
+              <mat-icon matPrefix>search</mat-icon>
 
-                <input
-                  type="text"
-                  matInput
-                  [formControl]="searchControl"
-                  [placeholder]="tableConfig.searchBarConfig.placeholder ?? defaultPlaceholder"
-                  (focus)="onFocusIn()"
-                  (blur)="onBlur()" />
+              <input
+                type="text"
+                matInput
+                [formControl]="searchControl"
+                [placeholder]="tableConfig.searchBarConfig.placeholder ?? defaultPlaceholder"
+                (focus)="onFocusIn()"
+                (blur)="onBlur()" />
 
-                @if (searchControl.value) {
-                  <button mat-icon-button
-                    matSuffix
-                    aria-label="Clear search bar"
-                    (click)="searchControl.setValue('')">
-                    <mat-icon>close</mat-icon>
-                  </button>
-                }
-              </mat-form-field>
-            </div>
-          }
-          
-          <div class="table-non-search-bar-container">
-            <!-- Menu trigger button for multiple row selection -->
-            <div class="multiple-selection-container">
-              @if (getSelectedRows().length) {
-                <span>{{ getSelectedRows().length | number }} row{{ getSelectedRows().length > 1 ? 's' : '' }} selected</span>
-              }
-              @if (someSelected() || allSelected()) {
+              @if (searchControl.value) {
                 <button mat-icon-button
-                  color="accent"
-                  [matTooltip]="multiRowActionMenuTooltip"
-                  [matMenuTriggerFor]="selectedRowMenu"
-                  [disabled]="loading">
-                  <mat-icon>more_vert</mat-icon>
+                  matSuffix
+                  aria-label="Clear search bar"
+                  (click)="searchControl.setValue('')">
+                  <mat-icon>close</mat-icon>
                 </button>
-                <mat-menu #selectedRowMenu="matMenu">
-                  <!-- Deselect menu option -->
-                  <button mat-menu-item
-                    aria-label="Deselect all row selections"
-                    (click)="deselectAllRows()">
-                    Deselect All
-                  </button>
-
-                  @for (action of tableConfig.selectedRowActions; track action) {
-                    <button mat-menu-item
-                      [attr.aria-label]="action.description"
-                      [disabled]="action.disabled?.(getSelectedRows())"
-                      (click)="action.action(getSelectedRows())">
-                      {{ action.label }}
-                    </button>
-                  }
-                </mat-menu>
               }
-            </div>
-
-            <!-- Auto refresh switch toggle -->
-            @if (tableConfig.autoRefresh) {
-              <div class="auto-refresh-toggle">
-                <mat-slide-toggle
-                  [checked]="tableConfig.autoRefresh.enabled"
-                  (change)="tableConfig.autoRefresh.onChange(!$event.checked)">
-                  Auto refreshing
-                </mat-slide-toggle>
-              </div>
+            </mat-form-field>
+          </div>
+        }
+        
+        <div class="table-non-search-bar-container">
+          <!-- Menu trigger button for multiple row selection -->
+          <div class="multiple-selection-container">
+            @if (getSelectedRows().length) {
+              <span>{{ getSelectedRows().length | number }} row{{ getSelectedRows().length > 1 ? 's' : '' }} selected</span>
             }
-            
-            <!-- Table menu -->
-            @if ((tableConfig.tableActions?.length ?? 0) > 0) {
+            @if (someSelected() || allSelected()) {
               <button mat-icon-button
-                [color]="'accent'"
-                [matMenuTriggerFor]="tableMenu"
+                color="accent"
+                [matTooltip]="multiRowActionMenuTooltip"
+                [matMenuTriggerFor]="selectedRowMenu"
                 [disabled]="loading">
-                <mat-icon>settings</mat-icon>
+                <mat-icon>more_vert</mat-icon>
               </button>
-              <mat-menu #tableMenu="matMenu">
-                @for (action of tableConfig.tableActions; track action) {
+              <mat-menu #selectedRowMenu="matMenu">
+                <!-- Deselect menu option -->
+                <button mat-menu-item
+                  aria-label="Deselect all row selections"
+                  (click)="deselectAllRows()">
+                  Deselect All
+                </button>
+
+                @for (action of tableConfig.selectedRowActions; track action) {
                   <button mat-menu-item
                     [attr.aria-label]="action.description"
-                    [disabled]="action.disabled?.()"
-                    (click)="action.action()">
+                    [disabled]="action.disabled?.(getSelectedRows())"
+                    (click)="action.action(getSelectedRows())">
                     {{ action.label }}
                   </button>
                 }
               </mat-menu>
             }
           </div>
-        </div>
 
-        <!-- Slot for anything to enhance table visuals like column filter and/or mat-chip quick filter options. -->
-        <ng-content />
-      
-        <div class="table-container" [class.is-loading]="loading">
-          <table mat-table
-            [dataSource]="tableData"
-            matSort
-            [matSortActive]="tableConfig.sortOptions?.initialSort?.active ?? ''"
-            [matSortDirection]="tableConfig.sortOptions?.initialSort?.direction ?? ''"
-            (matSortChange)="onSortChange($event)">
-      
-            <!-- Column for multiple row checkbox selection. -->
-            @if (tableConfig.multiRowSelection) {
-              <ng-container matColumnDef="select">
-                <th mat-header-cell *matHeaderCellDef>
-                  <mat-checkbox
-                    [checked]="allSelected()"
-                    [indeterminate]="someSelected()"
-                    (change)="toggleAllSelection($event.checked)">
-                  </mat-checkbox>
-                </th>
-                <td mat-cell *matCellDef="let row">
-                  <mat-checkbox
-                    [checked]="isSelected(row)"
-                    (change)="toggleRowSelection($event.checked, row)">
-                  </mat-checkbox>
-                </td>
-              </ng-container>
-            }
-      
-            <!-- Column for numbered rows. -->
-            @if (tableConfig.showRowNumbers) {
-              <ng-container matColumnDef="#">
-                <th mat-header-cell *matHeaderCellDef> # </th>
-                <td mat-cell *matCellDef="let row; let i = index"> {{ getRowNumber(i) }} </td>
-              </ng-container>
-            }
-      
-            <!-- Columns generated from table configuration. -->
-            @for (column of tableConfig.columnsConfig.columns; track column.field) {
-              <ng-container matColumnDef="{{ column.field }}">
-                <th mat-header-cell *matHeaderCellDef
-                  mat-sort-header
-                  sortActionDescription="Sort by {{column.field}}"
-                  [disabled]="!column.sortable"
-                  [style.text-align]="column.align">
-                  {{ column.header }}
-                </th>
-                <td mat-cell *matCellDef="let row"
-                  [ngClass]="column.cellClass?.(row) ?? ''"
-                  [style.text-align]="column.align ?? 'left'">
-                  @switch (column.type) {
-                    @case ('button') {
-                      <ng-container *ngTemplateOutlet="buttonTemplate; context: {label: column.label, onClick: column.onClick, row: row}"></ng-container>
-                    }
-                    @case ('checkbox') {
-                      <ng-container *ngTemplateOutlet="checkboxTemplate; context: {checked: column.checked, row: row}"></ng-container>
-                    }
-                    @case ('slideToggle') {
-                      <ng-container *ngTemplateOutlet="slideToggleTemplate; context: {checked: column.checked, row: row}"></ng-container>
-                    }
-                    @default {
-                      {{ column.valueGetter ? column.valueGetter(row) : (row | pathValue: column.field) }}
-                    }
+          <!-- Auto refresh switch toggle -->
+          @if (tableConfig.autoRefresh) {
+            <div class="auto-refresh-toggle">
+              <mat-slide-toggle
+                [checked]="tableConfig.autoRefresh.enabled"
+                (change)="tableConfig.autoRefresh.onChange(!$event.checked)">
+                Auto refreshing
+              </mat-slide-toggle>
+            </div>
+          }
+          
+          <!-- Table menu -->
+          @if ((tableConfig.tableActions?.length ?? 0) > 0) {
+            <button mat-icon-button
+              [color]="'accent'"
+              [matMenuTriggerFor]="tableMenu"
+              [disabled]="loading">
+              <mat-icon>settings</mat-icon>
+            </button>
+            <mat-menu #tableMenu="matMenu">
+              @for (action of tableConfig.tableActions; track action) {
+                <button mat-menu-item
+                  [attr.aria-label]="action.description"
+                  [disabled]="action.disabled?.()"
+                  (click)="action.action()">
+                  {{ action.label }}
+                </button>
+              }
+            </mat-menu>
+          }
+        </div>
+      </div>
+
+      <!-- Slot for anything to enhance table visuals like column filter and/or mat-chip quick filter options. -->
+      <ng-content />
+    
+      <div class="table-container" [class.is-loading]="loading">
+        @if (loadingTail) {
+          <mat-progress-bar
+            mode="indeterminate"
+            [@fadeInOut]>
+          </mat-progress-bar>
+        }
+        <table mat-table
+          [dataSource]="tableData"
+          matSort
+          [matSortActive]="tableConfig.sortOptions?.initialSort?.active ?? ''"
+          [matSortDirection]="tableConfig.sortOptions?.initialSort?.direction ?? ''"
+          (matSortChange)="onSortChange($event)">
+    
+          <!-- Column for multiple row checkbox selection. -->
+          @if (tableConfig.multiRowSelection) {
+            <ng-container matColumnDef="select">
+              <th mat-header-cell *matHeaderCellDef>
+                <mat-checkbox
+                  [checked]="allSelected()"
+                  [indeterminate]="someSelected()"
+                  (change)="toggleAllSelection($event.checked)">
+                </mat-checkbox>
+              </th>
+              <td mat-cell *matCellDef="let row">
+                <mat-checkbox
+                  [checked]="isSelected(row)"
+                  (change)="toggleRowSelection($event.checked, row)">
+                </mat-checkbox>
+              </td>
+            </ng-container>
+          }
+    
+          <!-- Column for numbered rows. -->
+          @if (tableConfig.showRowNumbers) {
+            <ng-container matColumnDef="#">
+              <th mat-header-cell *matHeaderCellDef> # </th>
+              <td mat-cell *matCellDef="let row; let i = index"> {{ getRowNumber(i) }} </td>
+            </ng-container>
+          }
+    
+          <!-- Columns generated from table configuration. -->
+          @for (column of tableConfig.columnsConfig.columns; track column.field) {
+            <ng-container matColumnDef="{{ column.field }}">
+              <th mat-header-cell *matHeaderCellDef
+                mat-sort-header
+                sortActionDescription="Sort by {{column.field}}"
+                [disabled]="!column.sortable"
+                [style.text-align]="column.align">
+                {{ column.header }}
+              </th>
+              <td mat-cell *matCellDef="let row"
+                [ngClass]="column.cellClass?.(row) ?? ''"
+                [style.text-align]="column.align ?? 'left'">
+                @switch (column.type) {
+                  @case ('button') {
+                    <ng-container *ngTemplateOutlet="buttonTemplate; context: {label: column.label, onClick: column.onClick, row: row}"></ng-container>
                   }
-                </td>
-              </ng-container>
-            }
-      
-            <!-- Column for row actions. -->
-            @if (tableConfig.rowActions) {
-              <ng-container matColumnDef="actions" [stickyEnd]="tableConfig.rowActions.stickyActions">
-                <th mat-header-cell *matHeaderCellDef> Actions </th>
-                <td mat-cell *matCellDef="let row">
-                  <button mat-icon-button
-                    [color]="'accent'"
-                    [matMenuTriggerFor]="actionMenu">
-                    <mat-icon>more_vert</mat-icon>
-                  </button>
-                  <mat-menu #actionMenu="matMenu">
-                    @for (action of tableConfig.rowActions.actions; track action) {
-                      <button mat-menu-item
-                        [attr.aria-label]="action.description"
-                        [disabled]="action.disabled?.(row)"
-                        (click)="$event.stopPropagation(); action.action(row)">
-                        <span> {{ action.label }}</span>
-                      </button>
-                    }
-                  </mat-menu>
-                </td>
-              </ng-container>
-            }
-      
-            <!-- Headers -->
-            <tr mat-header-row *matHeaderRowDef="displayColumns; sticky: tableConfig.columnsConfig.stickyHeaders"></tr>
+                  @case ('checkbox') {
+                    <ng-container *ngTemplateOutlet="checkboxTemplate; context: {checked: column.checked, row: row}"></ng-container>
+                  }
+                  @case ('slideToggle') {
+                    <ng-container *ngTemplateOutlet="slideToggleTemplate; context: {checked: column.checked, row: row}"></ng-container>
+                  }
+                  @default {
+                    {{ column.valueGetter ? column.valueGetter(row) : (row | pathValue: column.field) }}
+                  }
+                }
+              </td>
+            </ng-container>
+          }
+    
+          <!-- Column for row actions. -->
+          @if (tableConfig.rowActions) {
+            <ng-container matColumnDef="actions" [stickyEnd]="tableConfig.rowActions.stickyActions">
+              <th mat-header-cell *matHeaderCellDef> Actions </th>
+              <td mat-cell *matCellDef="let row">
+                <button mat-icon-button
+                  [color]="'accent'"
+                  [matMenuTriggerFor]="actionMenu">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #actionMenu="matMenu">
+                  @for (action of tableConfig.rowActions.actions; track action) {
+                    <button mat-menu-item
+                      [attr.aria-label]="action.description"
+                      [disabled]="action.disabled?.(row)"
+                      (click)="$event.stopPropagation(); action.action(row)">
+                      <span> {{ action.label }}</span>
+                    </button>
+                  }
+                </mat-menu>
+              </td>
+            </ng-container>
+          }
+    
+          <!-- Headers -->
+          <tr mat-header-row *matHeaderRowDef="displayColumns; sticky: tableConfig.columnsConfig.stickyHeaders"></tr>
 
-            <!-- Data rows -->
-            <tr mat-row *matRowDef="let row; columns: displayColumns"
-              [class.showActions]="tableConfig.rowActions"
-              [ngClass]="tableConfig.rowClass?.(row) ?? ''"></tr>
-            <tr *matNoDataRow>No data to display</tr>
-          </table>
-        </div>
+          <!-- Data rows -->
+          <tr mat-row *matRowDef="let row; columns: displayColumns"
+            [class.showActions]="tableConfig.rowActions"
+            [ngClass]="tableConfig.rowClass?.(row) ?? ''"></tr>
+          <tr *matNoDataRow>No data to display</tr>
+        </table>
       </div>
     }
   </mat-sidenav-content>
