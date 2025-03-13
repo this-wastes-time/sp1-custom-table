@@ -112,11 +112,12 @@
     
       <div class="table-container" [class.is-loading]="loading">
         @if (loadingTail) {
-          <mat-progress-bar
+          <mat-progress-bar class="progress-bar"
             mode="indeterminate"
             [@fadeInOut]>
           </mat-progress-bar>
         }
+
         <table mat-table
           [dataSource]="tableData"
           matSort
