@@ -111,7 +111,7 @@
       <ng-content />
     
       <div class="table-container" [class.is-loading]="loading">
-        @if (loadingTail) {
+        @if (loading) {
           <mat-progress-bar class="progress-bar"
             mode="indeterminate"
             [@fadeInOut]
