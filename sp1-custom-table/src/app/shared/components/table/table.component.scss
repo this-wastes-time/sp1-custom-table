@@ -32,6 +32,12 @@
 .table-container {
   margin: 0 auto;
   overflow: auto;
+
+  &.is-loading {
+    :not(:first-child) {
+      opacity: 55%;
+    }
+  }
 }
 
 table {

@@ -45,6 +45,12 @@ const DEBOUNCE_DELAY = 500;
         animate('125ms', style({ transform: 'translateY(-1.5em)' })), // Move
         animate('300ms ease-out', style({ opacity: 1 })), // Fade in
       ]),
+    ]),
+    trigger('fadeInOut', [
+      state('void', style({ opacity: 0 })), // Initial state (hidden)
+      state('*', style({ opacity: 1 })),    // Final state (visible)
+      transition(':enter', animate('300ms ease-in')), // Fade in
+      transition(':leave', animate('200ms ease-out')) // Fade out
     ])
   ],
 })
@@ -84,9 +90,9 @@ export class TableComponent<T> implements OnChanges, OnInit, OnDestroy {
       this.loadingTail = true;
       this.searchControl.disable({ emitEvent: false });
     } else {
+      this.searchControl.enable({ emitEvent: false });
       setTimeout(() => {
         this.loadingTail = false;
-        this.searchControl.enable({ emitEvent: false });
         // A little scuffed since the placeholder is not showing upon refocus.
         if (this._focusedElement instanceof HTMLInputElement) {
           this._focusedElement.focus();
