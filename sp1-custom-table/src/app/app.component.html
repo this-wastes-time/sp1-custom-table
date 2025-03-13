@@ -2,7 +2,7 @@
   <h2>{{ toggleExample === 'client' ? 'Client side paged table' : 'Server side paged table' }}</h2>
   <app-span-filler></app-span-filler>
   <span>Client</span>
-  <mat-slide-toggle color="warn" (change)="onToggleChange($event.checked)"></mat-slide-toggle>
+  <mat-slide-toggle color="warn" [checked]="toggleExample !== 'client'" (change)="onToggleChange($event.checked)"></mat-slide-toggle>
   <span>Server</span>
 </div>
 

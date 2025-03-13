@@ -50,7 +50,7 @@ const DEBOUNCE_DELAY = 500;
       state('void', style({ opacity: 0 })), // Initial state (hidden)
       state('*', style({ opacity: 1 })),    // Final state (visible)
       transition(':enter', animate('300ms ease-in')), // Fade in
-      transition(':leave', animate('200ms ease-out')) // Fade out
+      transition(':leave', animate('400ms ease-out')) // Fade out
     ])
   ],
 })
