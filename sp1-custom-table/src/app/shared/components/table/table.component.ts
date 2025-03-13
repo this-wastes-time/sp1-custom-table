@@ -84,9 +84,9 @@ export class TableComponent<T> implements OnChanges, OnInit, OnDestroy {
       this.loadingTail = true;
       this.searchControl.disable({ emitEvent: false });
     } else {
+      this.searchControl.enable({ emitEvent: false });
       setTimeout(() => {
         this.loadingTail = false;
-        this.searchControl.enable({ emitEvent: false });
         // A little scuffed since the placeholder is not showing upon refocus.
         if (this._focusedElement instanceof HTMLInputElement) {
           this._focusedElement.focus();

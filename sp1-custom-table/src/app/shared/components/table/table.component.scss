@@ -32,6 +32,10 @@
 .table-container {
   margin: 0 auto;
   overflow: auto;
+
+  &.is-loading {
+    opacity: 55%;
+  }
 }
 
 table {

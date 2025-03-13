@@ -11,7 +11,6 @@
           twtGeneralSpinner
           [spinnerBusy]="loading"
           [spinnerColor]="'accent'"
-          [style.background]="loading ? 'var(--spinner-background)' : 'none'"
           [style.z-index]="loadingTail ? 110 : -1">
         </div>
       
@@ -60,7 +59,7 @@
                   color="accent"
                   [matTooltip]="multiRowActionMenuTooltip"
                   [matMenuTriggerFor]="selectedRowMenu"
-                  [disabled]="loadingTail">
+                  [disabled]="loading">
                   <mat-icon>more_vert</mat-icon>
                 </button>
                 <mat-menu #selectedRowMenu="matMenu">
@@ -99,7 +98,7 @@
               <button mat-icon-button
                 [color]="'accent'"
                 [matMenuTriggerFor]="tableMenu"
-                [disabled]="loadingTail">
+                [disabled]="loading">
                 <mat-icon>settings</mat-icon>
               </button>
               <mat-menu #tableMenu="matMenu">
@@ -119,7 +118,7 @@
         <!-- Slot for anything to enhance table visuals like column filter and/or mat-chip quick filter options. -->
         <ng-content />
       
-        <div class="table-container">
+        <div class="table-container" [class.is-loading]="loading">
           <table mat-table
             [dataSource]="tableData"
             matSort
