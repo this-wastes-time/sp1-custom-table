@@ -114,7 +114,8 @@
         @if (loadingTail) {
           <mat-progress-bar class="progress-bar"
             mode="indeterminate"
-            [@fadeInOut]>
+            [@fadeInOut]
+            [class.pulsing]="loading">
           </mat-progress-bar>
         }
 
