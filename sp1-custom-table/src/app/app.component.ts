@@ -452,6 +452,13 @@ export class AppComponent implements OnInit {
 
     setTimeout(() => {
       this.serverData$ = this.mockService.fetchData(this.sPageIndex, this.sPageSize, sortBy, sortDirection, searchBarText).pipe(
+        map(data => {
+          if (data.length < this.sPageSize) {
+            const count = (this.sPageIndex * this.sPageSize) + data.length;
+            this.serverPaginator.totalItems = count;
+          }
+          return data;
+        }),
         catchError(() => {
           return of([]); // Return an empty array in case of error
         }),

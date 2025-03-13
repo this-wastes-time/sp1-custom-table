@@ -70,7 +70,7 @@ export class ServerPaginatorComponent extends BasePaginatorComponent {
     this._totalItems = value;
     this.totalItemsKnown = value !== null; // Update the state
 
-    if (value) {
+    if (value !== null) {
       this.totalPageCount = Math.ceil(value / this.pageSize);
     }
   }
