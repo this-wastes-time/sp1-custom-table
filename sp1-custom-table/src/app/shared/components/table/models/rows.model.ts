@@ -21,6 +21,13 @@ export interface RowsConfig<T> {
   hover?: boolean;
 
   /**
+   * Determines whether rows should have alternating row colors.
+   *
+   * @default false
+   */
+  zebraRows?: boolean;
+
+  /**
    * Function to determine the CSS class(es) applied to a row.
    *
    * @param row - The row data.

@@ -97,6 +97,14 @@ table {
     height: 52px;
   }
 
+  &.zebra-rows:nth-child(odd) {
+    background-color: var(--twt-row-zebra-odd-background);
+  }
+
+  &.zebra-rows:nth-child(even) {
+    background-color: var(--twt-row-zebra-even-background);
+  }
+
   &.hover:hover {
     background-color: var(--twt-row-hover-background);
   }
