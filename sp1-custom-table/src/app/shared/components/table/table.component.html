@@ -214,7 +214,6 @@
 
           <!-- Data rows -->
           <tr mat-row *matRowDef="let row; columns: displayColumns"
-            [class.showActions]="tableConfig.rowActions"
             [ngClass]="tableConfig.rowsConfig?.rowClass?.(row) ?? ''"
             [class.hover]="tableConfig.rowsConfig?.hover"
             [class.zebra-rows]="tableConfig.rowsConfig?.zebraRows">

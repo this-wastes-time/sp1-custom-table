@@ -93,10 +93,6 @@ table {
 .mat-mdc-row {
   height: 36px;
 
-  &.showActions {
-    height: 52px;
-  }
-
   &.zebra-rows:nth-child(odd) {
     background-color: var(--twt-row-zebra-odd-background);
   }
