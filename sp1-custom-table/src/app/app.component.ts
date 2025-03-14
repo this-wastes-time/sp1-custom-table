@@ -123,9 +123,12 @@ export class AppComponent implements OnInit {
       showHideColumns: true,
       reorderColumns: true,
     },
-    showRowNumbers: true,
-    multiRowSelection: true,
-    rowClass: (row: MockModel) => (row.name === 'Calcium' ? ['gold', 'bold'] : ''),
+    rowsConfig: {
+      showRowNumbers: true,
+      multiRowSelection: true,
+      hover: true,
+      rowClass: (row: MockModel) => (row.name === 'Calcium' ? ['gold', 'bold'] : ''),
+    },
     sortOptions: {
       sortFunc(item, property): string | number {
         if (property === 'discoveryLocation') {
