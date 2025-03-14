@@ -27,7 +27,7 @@ export interface TableConfig<T> {
   columnsConfig: ColumnsConfig;
 
   /**
-   * Configuration for table columns.
+   * Configuration for table rows.
    */
   rowsConfig?: RowsConfig<T>;
 

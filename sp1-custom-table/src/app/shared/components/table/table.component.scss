@@ -96,6 +96,10 @@ table {
   &.showActions {
     height: 52px;
   }
+
+  &.hover:hover {
+    background-color: var(--twt-row-hover);
+  }
 }
 
 .mat-column-actions,

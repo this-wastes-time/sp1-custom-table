@@ -1,5 +1,4 @@
 export interface RowsConfig<T> {
-
   /**
    * Determines whether to display row numbers.
    *
@@ -13,6 +12,13 @@ export interface RowsConfig<T> {
    * @default false
    */
   multiRowSelection?: boolean;
+
+  /**
+   * Determines whether rows should have a hover effect.
+   *
+   * @default false
+   */
+  hover?: boolean;
 
   /**
    * Function to determine the CSS class(es) applied to a row.

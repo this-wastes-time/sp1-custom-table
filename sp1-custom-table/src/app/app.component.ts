@@ -126,6 +126,7 @@ export class AppComponent implements OnInit {
     rowsConfig: {
       showRowNumbers: true,
       multiRowSelection: true,
+      hover: true,
       rowClass: (row: MockModel) => (row.name === 'Calcium' ? ['gold', 'bold'] : ''),
     },
     sortOptions: {
