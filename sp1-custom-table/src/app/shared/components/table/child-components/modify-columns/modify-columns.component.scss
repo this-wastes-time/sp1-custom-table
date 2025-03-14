@@ -31,6 +31,7 @@ ul {
   flex-flow: column wrap;
   margin-top: 1rem;
   padding: 0.25em;
+  justify-content: flex-end;
 
   button {
     width: 100%;
@@ -47,4 +48,8 @@ ul {
 
 .disabled-col {
   opacity: 0.4;
+}
+
+.spacer {
+  flex: auto;
 }
