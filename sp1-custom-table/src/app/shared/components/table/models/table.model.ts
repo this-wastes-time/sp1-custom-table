@@ -3,6 +3,7 @@ import { ColumnsConfig } from './column.model';
 import { RowActionsConfig, TableAction, SelectedRowAction } from './actions.model';
 import { SortConfig } from './sort.model';
 import { AutoRefreshConfig } from './auto-refresh.model';
+import { RowsConfig } from './rows.model';
 
 /**
  * Configuration options for a table component.
@@ -26,36 +27,14 @@ export interface TableConfig<T> {
   columnsConfig: ColumnsConfig;
 
   /**
-   * Determines whether to display row numbers.
-   *
-   * @default false
+   * Configuration for table columns.
    */
-  showRowNumbers?: boolean;
-
-  /**
-   * Enables multi-row selection mode.
-   *
-   * @default false
-   */
-  multiRowSelection?: boolean;
+  rowsConfig?: RowsConfig<T>;
 
   /**
    * Configuration for automatically refreshing table data.
    */
   autoRefresh?: AutoRefreshConfig;
-
-  /**
-   * Function to determine the CSS class(es) applied to a row.
-   *
-   * @param row - The row data.
-   * @returns A string or an array of CSS class names.
-   *
-   * @example
-   * ```typescript
-   * rowClass: (row) => row.active ? 'highlight' : 'dimmed'
-   * ```
-   */
-  rowClass?: (row: T) => string | string[];
 
   /**
    * Configuration for table sorting options.

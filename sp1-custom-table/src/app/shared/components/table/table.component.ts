@@ -316,12 +316,12 @@ export class TableComponent<T> implements OnChanges, OnInit, OnDestroy {
     this.displayColumns = columns.filter(col => col.visible ?? true).map(col => col.field);
 
     // Include the row number column.
-    if (this.tableConfig.showRowNumbers) {
+    if (this.tableConfig.rowsConfig?.showRowNumbers) {
       this.displayColumns.unshift('#');
     }
 
     // Include the multi-row select column.
-    if (this.tableConfig.multiRowSelection) {
+    if (this.tableConfig.rowsConfig?.multiRowSelection) {
       this.displayColumns.unshift('select');
     }
 
