@@ -105,8 +105,12 @@ table {
     background-color: var(--twt-row-zebra-even-background);
   }
 
-  &.hover:hover {
-    background-color: var(--twt-row-hover-background);
+  &.hover:hover:nth-child(odd) {
+    background-color: var(--twt-row-hover-odd-background);
+  }
+
+  &.hover:hover:nth-child(even) {
+    background-color: var(--twt-row-hover-even-background);
   }
 }
 
