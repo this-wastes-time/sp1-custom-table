@@ -110,9 +110,8 @@ table {
   }
 }
 
-.mat-column-actions,
-.mat-column-actions-filter {
-  border-left: 1px solid #ccc;
+.mat-column-actions {
+  border-left: 1px solid var(--twt-action-column-sticky-left-border);
 }
 
 .mat-mdc-form-field {
