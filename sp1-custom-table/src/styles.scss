@@ -4,10 +4,10 @@
 @import '@angular/material/prebuilt-themes/azure-blue.css';
 
 :root {
-  --spinner-background: rgba(255, 255, 255, 0.6);
   --paginator-height: 56px;
   --paginator-mat-form-field-height: 41px;
   --paginator-range-actions-height: 40px;
+
   --twt-header-row-height: 41px;
   --twt-row-hover-odd-background: #d0d0d0;
   --twt-row-hover-even-background: #dddddd;
@@ -32,15 +32,6 @@ body {
 
 .bold {
   font-weight: bold !important;
-}
-
-.spinner-div {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  width: 100%;
-  height: 100%;
 }
 
 .mat-mdc-menu-item:focus {
