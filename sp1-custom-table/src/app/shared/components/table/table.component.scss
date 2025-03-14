@@ -87,11 +87,11 @@ table {
 }
 
 .mat-mdc-header-row {
-  height: 26px;
+  height: var(--twt-header-row-height);
 }
 
 .mat-mdc-row {
-  height: 36px;
+  height: var(--twt-row-height);
 
   &.zebra-rows:nth-child(odd) {
     background-color: var(--twt-row-zebra-odd-background);
