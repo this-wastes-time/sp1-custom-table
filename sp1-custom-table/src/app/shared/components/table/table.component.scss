@@ -97,8 +97,20 @@ table {
     height: 52px;
   }
 
-  &.hover:hover {
-    background-color: var(--twt-row-hover-background);
+  &.zebra-rows:nth-child(odd) {
+    background-color: var(--twt-row-zebra-odd-background);
+  }
+
+  &.zebra-rows:nth-child(even) {
+    background-color: var(--twt-row-zebra-even-background);
+  }
+
+  &.hover:hover:nth-child(odd) {
+    background-color: var(--twt-row-hover-odd-background);
+  }
+
+  &.hover:hover:nth-child(even) {
+    background-color: var(--twt-row-hover-even-background);
   }
 }
 

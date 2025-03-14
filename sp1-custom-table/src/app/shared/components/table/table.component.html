@@ -216,7 +216,9 @@
           <tr mat-row *matRowDef="let row; columns: displayColumns"
             [class.showActions]="tableConfig.rowActions"
             [ngClass]="tableConfig.rowsConfig?.rowClass?.(row) ?? ''"
-            [class.hover]="tableConfig.rowsConfig?.hover"></tr>
+            [class.hover]="tableConfig.rowsConfig?.hover"
+            [class.zebra-rows]="tableConfig.rowsConfig?.zebraRows">
+          </tr>
           <tr *matNoDataRow>No data to display</tr>
         </table>
       </div>
