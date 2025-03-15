@@ -15,6 +15,7 @@ import { PathValuePipe } from '../../pipes/path-value.pipe';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { TruncatePipe } from '../../pipes/truncate.pipe';
 
 const material = [
   CommonModule,
@@ -39,6 +40,7 @@ const components = [
 
 const pipes = [
   PathValuePipe,
+  TruncatePipe,
 ];
 
 @NgModule({

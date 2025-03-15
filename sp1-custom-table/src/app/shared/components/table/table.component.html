@@ -178,7 +178,7 @@
                     <ng-container *ngTemplateOutlet="slideToggleTemplate; context: {checked: column.checked, row: row}"></ng-container>
                   }
                   @default {
-                    {{ column.valueGetter ? column.valueGetter(row) : (row | pathValue: column.field) }}
+                    {{ (column.valueGetter ? column.valueGetter(row) : (row | pathValue: column.field)) | truncate:column.truncationLimit }}
                   }
                 }
               </td>

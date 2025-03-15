@@ -81,6 +81,7 @@ export class AppComponent implements OnInit {
           header: 'Discovery Location',
           valueGetter: (row: MockModel) => `${row.university} (${row.country})`,
           sortable: true,
+          truncationLimit: 25,
         },
         {
           type: 'text',
@@ -122,6 +123,7 @@ export class AppComponent implements OnInit {
       stickyHeaders: true,
       showHideColumns: true,
       reorderColumns: true,
+
     },
     rowsConfig: {
       showRowNumbers: true,
