@@ -84,17 +84,6 @@ export class TableComponent<T> implements OnChanges, OnInit, OnDestroy {
   }
   set loading(value: boolean) {
     this._loading = value;
-    if (value) {
-      // Store the current focused element, will check later if it is the search bar for restoration.
-      this._focusedElement = document.activeElement;
-      this.searchControl.disable({ emitEvent: false });
-    } else {
-      // A little scuffed since the placeholder is not showing upon refocus.
-      if (this._focusedElement instanceof HTMLInputElement) {
-        this._focusedElement.focus();
-      }
-      this.searchControl.enable({ emitEvent: false });
-    }
   }
   private _loading!: boolean;
 
@@ -126,9 +115,6 @@ export class TableComponent<T> implements OnChanges, OnInit, OnDestroy {
   protected searchControl = new FormControl('');
   protected floatState: 'placeholding' | 'float' = 'placeholding';
   private _destroy$ = new Subject<void>();
-
-  // Focus watching var.
-  private _focusedElement!: Element | null;
 
   constructor(
     private announcer: LiveAnnouncer,
