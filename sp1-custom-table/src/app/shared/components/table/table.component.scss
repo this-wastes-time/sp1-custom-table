@@ -95,19 +95,19 @@ table {
   height: var(--twt-row-height);
 
   &.zebra-rows:nth-child(odd) {
-    background-color: var(--twt-row-zebra-odd-background);
+    background-color: var(--twt-row-zebra-odd-background-color);
   }
 
   &.zebra-rows:nth-child(even) {
-    background-color: var(--twt-row-zebra-even-background);
+    background-color: var(--twt-row-zebra-even-background-color);
   }
 
   &.hover:hover:nth-child(odd) {
-    background-color: var(--twt-row-hover-odd-background);
+    background-color: var(--twt-row-hover-odd-background-color);
   }
 
   &.hover:hover:nth-child(even) {
-    background-color: var(--twt-row-hover-even-background);
+    background-color: var(--twt-row-hover-even-background-color);
   }
 }
 
