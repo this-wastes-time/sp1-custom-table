@@ -133,6 +133,19 @@ interface TextColumn<T> extends BaseColumn<T> {
    * Identifies this column as a text column.
    */
   type: 'text';
+
+  /**
+   * Specifies the maximum number of characters to display in the cell.
+   * Content beyond this limit may be truncated.
+   *
+   * @default undefined
+   * 
+   * @example
+   * ```typescript
+   * truncationLimit: 50 // Limits the content to 50 characters
+   * ```
+   */
+  truncationLimit?: number;
 }
 
 /**
