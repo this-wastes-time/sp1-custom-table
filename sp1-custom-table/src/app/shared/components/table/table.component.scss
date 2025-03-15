@@ -88,6 +88,7 @@ table {
 
 .mat-mdc-header-row {
   height: var(--twt-header-row-height);
+  background-color: var(--twt-header-row-background-color, transparent);
 }
 
 .mat-mdc-row {
